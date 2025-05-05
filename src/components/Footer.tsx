@@ -7,7 +7,7 @@ const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer className="bg-prince-navy text-white">
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
@@ -18,13 +18,13 @@ const Footer = () => {
               20 Branches All-Over Kanyakumari District
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-prince-green">
+              <a href="#" className="text-gray-300 hover:text-prince-accent transition-colors">
                 <Facebook />
               </a>
-              <a href="#" className="text-gray-300 hover:text-prince-green">
+              <a href="#" className="text-gray-300 hover:text-prince-accent transition-colors">
                 <Twitter />
               </a>
-              <a href="#" className="text-gray-300 hover:text-prince-green">
+              <a href="#" className="text-gray-300 hover:text-prince-accent transition-colors">
                 <Instagram />
               </a>
             </div>
@@ -36,32 +36,32 @@ const Footer = () => {
             </h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/" className="text-gray-300 hover:text-prince-green">
+                <Link to="/" className="text-gray-300 hover:text-prince-accent transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-gray-300 hover:text-prince-green">
+                <Link to="/about" className="text-gray-300 hover:text-prince-accent transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="text-gray-300 hover:text-prince-green">
+                <Link to="/services" className="text-gray-300 hover:text-prince-accent transition-colors">
                   Our Services
                 </Link>
               </li>
               <li>
-                <Link to="/branches" className="text-gray-300 hover:text-prince-green">
+                <Link to="/branches" className="text-gray-300 hover:text-prince-accent transition-colors">
                   Branches
                 </Link>
               </li>
               <li>
-                <Link to="/events" className="text-gray-300 hover:text-prince-green">
+                <Link to="/events" className="text-gray-300 hover:text-prince-accent transition-colors">
                   Events
                 </Link>
               </li>
               <li>
-                <Link to="/membership" className="text-gray-300 hover:text-prince-green">
+                <Link to="/membership" className="text-gray-300 hover:text-prince-accent transition-colors">
                   Membership
                 </Link>
               </li>
@@ -74,12 +74,12 @@ const Footer = () => {
             </h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/privacy" className="text-gray-300 hover:text-prince-green">
+                <Link to="/privacy" className="text-gray-300 hover:text-prince-accent transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-gray-300 hover:text-prince-green">
+                <Link to="/terms" className="text-gray-300 hover:text-prince-accent transition-colors">
                   Terms & Conditions
                 </Link>
               </li>
@@ -92,20 +92,20 @@ const Footer = () => {
             </h3>
             <ul className="space-y-4">
               <li className="flex items-start">
-                <MapPin className="h-5 w-5 text-prince-green mr-3 mt-1" />
+                <MapPin className="h-5 w-5 text-prince-accent mr-3 mt-1" />
                 <span className="text-gray-300">
                   Sri Sai Complex, Court Road, Vepamoodu Junction, Nagercoil, Tamil Nadu, India - 629001
                 </span>
               </li>
               <li className="flex items-center">
-                <Phone className="h-5 w-5 text-prince-green mr-3" />
+                <Phone className="h-5 w-5 text-prince-accent mr-3" />
                 <span className="text-gray-300">9150537718, 9385722102</span>
               </li>
               <li className="flex items-center">
-                <Mail className="h-5 w-5 text-prince-green mr-3" />
+                <Mail className="h-5 w-5 text-prince-accent mr-3" />
                 <a
                   href="mailto:info@jeztechnologies.com"
-                  className="text-gray-300 hover:text-prince-green"
+                  className="text-gray-300 hover:text-prince-accent transition-colors"
                 >
                   info@jeztechnologies.com
                 </a>

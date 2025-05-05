@@ -44,7 +44,8 @@ const Branches = () => {
       <Navbar />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative bg-prince-green py-24">
+        <section className="relative bg-gradient-to-r from-prince-dark to-prince-green py-24">
+          <div className="absolute inset-0 bg-[url('https://placehold.co/1920x1080')] opacity-10 mix-blend-overlay bg-cover bg-center"></div>
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">Our Branches</h1>
@@ -59,7 +60,7 @@ const Branches = () => {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center mb-16">
-              <h2 className="text-3xl font-bold mb-6">Find a Branch Near You</h2>
+              <h2 className="text-3xl font-bold mb-6 gradient-heading">Find a Branch Near You</h2>
               <p className="text-gray-600">
                 With 20 branches spread across Kanyakumari District, we're always nearby to assist you with your documentation and loan needs.
               </p>
@@ -67,7 +68,7 @@ const Branches = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {branches.map(branch => (
-                <div key={branch.id} className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100">
+                <div key={branch.id} className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-shadow duration-300 hover:border-prince-accent/20">
                   <div className="p-6">
                     <h3 className="text-xl font-semibold mb-3 text-prince-green">{branch.name}</h3>
                     <div className="space-y-3 text-gray-600">
@@ -77,24 +78,24 @@ const Branches = () => {
                       </div>
                       <div className="flex items-center">
                         <Phone className="h-5 w-5 text-prince-green mr-3 flex-shrink-0" />
-                        <a href={`tel:${branch.phone}`} className="hover:text-prince-green">
+                        <a href={`tel:${branch.phone}`} className="hover:text-prince-accent transition-colors">
                           {branch.phone}
                         </a>
                       </div>
                       <div className="flex items-center">
                         <Mail className="h-5 w-5 text-prince-green mr-3 flex-shrink-0" />
-                        <a href={`mailto:${branch.email}`} className="hover:text-prince-green">
+                        <a href={`mailto:${branch.email}`} className="hover:text-prince-accent transition-colors">
                           {branch.email}
                         </a>
                       </div>
                     </div>
                   </div>
-                  <div className="px-6 py-3 bg-gray-50 text-center">
+                  <div className="px-6 py-3 bg-prince-light text-center">
                     <a 
                       href={`https://maps.google.com/?q=${encodeURIComponent(branch.address)}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-prince-green hover:underline inline-flex items-center"
+                      className="text-prince-green hover:text-prince-accent transition-colors inline-flex items-center"
                     >
                       <MapPin className="h-4 w-4 mr-1" /> View on Map
                     </a>
