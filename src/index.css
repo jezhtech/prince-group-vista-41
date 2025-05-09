@@ -5,7 +5,7 @@
 
 @layer base {
   :root {
-    --background: 142 68% 98%;
+    --background: 220 33% 98%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -14,30 +14,30 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 162 79% 24%;
+    --primary: 223 75% 63%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 152 90% 32%;
+    --secondary: 174 90% 36%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 146 79% 91%;
-    --accent-foreground: 162 79% 24%;
+    --accent: 183 74% 68%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 162 79% 24%;
+    --ring: 223 75% 63%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 162 79% 24%;
+    --sidebar-primary: 223 75% 63%;
     --sidebar-primary-foreground: 0 0% 98%;
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
@@ -55,10 +55,10 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 162 79% 24%;
+    --primary: 223 75% 63%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 152 90% 32%;
+    --secondary: 174 90% 36%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217.2 32.6% 17.5%;
@@ -76,7 +76,7 @@
     
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 162 79% 24%;
+    --sidebar-primary: 223 75% 63%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
@@ -99,12 +99,104 @@
   @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;
 }
 
+.modern-glass {
+  @apply bg-white/80 backdrop-blur-md border border-white/30 shadow-lg;
+}
+
+.blue-gradient-bg {
+  @apply bg-gradient-to-r from-ui-blue-600 to-ui-blue-400;
+}
+
+.green-gradient-bg {
+  @apply bg-gradient-to-r from-ui-green-600 to-ui-green-400;
+}
+
+.blue-cyan-gradient-bg {
+  @apply bg-gradient-to-r from-ui-blue-500 to-ui-cyan-400;
+}
+
 .gradient-heading {
-  @apply bg-gradient-to-r from-prince-dark via-prince-green to-prince-accent bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-ui-blue-600 via-ui-blue-500 to-ui-cyan-400 bg-clip-text text-transparent;
+}
+
+.gradient-heading-green {
+  @apply bg-gradient-to-r from-ui-blue-500 via-ui-cyan-400 to-ui-green-400 bg-clip-text text-transparent;
 }
 
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
+}
+
+.feature-card {
+  @apply bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-ui-blue-200 hover:-translate-y-1;
+}
+
+.service-card {
+  @apply bg-white/90 backdrop-blur-sm rounded-xl p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 relative overflow-hidden hover:-translate-y-1;
+}
+
+.service-card::after {
+  @apply content-[''] absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-ui-blue-400 to-ui-cyan-400 transform scale-x-0 origin-left transition-transform duration-300;
+}
+
+.service-card:hover::after {
+  @apply scale-x-100;
+}
+
+.icon-circle {
+  @apply flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-ui-blue-100 text-ui-blue-600;
+}
+
+.icon-circle-green {
+  @apply flex items-center justify-center w-16 h-16 rounded-full mb-4 bg-ui-green-100 text-ui-green-600;
+}
+
+.icon-outline {
+  @apply flex items-center justify-center w-20 h-20 rounded-full border-2 border-dashed border-ui-blue-300 p-1;
+}
+
+.icon-outline-inner {
+  @apply flex items-center justify-center w-full h-full rounded-full bg-ui-blue-100/50;
+}
+
+.btn-primary {
+  @apply blue-gradient-bg text-white font-medium px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5;
+}
+
+.btn-secondary {
+  @apply bg-white text-ui-blue-600 border border-ui-blue-200 font-medium px-6 py-3 rounded-lg hover:bg-ui-blue-50 hover:shadow-md transition-all duration-300;
+}
+
+.wave-shape {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.wave-shape svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 75px;
+}
+
+.wave-shape .shape-fill {
+  fill: #FFFFFF;
+}
+
+.dot-pattern {
+  background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.blob-shape {
+  position: absolute;
+  z-index: -1;
+  filter: blur(70px);
+  opacity: 0.4;
 }
 
 @keyframes fadeIn {
@@ -115,5 +207,78 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+.animated-image {
+  animation: float 6s ease-in-out infinite;
+}
+
+.counter-number {
+  @apply text-5xl font-bold text-ui-blue-600 flex items-end;
+}
+
+.counter-suffix {
+  @apply text-2xl mb-1 ml-1 text-ui-blue-500;
+}
+
+.scroll-indicator {
+  @apply fixed right-5 bottom-10 z-40 flex flex-col items-center cursor-pointer;
+}
+
+.scroll-indicator .mouse {
+  @apply w-8 h-12 border-2 border-ui-blue-500 rounded-full flex justify-center pt-2;
+}
+
+.scroll-indicator .wheel {
+  @apply w-1 h-2 bg-ui-blue-500 rounded-full animate-bounce-light;
+}
+
+.wavy-underline {
+  position: relative;
+}
+
+.wavy-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  height: 3px;
+  width: 100%;
+  background: linear-gradient(45deg, #4C83FB, #0BD488, #4C83FB);
+  background-size: 200% 100%;
+  animation: gradient 2s ease infinite;
+  border-radius: 3px;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }

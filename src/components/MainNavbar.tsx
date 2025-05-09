@@ -1,14 +1,30 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, User } from 'lucide-react';
+import { Menu, X, ChevronDown, User, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Logo from './Logo';
+import { motion } from "framer-motion";
 
 const MainNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 10;
+      if (isScrolled !== scrolled) {
+        setScrolled(isScrolled);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [scrolled]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -44,64 +60,88 @@ const MainNavbar = () => {
   ];
 
   return (
-    <nav className="bg-white shadow-md sticky top-0 z-50">
+    <motion.nav 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? 'bg-white/90 backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'
+      }`}
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center">
           <div className="flex-shrink-0">
-            <Link to="/">
-              <Logo />
-            </Link>
+            <Logo />
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-3">
               {navItems.map((item) => (
-                <div key={item.name} className="relative">
+                <div key={item.name} className="relative group">
                   {item.dropdown ? (
                     <div>
                       <button
                         onClick={() => toggleDropdown(item.name)}
-                        className={`px-3 py-2 flex items-center ${
-                          isActive(item.path) ? 'text-prince-green font-medium' : 'text-gray-700 hover:text-prince-green'
+                        className={`px-3 py-2 flex items-center rounded-md transition-colors ${
+                          isActive(item.path) 
+                            ? 'text-ui-blue-600 font-medium' 
+                            : 'text-gray-700 hover:text-ui-blue-600 hover:bg-ui-blue-50'
                         }`}
                       >
                         {item.name}
-                        <ChevronDown className="ml-1 h-4 w-4" />
+                        <ChevronDown className={`ml-1 h-4 w-4 transition-transform duration-200 ${activeDropdown === item.name ? 'rotate-180' : ''}`} />
                       </button>
 
                       {activeDropdown === item.name && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                        <motion.div 
+                          className="absolute right-0 mt-2 w-64 bg-white modern-glass rounded-lg shadow-xl z-10 overflow-hidden"
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          transition={{ duration: 0.2 }}
+                        >
                           {item.dropdown.map((dropdownItem) => (
                             <Link
                               key={dropdownItem.name}
                               to={dropdownItem.path}
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-prince-green hover:text-white"
+                              className="block px-4 py-3 text-sm text-gray-700 hover:bg-ui-blue-50 hover:text-ui-blue-600 transition-colors"
                               onClick={() => setActiveDropdown(null)}
                             >
                               {dropdownItem.name}
                             </Link>
                           ))}
-                        </div>
+                        </motion.div>
                       )}
                     </div>
                   ) : (
                     <Link
                       to={item.path}
-                      className={`px-3 py-2 ${
-                        isActive(item.path) ? 'text-prince-green font-medium' : 'text-gray-700 hover:text-prince-green'
+                      className={`px-3 py-2 rounded-md transition-colors ${
+                        isActive(item.path) 
+                          ? 'text-ui-blue-600 font-medium' 
+                          : 'text-gray-700 hover:text-ui-blue-600 hover:bg-ui-blue-50'
                       }`}
                     >
                       {item.name}
+                      {isActive(item.path) && (
+                        <motion.div 
+                          className="h-0.5 bg-ui-blue-500 mt-0.5"
+                          layoutId="navIndicator"
+                        />
+                      )}
                     </Link>
                   )}
                 </div>
               ))}
-              <div className="ml-4 flex space-x-2">
-                <Button asChild variant="outline">
+              <div className="ml-6 flex items-center space-x-3">
+                <button className="text-gray-500 hover:text-ui-blue-600 transition-colors">
+                  <Search className="h-5 w-5" />
+                </button>
+                <Button asChild variant="outline" className="border-ui-blue-200 hover:bg-ui-blue-50 hover:text-ui-blue-600">
                   <Link to="/login"><User className="mr-2 h-4 w-4" /> Login</Link>
                 </Button>
-                <Button asChild>
+                <Button asChild className="bg-ui-blue-600 text-white hover:bg-ui-blue-500">
                   <Link to="/contact">Contact Us</Link>
                 </Button>
               </div>
@@ -112,7 +152,7 @@ const MainNavbar = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-prince-green focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-ui-blue-600 focus:outline-none"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -121,29 +161,41 @@ const MainNavbar = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-100">
-            <div className="px-2 pt-2 pb-3 space-y-1">
+          <motion.div 
+            className="md:hidden bg-white shadow-lg rounded-lg mt-4 modern-glass overflow-hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="px-4 pt-3 pb-5 space-y-2">
               {navItems.map((item) => (
-                <div key={item.name}>
+                <div key={item.name} className="rounded-lg overflow-hidden">
                   {item.dropdown ? (
                     <div>
                       <button
                         onClick={() => toggleDropdown(item.name)}
-                        className={`w-full text-left px-3 py-2 text-base flex items-center justify-between ${
-                          isActive(item.path) ? 'text-prince-green font-medium' : 'text-gray-700 hover:text-prince-green'
+                        className={`w-full text-left px-4 py-3 text-base flex items-center justify-between rounded-lg ${
+                          isActive(item.path) ? 'bg-ui-blue-50 text-ui-blue-600 font-medium' : 'text-gray-700 hover:bg-gray-50'
                         }`}
                       >
                         {item.name}
-                        <ChevronDown className="ml-1 h-4 w-4" />
+                        <ChevronDown className={`ml-1 h-4 w-4 transition-transform duration-200 ${activeDropdown === item.name ? 'rotate-180' : ''}`} />
                       </button>
 
                       {activeDropdown === item.name && (
-                        <div className="pl-4 border-l-2 border-prince-green">
+                        <motion.div 
+                          className="mt-1 ml-2 space-y-1 border-l-2 border-ui-blue-200 pl-4"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2 }}
+                        >
                           {item.dropdown.map((dropdownItem) => (
                             <Link
                               key={dropdownItem.name}
                               to={dropdownItem.path}
-                              className="block px-3 py-2 text-base text-gray-500 hover:text-prince-green"
+                              className="block px-4 py-2 rounded-lg text-base text-gray-600 hover:bg-ui-blue-50 hover:text-ui-blue-600"
                               onClick={() => {
                                 setActiveDropdown(null);
                                 setIsMenuOpen(false);
@@ -152,14 +204,14 @@ const MainNavbar = () => {
                               {dropdownItem.name}
                             </Link>
                           ))}
-                        </div>
+                        </motion.div>
                       )}
                     </div>
                   ) : (
                     <Link
                       to={item.path}
-                      className={`block px-3 py-2 text-base ${
-                        isActive(item.path) ? 'text-prince-green font-medium' : 'text-gray-700 hover:text-prince-green'
+                      className={`block px-4 py-3 text-base rounded-lg ${
+                        isActive(item.path) ? 'bg-ui-blue-50 text-ui-blue-600 font-medium' : 'text-gray-700 hover:bg-gray-50 hover:text-ui-blue-600'
                       }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -168,21 +220,21 @@ const MainNavbar = () => {
                   )}
                 </div>
               ))}
-              <div className="flex flex-col space-y-2 pt-2">
+              <div className="pt-4 space-y-2">
                 <Button asChild variant="outline" className="w-full">
                   <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                     <User className="mr-2 h-4 w-4" /> Login
                   </Link>
                 </Button>
-                <Button asChild className="w-full">
+                <Button asChild className="w-full bg-ui-blue-600 hover:bg-ui-blue-500">
                   <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
                 </Button>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 
