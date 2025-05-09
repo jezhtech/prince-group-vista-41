@@ -7,6 +7,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Services from "./pages/Services";
+import DocumentationServices from "./pages/DocumentationServices";
+import LoanServices from "./pages/LoanServices";
 import Branches from "./pages/Branches";
 import TariffComparison from "./pages/TariffComparison";
 import Events from "./pages/Events";
@@ -40,6 +42,8 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/services/documentation" element={<DocumentationServices />} />
+          <Route path="/services/loans" element={<LoanServices />} />
           <Route path="/branches" element={<Branches />} />
           <Route path="/tariff-comparison" element={<TariffComparison />} />
           <Route path="/events" element={<Events />} />
