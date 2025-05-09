@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, User, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Logo from './Logo';
 
@@ -23,23 +23,17 @@ const Navbar = () => {
 
   const navItems = [
     { name: 'Home', path: '/' },
-    { 
-      name: 'About', 
-      path: '/about',
-      dropdown: [
-        { name: 'Our Story', path: '/about' },
-        { name: 'Team', path: '/about#team' },
-      ]
-    },
+    { name: 'About Us', path: '/about' },
     { 
       name: 'Services', 
       path: '/services',
       dropdown: [
-        { name: 'Documentation Services', path: '/services' },
-        { name: 'Loan Services', path: '/services#loans' },
+        { name: 'Documentation Services', path: '/services/documentation' },
+        { name: 'Loan Services', path: '/services/loans' },
       ]
     },
     { name: 'Branches', path: '/branches' },
+    { name: 'Tariff Comparison', path: '/tariff-comparison' },
     { name: 'Events', path: '/events' },
     { name: 'Membership', path: '/membership' },
   ];
@@ -49,9 +43,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-20">
           <div className="flex-shrink-0">
-            <Link to="/">
-              <Logo />
-            </Link>
+            <Logo />
           </div>
 
           {/* Desktop Navigation */}
@@ -63,7 +55,7 @@ const Navbar = () => {
                     <div>
                       <button
                         onClick={() => toggleDropdown(item.name)}
-                        className="px-3 py-2 text-gray-700 hover:text-prince-green flex items-center"
+                        className="px-3 py-2 text-gray-700 hover:text-ui-blue-600 flex items-center"
                       >
                         {item.name}
                         <ChevronDown className="ml-1 h-4 w-4" />
@@ -75,7 +67,7 @@ const Navbar = () => {
                             <Link
                               key={dropdownItem.name}
                               to={dropdownItem.path}
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-prince-green hover:text-white"
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-ui-blue-50 hover:text-ui-blue-600"
                               onClick={() => setActiveDropdown(null)}
                             >
                               {dropdownItem.name}
@@ -87,16 +79,21 @@ const Navbar = () => {
                   ) : (
                     <Link
                       to={item.path}
-                      className="px-3 py-2 text-gray-700 hover:text-prince-green"
+                      className="px-3 py-2 text-gray-700 hover:text-ui-blue-600"
                     >
                       {item.name}
                     </Link>
                   )}
                 </div>
               ))}
-              <Button className="ml-4" variant="default">
-                <Link to="/contact">Contact Us</Link>
-              </Button>
+              <div className="ml-4 flex items-center gap-2">
+                <button className="text-gray-500 hover:text-ui-blue-600">
+                  <Search className="h-5 w-5" />
+                </button>
+                <Button asChild className="bg-ui-blue-600 hover:bg-ui-blue-500">
+                  <Link to="/login">Login</Link>
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -104,7 +101,7 @@ const Navbar = () => {
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-prince-green focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-ui-blue-600 focus:outline-none"
             >
               {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
@@ -121,19 +118,19 @@ const Navbar = () => {
                     <div>
                       <button
                         onClick={() => toggleDropdown(item.name)}
-                        className="w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-prince-green flex items-center justify-between"
+                        className="w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-ui-blue-600 flex items-center justify-between"
                       >
                         {item.name}
                         <ChevronDown className="ml-1 h-4 w-4" />
                       </button>
 
                       {activeDropdown === item.name && (
-                        <div className="pl-4 border-l-2 border-prince-green">
+                        <div className="pl-4 border-l-2 border-ui-blue-400">
                           {item.dropdown.map((dropdownItem) => (
                             <Link
                               key={dropdownItem.name}
                               to={dropdownItem.path}
-                              className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-prince-green"
+                              className="block px-3 py-2 text-base font-medium text-gray-500 hover:text-ui-blue-600"
                               onClick={() => {
                                 setActiveDropdown(null);
                                 setIsMenuOpen(false);
@@ -148,7 +145,7 @@ const Navbar = () => {
                   ) : (
                     <Link
                       to={item.path}
-                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-prince-green"
+                      className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-ui-blue-600"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {item.name}
@@ -157,11 +154,11 @@ const Navbar = () => {
                 </div>
               ))}
               <Link
-                to="/contact"
-                className="block w-full text-center px-3 py-2 bg-prince-green text-white rounded-md font-medium"
+                to="/login"
+                className="block w-full text-center px-3 py-2 mt-2 bg-ui-blue-600 text-white rounded-md font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Contact Us
+                Login
               </Link>
             </div>
           </div>

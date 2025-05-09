@@ -24,8 +24,8 @@ const AdminLayout = () => {
 
   const isActiveLink = ({ isActive }: { isActive: boolean }) =>
     isActive
-      ? "bg-prince-green text-white"
-      : "text-gray-600 hover:bg-prince-green/10 hover:text-prince-green";
+      ? "bg-ui-blue-500 text-white"
+      : "text-gray-600 hover:bg-ui-blue-50 hover:text-ui-blue-600";
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -41,7 +41,7 @@ const AdminLayout = () => {
               <Logo />
             ) : (
               <div className="mx-auto">
-                <div className="h-8 w-8 bg-prince-green rounded-full flex items-center justify-center text-white font-bold">
+                <div className="h-8 w-8 bg-ui-blue-500 rounded-full flex items-center justify-center text-white font-bold">
                   PG
                 </div>
               </div>
@@ -107,8 +107,8 @@ const AdminLayout = () => {
             </button>
             <div className="flex items-center space-x-4">
               <span className="text-sm font-medium text-gray-700">Admin User</span>
-              <div className="h-8 w-8 bg-gray-200 rounded-full flex items-center justify-center">
-                <span className="text-xs font-medium">AU</span>
+              <div className="h-8 w-8 bg-ui-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-xs font-medium text-ui-blue-600">AU</span>
               </div>
             </div>
           </div>
