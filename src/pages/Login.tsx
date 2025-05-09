@@ -47,35 +47,36 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-ui-blue-50 to-ui-green-50 z-0"></div>
+    <div className="min-h-screen flex items-center justify-center">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-ui-blue-50 via-white to-ui-green-50 z-0"></div>
       
-      {/* Glow effects - positioned behind content */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-ui-blue-400 opacity-10 filter blur-3xl z-0"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-ui-green-400 opacity-10 filter blur-3xl z-0"></div>
+      {/* Glow effects */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-ui-blue-400 opacity-5 filter blur-3xl z-0"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-ui-green-400 opacity-5 filter blur-3xl z-0"></div>
       
-      <Card className="w-full max-w-md p-8 shadow-xl relative z-10 bg-white/80 backdrop-blur-md">
+      <Card className="w-full max-w-md p-8 shadow-lg relative z-10 bg-white/90 backdrop-blur-sm border border-white">
         <div className="mb-8 flex justify-center">
           <Logo />
         </div>
         
-        <h2 className="text-2xl font-bold text-center mb-6">
+        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
           {otpSent ? 'Verify OTP' : 'Login to your account'}
         </h2>
         
         {!otpSent ? (
           <form onSubmit={handleSendOtp} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="mobile" className="text-sm font-medium">
+              <label htmlFor="mobile" className="text-sm font-medium text-gray-700">
                 Mobile Number
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-5 w-5" />
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ui-blue-500 h-5 w-5" />
                 <Input
                   id="mobile"
                   type="tel"
                   placeholder="Enter your mobile number"
-                  className="pl-10"
+                  className="pl-10 border-gray-200 focus:border-ui-blue-300 focus:ring focus:ring-ui-blue-200 focus:ring-opacity-50"
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   required
@@ -83,7 +84,11 @@ const Login = () => {
               </div>
             </div>
             
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-ui-blue-500 hover:bg-ui-blue-600 transition-colors" 
+              disabled={isLoading}
+            >
               {isLoading ? "Sending OTP..." : "Send OTP"}
             </Button>
             
@@ -97,16 +102,16 @@ const Login = () => {
         ) : (
           <form onSubmit={handleVerifyOtp} className="space-y-4">
             <div className="space-y-2">
-              <label htmlFor="otp" className="text-sm font-medium">
+              <label htmlFor="otp" className="text-sm font-medium text-gray-700">
                 Verification Code
               </label>
               <div className="relative">
-                <KeySquare className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-5 w-5" />
+                <KeySquare className="absolute left-3 top-1/2 transform -translate-y-1/2 text-ui-blue-500 h-5 w-5" />
                 <Input
                   id="otp"
                   type="text"
                   placeholder="Enter 6-digit OTP"
-                  className="pl-10 text-center tracking-wider font-medium"
+                  className="pl-10 text-center tracking-wider font-medium border-gray-200 focus:border-ui-blue-300 focus:ring focus:ring-ui-blue-200 focus:ring-opacity-50"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   required
@@ -118,7 +123,11 @@ const Login = () => {
               </p>
             </div>
             
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-ui-blue-500 hover:bg-ui-blue-600 transition-colors" 
+              disabled={isLoading}
+            >
               {isLoading ? "Verifying..." : "Verify & Login"}
             </Button>
             

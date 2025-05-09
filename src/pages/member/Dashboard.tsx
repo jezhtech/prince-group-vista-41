@@ -3,9 +3,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Ticket, User, FileText, MessageSquare, Settings } from 'lucide-react';
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { Calendar, Ticket, User, FileText, MessageSquare, Settings, ArrowRight } from 'lucide-react';
+import MainNavbar from "@/components/MainNavbar";
+import MainFooter from "@/components/MainFooter";
 import StatisticsCard from '@/components/StatisticsCard';
 
 const MemberDashboard = () => {
@@ -32,14 +32,21 @@ const MemberDashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-grow pt-24 pb-16 bg-gray-50">
+      <MainNavbar />
+      <main className="flex-grow pt-24 pb-16 bg-gradient-to-br from-gray-50 to-ui-blue-50/30">
         <div className="container mx-auto px-4">
           {/* Welcome Section */}
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Welcome, {memberInfo.name}</h1>
-            <p className="text-gray-600">
-              Membership ID: {memberInfo.membershipId} | Member Since: {memberInfo.memberSince}
+          <div className="mb-8 bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <h1 className="text-3xl font-bold mb-2 text-gray-800">Welcome, {memberInfo.name}</h1>
+            <p className="text-gray-600 flex flex-wrap gap-x-4">
+              <span className="inline-flex items-center">
+                <User className="h-4 w-4 mr-1 text-ui-blue-500" />
+                ID: {memberInfo.membershipId}
+              </span>
+              <span className="inline-flex items-center">
+                <Calendar className="h-4 w-4 mr-1 text-ui-blue-500" />
+                Member Since: {memberInfo.memberSince}
+              </span>
             </p>
           </div>
 
@@ -72,24 +79,26 @@ const MemberDashboard = () => {
             {/* Left Column */}
             <div className="lg:col-span-2 space-y-8">
               {/* Upcoming Events */}
-              <Card className="p-6">
+              <Card className="p-6 overflow-hidden border-0 shadow-md">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-bold flex items-center">
                     <Calendar className="mr-2 h-5 w-5 text-ui-blue-500" />
                     Upcoming Events
                   </h2>
-                  <Button asChild variant="outline" size="sm">
-                    <Link to="/member/events">View All</Link>
+                  <Button asChild variant="ghost" size="sm" className="text-ui-blue-600 hover:text-ui-blue-700 hover:bg-ui-blue-50">
+                    <Link to="/member/events" className="flex items-center">
+                      View All <ArrowRight className="ml-1 h-4 w-4" />
+                    </Link>
                   </Button>
                 </div>
                 
                 {upcomingEvents.length > 0 ? (
                   <div className="space-y-4">
                     {upcomingEvents.map(event => (
-                      <div key={event.id} className="p-4 border border-gray-100 rounded-lg hover:border-ui-blue-200 transition-colors">
+                      <div key={event.id} className="p-4 border border-gray-100 rounded-lg bg-white hover:shadow-md transition-all duration-200">
                         <h3 className="font-medium mb-1">{event.title}</h3>
                         <div className="flex items-center text-sm text-gray-500">
-                          <Calendar className="h-4 w-4 mr-1" />
+                          <Calendar className="h-4 w-4 mr-1 text-ui-green-500" />
                           <span className="mr-3">{event.date}</span>
                           <span>({event.location})</span>
                         </div>
@@ -102,19 +111,21 @@ const MemberDashboard = () => {
               </Card>
 
               {/* Tickets */}
-              <Card className="p-6">
+              <Card className="p-6 overflow-hidden border-0 shadow-md">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-bold flex items-center">
                     <Ticket className="mr-2 h-5 w-5 text-ui-blue-500" />
                     My Tickets
                   </h2>
-                  <Button asChild variant="outline" size="sm">
-                    <Link to="/member/tickets">View All</Link>
+                  <Button asChild variant="ghost" size="sm" className="text-ui-blue-600 hover:text-ui-blue-700 hover:bg-ui-blue-50">
+                    <Link to="/member/tickets" className="flex items-center">
+                      View All <ArrowRight className="ml-1 h-4 w-4" />
+                    </Link>
                   </Button>
                 </div>
 
                 {tickets.length > 0 ? (
-                  <div className="overflow-x-auto">
+                  <div className="overflow-x-auto bg-white rounded-lg">
                     <table className="w-full">
                       <thead>
                         <tr className="border-b border-gray-100">
@@ -153,8 +164,8 @@ const MemberDashboard = () => {
             {/* Right Column */}
             <div className="space-y-8">
               {/* Membership Card */}
-              <Card className="p-6 bg-gradient-to-r from-ui-blue-600 to-ui-blue-400 text-white">
-                <div className="flex flex-col">
+              <Card className="overflow-hidden border-0 shadow-md">
+                <div className="p-6 bg-gradient-to-br from-ui-blue-600 to-ui-blue-400 text-white">
                   <h2 className="text-xl font-bold mb-6">Membership Card</h2>
                   <div className="mb-6">
                     <h3 className="text-lg font-medium">{memberInfo.name}</h3>
@@ -171,33 +182,38 @@ const MemberDashboard = () => {
                     </div>
                   </div>
                 </div>
+                <div className="p-4 bg-white">
+                  <Button variant="outline" className="w-full text-ui-blue-600 border-ui-blue-200 hover:bg-ui-blue-50">
+                    View Full Card
+                  </Button>
+                </div>
               </Card>
 
               {/* Quick Actions */}
-              <Card className="p-6">
+              <Card className="p-6 border-0 shadow-md">
                 <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-2 gap-3">
-                  <Button asChild variant="outline" className="flex flex-col h-auto py-4">
+                  <Button asChild variant="outline" className="flex flex-col h-auto py-4 border-gray-200 hover:bg-gray-50 hover:border-gray-300">
                     <Link to="/services">
-                      <FileText className="h-5 w-5 mb-1" />
+                      <FileText className="h-5 w-5 mb-1 text-ui-green-500" />
                       <span className="text-sm">Services</span>
                     </Link>
                   </Button>
-                  <Button asChild variant="outline" className="flex flex-col h-auto py-4">
+                  <Button asChild variant="outline" className="flex flex-col h-auto py-4 border-gray-200 hover:bg-gray-50 hover:border-gray-300">
                     <Link to="/member/events">
-                      <Calendar className="h-5 w-5 mb-1" />
+                      <Calendar className="h-5 w-5 mb-1 text-ui-green-500" />
                       <span className="text-sm">Events</span>
                     </Link>
                   </Button>
-                  <Button asChild variant="outline" className="flex flex-col h-auto py-4">
+                  <Button asChild variant="outline" className="flex flex-col h-auto py-4 border-gray-200 hover:bg-gray-50 hover:border-gray-300">
                     <Link to="/contact">
-                      <MessageSquare className="h-5 w-5 mb-1" />
+                      <MessageSquare className="h-5 w-5 mb-1 text-ui-green-500" />
                       <span className="text-sm">Support</span>
                     </Link>
                   </Button>
-                  <Button asChild variant="outline" className="flex flex-col h-auto py-4">
+                  <Button asChild variant="outline" className="flex flex-col h-auto py-4 border-gray-200 hover:bg-gray-50 hover:border-gray-300">
                     <Link to="/member/profile">
-                      <Settings className="h-5 w-5 mb-1" />
+                      <Settings className="h-5 w-5 mb-1 text-ui-green-500" />
                       <span className="text-sm">Settings</span>
                     </Link>
                   </Button>
@@ -207,7 +223,7 @@ const MemberDashboard = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      <MainFooter />
     </div>
   );
 };
