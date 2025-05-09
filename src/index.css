@@ -123,22 +123,37 @@
   @apply bg-gradient-to-r from-ui-blue-500 via-ui-cyan-400 to-ui-green-400 bg-clip-text text-transparent;
 }
 
+/* Remove fade-in animation */
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .feature-card {
-  @apply bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-ui-blue-200 hover:-translate-y-1;
+  @apply bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-ui-blue-200;
+  /* Remove hover translation */
+  &:hover {
+    transform: none;
+  }
 }
 
 .service-card {
-  @apply bg-white/90 backdrop-blur-sm rounded-xl p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 relative overflow-hidden hover:-translate-y-1;
+  @apply bg-white/90 backdrop-blur-sm rounded-xl p-8 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100 relative overflow-hidden;
+  /* Remove hover translation */
+  &:hover {
+    transform: none;
+  }
 }
 
 .service-card::after {
-  @apply content-[''] absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-ui-blue-400 to-ui-cyan-400 transform scale-x-0 origin-left transition-transform duration-300;
+  @apply content-[''] absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-ui-blue-400 to-ui-cyan-400 scale-x-100;
+  /* Remove transform animation for service cards */
+  transform: scale-x-100;
+  transform-origin: left;
+  transition: none;
 }
 
+/* No need to animate service card hover effect */
 .service-card:hover::after {
   @apply scale-x-100;
 }
@@ -160,7 +175,11 @@
 }
 
 .btn-primary {
-  @apply blue-gradient-bg text-white font-medium px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5;
+  @apply blue-gradient-bg text-white font-medium px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300;
+  /* Remove hover translation */
+  &:hover {
+    transform: none;
+  }
 }
 
 .btn-secondary {
@@ -192,19 +211,17 @@
   background-size: 20px 20px;
 }
 
+/* Modify the blob shape to be behind content */
 .blob-shape {
   position: absolute;
-  z-index: -1;
+  z-index: -10; /* Push glow effect behind content */
   filter: blur(70px);
   opacity: 0.4;
 }
 
+/* Remove animations */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
+  from, to {
     opacity: 1;
     transform: translateY(0);
   }
@@ -214,9 +231,6 @@
   0%, 100% {
     transform: translateY(0);
   }
-  50% {
-    transform: translateY(-20px);
-  }
 }
 
 @keyframes pulse {
@@ -224,14 +238,11 @@
     transform: scale(1);
     opacity: 0.8;
   }
-  50% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
 }
 
+/* Remove animation from this class */
 .animated-image {
-  animation: float 6s ease-in-out infinite;
+  animation: none;
 }
 
 .counter-number {
@@ -242,6 +253,7 @@
   @apply text-2xl mb-1 ml-1 text-ui-blue-500;
 }
 
+/* Remove scroll indicator animation */
 .scroll-indicator {
   @apply fixed right-5 bottom-10 z-40 flex flex-col items-center cursor-pointer;
 }
@@ -251,9 +263,12 @@
 }
 
 .scroll-indicator .wheel {
-  @apply w-1 h-2 bg-ui-blue-500 rounded-full animate-bounce-light;
+  @apply w-1 h-2 bg-ui-blue-500 rounded-full;
+  /* Remove animation */
+  animation: none;
 }
 
+/* Simplify the wavy underline to be static */
 .wavy-underline {
   position: relative;
 }
@@ -267,18 +282,63 @@
   width: 100%;
   background: linear-gradient(45deg, #4C83FB, #0BD488, #4C83FB);
   background-size: 200% 100%;
-  animation: gradient 2s ease infinite;
+  /* Remove animation */
+  animation: none;
   border-radius: 3px;
 }
 
+/* Keep the gradient definition but remove the animation */
 @keyframes gradient {
-  0% {
+  0%, 100% {
     background-position: 0% 50%;
   }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+}
+
+/* Stats card style matching the provided image */
+.stats-card {
+  @apply bg-white rounded-xl p-6 shadow-sm relative overflow-hidden;
+  z-index: 5;
+}
+
+.stats-card-blue {
+  background: linear-gradient(135deg, rgba(240, 249, 255, 0.8) 0%, rgba(214, 240, 253, 0.6) 100%);
+}
+
+.stats-card-green {
+  background: linear-gradient(135deg, rgba(240, 255, 244, 0.8) 0%, rgba(220, 250, 236, 0.6) 100%);
+}
+
+.stats-value {
+  @apply text-4xl font-bold;
+  color: #1967D2;
+}
+
+.stats-value-green {
+  color: #08A045;
+}
+
+.stats-label {
+  @apply text-gray-600 mt-2;
+}
+
+/* Glow effect for cards */
+.glow-effect {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.glow-blue {
+  background: radial-gradient(circle, rgba(25, 103, 210, 0.3) 0%, rgba(25, 103, 210, 0) 70%);
+  top: -30px;
+  left: -30px;
+}
+
+.glow-green {
+  background: radial-gradient(circle, rgba(8, 160, 69, 0.3) 0%, rgba(8, 160, 69, 0) 70%);
+  bottom: -30px;
+  right: -30px;
 }

@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ChevronDown, User, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Logo from './Logo';
-import { motion } from "framer-motion";
 
 const MainNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -60,13 +59,10 @@ const MainNavbar = () => {
   ];
 
   return (
-    <motion.nav 
+    <nav 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled ? 'bg-white/90 backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'
       }`}
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
     >
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center">
@@ -94,12 +90,8 @@ const MainNavbar = () => {
                       </button>
 
                       {activeDropdown === item.name && (
-                        <motion.div 
+                        <div 
                           className="absolute right-0 mt-2 w-64 bg-white modern-glass rounded-lg shadow-xl z-10 overflow-hidden"
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                          transition={{ duration: 0.2 }}
                         >
                           {item.dropdown.map((dropdownItem) => (
                             <Link
@@ -111,7 +103,7 @@ const MainNavbar = () => {
                               {dropdownItem.name}
                             </Link>
                           ))}
-                        </motion.div>
+                        </div>
                       )}
                     </div>
                   ) : (
@@ -125,10 +117,7 @@ const MainNavbar = () => {
                     >
                       {item.name}
                       {isActive(item.path) && (
-                        <motion.div 
-                          className="h-0.5 bg-ui-blue-500 mt-0.5"
-                          layoutId="navIndicator"
-                        />
+                        <div className="h-0.5 bg-ui-blue-500 mt-0.5" />
                       )}
                     </Link>
                   )}
@@ -161,13 +150,7 @@ const MainNavbar = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <motion.div 
-            className="md:hidden bg-white shadow-lg rounded-lg mt-4 modern-glass overflow-hidden"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-          >
+          <div className="md:hidden bg-white shadow-lg rounded-lg mt-4 modern-glass overflow-hidden">
             <div className="px-4 pt-3 pb-5 space-y-2">
               {navItems.map((item) => (
                 <div key={item.name} className="rounded-lg overflow-hidden">
@@ -184,13 +167,7 @@ const MainNavbar = () => {
                       </button>
 
                       {activeDropdown === item.name && (
-                        <motion.div 
-                          className="mt-1 ml-2 space-y-1 border-l-2 border-ui-blue-200 pl-4"
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.2 }}
-                        >
+                        <div className="mt-1 ml-2 space-y-1 border-l-2 border-ui-blue-200 pl-4">
                           {item.dropdown.map((dropdownItem) => (
                             <Link
                               key={dropdownItem.name}
@@ -204,7 +181,7 @@ const MainNavbar = () => {
                               {dropdownItem.name}
                             </Link>
                           ))}
-                        </motion.div>
+                        </div>
                       )}
                     </div>
                   ) : (
@@ -231,10 +208,10 @@ const MainNavbar = () => {
                 </Button>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
       </div>
-    </motion.nav>
+    </nav>
   );
 };
 

@@ -15,6 +15,8 @@ import About from "./pages/About";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 import Contact from "./pages/Contact";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
 import AdminEvents from "./pages/admin/Events";
@@ -23,6 +25,7 @@ import AdminUsers from "./pages/admin/Users";
 import AdminAccounts from "./pages/admin/Accounts";
 import AdminTicketDesigner from "./pages/admin/TicketDesigner";
 import AdminMembershipCardDesigner from "./pages/admin/MembershipCardDesigner";
+import MemberDashboard from "./pages/member/Dashboard";
 import MemberTickets from "./pages/member/Tickets";
 import MemberEvents from "./pages/member/Events";
 
@@ -45,8 +48,11 @@ const App = () => (
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           
           {/* Member routes */}
+          <Route path="/member/dashboard" element={<MemberDashboard />} />
           <Route path="/member/tickets" element={<MemberTickets />} />
           <Route path="/member/events" element={<MemberEvents />} />
           
