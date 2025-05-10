@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   Card, 
@@ -29,7 +28,7 @@ import {
   Undo,
   Redo,
   CheckSquare,
-  Chip,
+  CreditCard as CreditCardIcon,
   User,
   Calendar
 } from "lucide-react";
@@ -336,7 +335,7 @@ const AdminMembershipCardDesigner = () => {
                         <div className="absolute top-5 left-6">
                           <div className="flex items-center">
                             <div className="h-10 w-10 bg-white/20 rounded-full flex items-center justify-center">
-                              <Chip className="h-5 w-5 text-white" />
+                              <CreditCardIcon className="h-5 w-5 text-white" />
                             </div>
                           </div>
                           <div className="mt-8">
