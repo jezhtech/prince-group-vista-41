@@ -57,7 +57,7 @@ const Membership = () => {
       <Navbar />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative bg-prince-green py-24">
+        <section className="relative bg-ui-blue-600 py-24">
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">Become a Member</h1>
@@ -81,18 +81,18 @@ const Membership = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {membershipPlans.map((plan, index) => (
                 <div key={index} className={`bg-white rounded-lg shadow-md overflow-hidden relative transition-transform hover:-translate-y-1 hover:shadow-lg ${
-                  plan.isPopular ? "border-2 border-prince-green" : "border border-gray-200"
+                  plan.isPopular ? "border-2 border-ui-blue-500" : "border border-gray-200"
                 }`}>
                   {plan.isPopular && (
                     <div className="absolute top-0 right-0">
-                      <div className="bg-prince-green text-white text-xs font-semibold py-1 px-4 transform rotate-45 translate-y-[6px] translate-x-[30px] shadow-md">
+                      <div className="bg-ui-blue-500 text-white text-xs font-semibold py-1 px-4 transform rotate-45 translate-y-[6px] translate-x-[30px] shadow-md">
                         Popular
                       </div>
                     </div>
                   )}
                   <div className="p-6">
                     <h3 className={`text-xl font-semibold mb-2 ${
-                      plan.isPopular ? "text-prince-green" : "text-gray-800"
+                      plan.isPopular ? "text-ui-blue-600" : "text-gray-800"
                     }`}>
                       {plan.title}
                     </h3>
@@ -103,7 +103,7 @@ const Membership = () => {
                     <ul className="space-y-3 mb-8">
                       {plan.benefits.map((benefit, i) => (
                         <li key={i} className="flex items-start">
-                          <Check className="h-5 w-5 text-prince-green mr-2 mt-0.5 flex-shrink-0" />
+                          <Check className="h-5 w-5 text-ui-blue-500 mr-2 mt-0.5 flex-shrink-0" />
                           <span className="text-gray-600">{benefit}</span>
                         </li>
                       ))}
@@ -112,7 +112,7 @@ const Membership = () => {
                   <div className="px-6 pb-6">
                     <Button className={`w-full ${
                       plan.isPopular 
-                        ? "bg-prince-green hover:bg-prince-accent" 
+                        ? "bg-ui-blue-500 hover:bg-ui-blue-600" 
                         : "bg-gray-200 hover:bg-gray-300 text-gray-800"
                     }`}>
                       {plan.buttonText}
@@ -124,7 +124,7 @@ const Membership = () => {
 
             <div className="mt-12 text-center">
               <p className="text-gray-600">
-                All plans include a 30-day money-back guarantee. Need help choosing? <a href="/contact" className="text-prince-green font-medium hover:underline">Contact our team</a>.
+                All plans include a 30-day money-back guarantee. Need help choosing? <a href="/contact" className="text-ui-blue-600 font-medium hover:underline">Contact our team</a>.
               </p>
             </div>
           </div>

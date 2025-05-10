@@ -100,7 +100,7 @@ const Branches = () => {
       <Navbar />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-r from-prince-dark to-prince-green py-24">
+        <section className="relative bg-gradient-to-r from-ui-blue-700 to-ui-blue-500 py-24">
           <div className="absolute inset-x-0 bottom-0">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="fill-white h-16 w-full">
               <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" />
@@ -152,7 +152,7 @@ const Branches = () => {
                   {/* Region Filter */}
                   <div>
                     <select
-                      className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-prince-accent"
+                      className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-ui-blue-400"
                       value={selectedRegion}
                       onChange={(e) => setSelectedRegion(e.target.value)}
                     >
@@ -175,20 +175,20 @@ const Branches = () => {
                       <div 
                         key={branch.id} 
                         className={`bg-white rounded-lg shadow-md overflow-hidden border ${
-                          branch.isMainBranch ? 'border-prince-accent' : 'border-gray-100'
+                          branch.isMainBranch ? 'border-ui-blue-400' : 'border-gray-100'
                         } transition-all hover:shadow-lg`}
                       >
                         <div className="grid grid-cols-1 md:grid-cols-4">
                           <div className="md:col-span-3 p-6">
                             <div className="flex items-start">
-                              <div className={`p-3 rounded-md ${branch.isMainBranch ? 'bg-prince-accent/10' : 'bg-gray-100'} mr-4`}>
-                                <MapPin className={`h-6 w-6 ${branch.isMainBranch ? 'text-prince-accent' : 'text-prince-green'}`} />
+                              <div className={`p-3 rounded-md ${branch.isMainBranch ? 'bg-ui-blue-100' : 'bg-gray-100'} mr-4`}>
+                                <MapPin className={`h-6 w-6 ${branch.isMainBranch ? 'text-ui-blue-500' : 'text-ui-blue-400'}`} />
                               </div>
                               <div>
                                 <div className="flex items-center">
                                   <h3 className="text-xl font-semibold">{branch.name}</h3>
                                   {branch.isMainBranch && (
-                                    <span className="ml-2 bg-prince-accent/10 text-prince-accent text-xs px-2 py-1 rounded-full font-medium">
+                                    <span className="ml-2 bg-ui-blue-100 text-ui-blue-500 text-xs px-2 py-1 rounded-full font-medium">
                                       Headquarters
                                     </span>
                                   )}
@@ -196,11 +196,11 @@ const Branches = () => {
                                 <p className="text-gray-600 mt-1">{branch.address}</p>
                                 
                                 <div className="mt-4 space-y-2">
-                                  <a href={`tel:${branch.phone}`} className="flex items-center text-gray-600 hover:text-prince-accent">
+                                  <a href={`tel:${branch.phone}`} className="flex items-center text-gray-600 hover:text-ui-blue-500">
                                     <Phone className="h-4 w-4 mr-2" />
                                     <span>{branch.phone}</span>
                                   </a>
-                                  <a href={`mailto:${branch.email}`} className="flex items-center text-gray-600 hover:text-prince-accent">
+                                  <a href={`mailto:${branch.email}`} className="flex items-center text-gray-600 hover:text-ui-blue-500">
                                     <Mail className="h-4 w-4 mr-2" />
                                     <span>{branch.email}</span>
                                   </a>
@@ -218,7 +218,7 @@ const Branches = () => {
                           </div>
                           
                           <div className="bg-gray-50 flex items-center justify-center p-6">
-                            <Button className="w-full flex items-center justify-center" asChild>
+                            <Button className="w-full flex items-center justify-center bg-ui-blue-500 hover:bg-ui-blue-600" asChild>
                               <a 
                                 href={`https://maps.google.com/?q=${encodeURIComponent(branch.address)}`}
                                 target="_blank"
@@ -254,12 +254,12 @@ const Branches = () => {
                     </div>
                   </div>
                   
-                  <div className="bg-prince-light rounded-lg p-6">
+                  <div className="bg-ui-blue-50 rounded-lg p-6">
                     <h4 className="text-lg font-semibold mb-2">Need Assistance?</h4>
                     <p className="text-gray-600 mb-4">
                       Our customer support team is available during working hours to help with any queries.
                     </p>
-                    <Button className="w-full md:w-auto">Contact Us</Button>
+                    <Button className="w-full md:w-auto bg-ui-blue-500 hover:bg-ui-blue-600">Contact Us</Button>
                   </div>
                 </div>
               </div>
@@ -271,7 +271,7 @@ const Branches = () => {
         <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4 gradient-heading">Our Coverage Area</h2>
+              <h2 className="text-3xl font-bold mb-4 text-ui-blue-600">Our Coverage Area</h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
                 With branches strategically located across Kanyakumari District, we ensure our services are accessible to all.
               </p>

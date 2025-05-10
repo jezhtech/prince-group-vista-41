@@ -11,7 +11,7 @@ const About = () => {
       <Navbar />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-r from-prince-dark to-prince-green py-24">
+        <section className="relative bg-gradient-to-r from-ui-blue-700 to-ui-blue-500 py-24">
           <div className="absolute inset-0 bg-[url('https://placehold.co/1920x1080')] opacity-10 mix-blend-overlay bg-cover bg-center"></div>
           <div className="absolute inset-x-0 bottom-0">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="fill-white h-16 w-full">
@@ -35,9 +35,9 @@ const About = () => {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 -mt-16 relative z-10">
               <StatisticsCard value="2010" label="Year Established" variant="blue" />
-              <StatisticsCard value="20+" label="Branch Locations" variant="green" />
+              <StatisticsCard value="20+" label="Branch Locations" variant="blue" />
               <StatisticsCard value="150+" label="Team Members" variant="blue" />
-              <StatisticsCard value="50,000+" label="Happy Clients" variant="green" />
+              <StatisticsCard value="50,000+" label="Happy Clients" variant="blue" />
             </div>
           </div>
         </section>
@@ -48,11 +48,11 @@ const About = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
               <div>
                 <div className="mb-6 inline-block">
-                  <div className="bg-prince-light text-prince-green text-sm font-semibold py-1 px-3 rounded-full">
+                  <div className="bg-ui-blue-50 text-ui-blue-600 text-sm font-semibold py-1 px-3 rounded-full">
                     OUR JOURNEY
                   </div>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6 gradient-heading">Our Story</h2>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6 text-ui-blue-600">Our Story</h2>
                 <p className="text-gray-600 mb-6">
                   Founded in 2010, Prince Group started with a vision to simplify documentation services in Kanyakumari district. What began as a small office with three dedicated staff members has now grown into a network of over 20 branches serving thousands of satisfied customers.
                 </p>
@@ -73,7 +73,7 @@ const About = () => {
               </div>
               <div className="relative">
                 <div className="absolute -top-8 -left-8 bg-ui-blue-100 w-full h-full rounded-xl"></div>
-                <div className="absolute -bottom-8 -right-8 bg-ui-green-100 w-full h-full rounded-xl"></div>
+                <div className="absolute -bottom-8 -right-8 bg-ui-blue-200 w-full h-full rounded-xl"></div>
                 <div className="bg-gray-200 h-96 rounded-lg relative z-10 flex items-center justify-center">
                   <div className="text-gray-400 text-lg">Company Image</div>
                 </div>
@@ -87,11 +87,11 @@ const About = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <div className="mb-6 inline-block">
-                <div className="bg-prince-light text-prince-green text-sm font-semibold py-1 px-3 rounded-full">
+                <div className="bg-ui-blue-50 text-ui-blue-600 text-sm font-semibold py-1 px-3 rounded-full">
                   OUR PURPOSE
                 </div>
               </div>
-              <h2 className="text-3xl font-bold mb-4 gradient-heading">Mission & Vision</h2>
+              <h2 className="text-3xl font-bold mb-4 text-ui-blue-600">Mission & Vision</h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
                 Our guiding principles that drive everything we do at Prince Group
               </p>
@@ -127,9 +127,9 @@ const About = () => {
                   </li>
                 </ul>
               </div>
-              <div className="bg-white p-8 rounded-xl shadow-md border-t-4 border-ui-green-500 hover:shadow-lg transition-shadow duration-300">
-                <div className="p-4 bg-ui-green-50 rounded-full inline-block mb-6">
-                  <BarChart className="h-8 w-8 text-ui-green-500" />
+              <div className="bg-white p-8 rounded-xl shadow-md border-t-4 border-ui-blue-400 hover:shadow-lg transition-shadow duration-300">
+                <div className="p-4 bg-ui-blue-50 rounded-full inline-block mb-6">
+                  <BarChart className="h-8 w-8 text-ui-blue-500" />
                 </div>
                 <h3 className="text-2xl font-bold mb-6 text-gray-800">Our Vision</h3>
                 <p className="text-gray-600 mb-6">
@@ -137,20 +137,20 @@ const About = () => {
                 </p>
                 <ul className="space-y-4">
                   <li className="flex items-start">
-                    <div className="bg-ui-green-50 p-1 rounded-full mr-3 mt-1.5">
-                      <Check className="h-4 w-4 text-ui-green-500" />
+                    <div className="bg-ui-blue-50 p-1 rounded-full mr-3 mt-1.5">
+                      <Check className="h-4 w-4 text-ui-blue-500" />
                     </div>
                     <span className="text-gray-700">Expand our services throughout Tamil Nadu</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="bg-ui-green-50 p-1 rounded-full mr-3 mt-1.5">
-                      <Check className="h-4 w-4 text-ui-green-500" />
+                    <div className="bg-ui-blue-50 p-1 rounded-full mr-3 mt-1.5">
+                      <Check className="h-4 w-4 text-ui-blue-500" />
                     </div>
                     <span className="text-gray-700">Continuously adapt to changing customer needs</span>
                   </li>
                   <li className="flex items-start">
-                    <div className="bg-ui-green-50 p-1 rounded-full mr-3 mt-1.5">
-                      <Check className="h-4 w-4 text-ui-green-500" />
+                    <div className="bg-ui-blue-50 p-1 rounded-full mr-3 mt-1.5">
+                      <Check className="h-4 w-4 text-ui-blue-500" />
                     </div>
                     <span className="text-gray-700">Lead the industry in digital transformation</span>
                   </li>
@@ -165,11 +165,11 @@ const About = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <div className="mb-6 inline-block">
-                <div className="bg-prince-light text-prince-green text-sm font-semibold py-1 px-3 rounded-full">
+                <div className="bg-ui-blue-50 text-ui-blue-600 text-sm font-semibold py-1 px-3 rounded-full">
                   OUR PRINCIPLES
                 </div>
               </div>
-              <h2 className="text-3xl font-bold mb-4 gradient-heading">Core Values</h2>
+              <h2 className="text-3xl font-bold mb-4 text-ui-blue-600">Core Values</h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
                 The foundational principles that guide our conduct and decisions
               </p>
@@ -185,7 +185,7 @@ const About = () => {
                 {
                   title: "Excellence",
                   description: "We strive for perfection in our work and continuously improve our services.",
-                  icon: <Award className="h-8 w-8 text-ui-green-500" />
+                  icon: <Award className="h-8 w-8 text-ui-blue-500" />
                 },
                 {
                   title: "Customer First",
@@ -195,11 +195,11 @@ const About = () => {
                 {
                   title: "Innovation",
                   description: "We embrace new ideas and technologies to enhance our service delivery.",
-                  icon: <BarChart className="h-8 w-8 text-ui-green-500" />
+                  icon: <BarChart className="h-8 w-8 text-ui-blue-500" />
                 }
               ].map((value, index) => (
                 <div key={index} className="bg-white rounded-xl p-6 shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300">
-                  <div className={`p-4 ${index % 2 === 0 ? 'bg-ui-blue-50' : 'bg-ui-green-50'} rounded-full inline-block mb-6`}>
+                  <div className="p-4 bg-ui-blue-50 rounded-full inline-block mb-6">
                     {value.icon}
                   </div>
                   <h3 className="text-xl font-semibold mb-3">{value.title}</h3>
@@ -215,11 +215,11 @@ const About = () => {
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
               <div className="mb-6 inline-block">
-                <div className="bg-prince-light text-prince-green text-sm font-semibold py-1 px-3 rounded-full">
+                <div className="bg-ui-blue-50 text-ui-blue-600 text-sm font-semibold py-1 px-3 rounded-full">
                   OUR PEOPLE
                 </div>
               </div>
-              <h2 className="text-3xl font-bold mb-4 gradient-heading">Leadership Team</h2>
+              <h2 className="text-3xl font-bold mb-4 text-ui-blue-600">Leadership Team</h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
                 Meet the dedicated professionals who lead Prince Group
               </p>

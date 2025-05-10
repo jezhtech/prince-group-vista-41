@@ -1,315 +1,341 @@
 
-import { useState } from "react";
-import { 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  CardTitle,
-  CardDescription
-} from "@/components/ui/card";
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
-  TabsTrigger 
-} from "@/components/ui/tabs";
-import { 
-  Search, 
-  CreditCard, 
-  FileText, 
-  Download, 
-  TrendingUp, 
-  ArrowUpRight, 
-  ArrowDownRight,
-  ChevronDown
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import StatisticsCard from "@/components/StatisticsCard";
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { CreditCard, Users, MoreVertical, Download, ChevronDown } from "lucide-react";
 
-// Mock transaction data
-const transactions = [
-  {
-    id: "TXN-5432",
-    date: "2023-05-15",
-    description: "Membership Renewal - Rajesh Kumar",
-    amount: 1999,
-    status: "completed",
-    type: "income",
-    category: "membership"
-  },
-  {
-    id: "TXN-5431",
-    date: "2023-05-14",
-    description: "Loan Processing Fee - Anita Singh",
-    amount: 2500,
-    status: "completed",
-    type: "income",
-    category: "loan"
-  },
-  {
-    id: "TXN-5430",
-    date: "2023-05-14",
-    description: "Documentation Service - Vikram Mehta",
-    amount: 1200,
-    status: "completed",
-    type: "income",
-    category: "documentation"
-  },
-  {
-    id: "TXN-5429",
-    date: "2023-05-13",
-    description: "Event Ticket Purchase - Priya Sharma",
-    amount: 500,
-    status: "completed",
-    type: "income",
-    category: "event"
-  },
-  {
-    id: "TXN-5428",
-    date: "2023-05-12",
-    description: "Utility Bill Payment",
-    amount: 3500,
-    status: "completed",
-    type: "expense",
-    category: "utility"
-  },
-  {
-    id: "TXN-5427",
-    date: "2023-05-10",
-    description: "Equipment Purchase",
-    amount: 15000,
-    status: "completed",
-    type: "expense",
-    category: "equipment"
-  }
-];
-
-const AdminAccounts = () => {
-  const [transactionPeriod, setTransactionPeriod] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const filteredTransactions = transactions.filter(transaction =>
-    transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    transaction.id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const totalIncome = transactions
-    .filter(t => t.type === "income")
-    .reduce((sum, t) => sum + t.amount, 0);
-
-  const totalExpense = transactions
-    .filter(t => t.type === "expense")
-    .reduce((sum, t) => sum + t.amount, 0);
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0
-    }).format(amount);
-  };
-
+const Accounts = () => {
   return (
-    <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Accounts Management</h1>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <FileText className="mr-2 h-4 w-4" /> Generate Report
-          </Button>
-          <Button className="bg-ui-blue-600 hover:bg-ui-blue-700">
-            <Download className="mr-2 h-4 w-4" /> Export Data
-          </Button>
+    <div className="h-full p-8 space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Accounts Management</h1>
+          <p className="text-muted-foreground">
+            Manage all membership and event accounts in one place
+          </p>
         </div>
+        <Button>
+          <Download className="mr-2 h-4 w-4" />
+          Export Data
+        </Button>
       </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <StatisticsCard
-          value={formatCurrency(totalIncome)}
-          label="Total Income"
-          variant="blue"
-        />
-        <StatisticsCard
-          value={formatCurrency(totalExpense)}
-          label="Total Expenses"
-          variant="green"
-        />
-        <StatisticsCard
-          value={formatCurrency(totalIncome - totalExpense)}
-          label="Net Profit"
-          variant="blue"
-        />
-      </div>
-      
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle>Revenue Breakdown</CardTitle>
-          <CardDescription>Financial overview of different revenue streams</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {[
-              { category: "Documentation Services", amount: 65000, percentage: 45, trend: "up" },
-              { category: "Loan Processing", amount: 48000, percentage: 33, trend: "up" },
-              { category: "Membership Fees", amount: 22000, percentage: 15, trend: "up" },
-              { category: "Event Tickets", amount: 10000, percentage: 7, trend: "down" }
-            ].map((item, index) => (
-              <div key={index}>
-                <div className="flex justify-between mb-1">
-                  <div className="flex items-center">
-                    <span className="font-medium">{item.category}</span>
-                    {item.trend === "up" ? (
-                      <ArrowUpRight className="h-4 w-4 text-green-500 ml-1" />
-                    ) : (
-                      <ArrowDownRight className="h-4 w-4 text-red-500 ml-1" />
-                    )}
-                  </div>
-                  <span className="font-medium">{formatCurrency(item.amount)}</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div
-                    className="bg-ui-blue-500 h-2.5 rounded-full"
-                    style={{ width: `${item.percentage}%` }}
-                  ></div>
-                </div>
-                <div className="flex justify-between mt-1">
-                  <span className="text-xs text-gray-500">{item.percentage}% of total</span>
-                </div>
-              </div>
-            ))}
+
+      <div className="grid gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Total Membership Revenue
+              </CardTitle>
+              <CreditCard className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">₹42,58,950</div>
+              <p className="text-xs text-muted-foreground">
+                +18% from last month
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Active Members</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">2,350</div>
+              <p className="text-xs text-muted-foreground">
+                +12% from last month
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Event Revenue
+              </CardTitle>
+              <CreditCard className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">₹2,45,000</div>
+              <p className="text-xs text-muted-foreground">
+                +7% from last month
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Tabs defaultValue="membership" className="w-full">
+          <div className="flex items-center justify-between">
+            <TabsList>
+              <TabsTrigger value="membership">Membership Accounts</TabsTrigger>
+              <TabsTrigger value="events">Event Accounts</TabsTrigger>
+            </TabsList>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm">
+                <ChevronDown className="mr-2 h-4 w-4" />
+                Filter
+              </Button>
+              <Button size="sm">Add New</Button>
+            </div>
           </div>
-        </CardContent>
-      </Card>
-      
-      <Tabs defaultValue="all" className="w-full">
-        <div className="flex items-center justify-between mb-6">
-          <TabsList>
-            <TabsTrigger value="all">All Transactions</TabsTrigger>
-            <TabsTrigger value="income">Income</TabsTrigger>
-            <TabsTrigger value="expense">Expenses</TabsTrigger>
-          </TabsList>
-          
-          <Select value={transactionPeriod} onValueChange={setTransactionPeriod}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Select Period" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Time</SelectItem>
-              <SelectItem value="today">Today</SelectItem>
-              <SelectItem value="week">This Week</SelectItem>
-              <SelectItem value="month">This Month</SelectItem>
-              <SelectItem value="year">This Year</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <Input
-            placeholder="Search transactions..."
-            className="pl-10"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        
-        <TabsContent value="all" className="mt-0">
-          <Card>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gray-50 border-b">
-                      <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">Transaction ID</th>
-                      <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">Date</th>
-                      <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">Description</th>
-                      <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">Category</th>
-                      <th className="py-3 px-4 text-right text-sm font-medium text-gray-500">Amount</th>
-                      <th className="py-3 px-4 text-left text-sm font-medium text-gray-500">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {filteredTransactions.map((transaction, index) => (
-                      <tr key={index} className="hover:bg-gray-50">
-                        <td className="py-3 px-4 font-medium text-gray-900">{transaction.id}</td>
-                        <td className="py-3 px-4 text-gray-600">{transaction.date}</td>
-                        <td className="py-3 px-4 text-gray-600">{transaction.description}</td>
-                        <td className="py-3 px-4">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium uppercase ${
-                            transaction.category === 'membership' 
-                              ? 'bg-purple-100 text-purple-800'
-                              : transaction.category === 'loan'
-                              ? 'bg-blue-100 text-blue-800'
-                              : transaction.category === 'documentation'
-                              ? 'bg-green-100 text-green-800'
-                              : transaction.category === 'event'
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : transaction.category === 'utility'
-                              ? 'bg-gray-100 text-gray-800'
-                              : 'bg-red-100 text-red-800'
-                          }`}>
-                            {transaction.category}
-                          </span>
-                        </td>
-                        <td className={`py-3 px-4 text-right font-medium ${
-                          transaction.type === 'income' 
-                            ? 'text-green-600' 
-                            : 'text-red-600'
-                        }`}>
-                          {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            {transaction.status === 'completed' ? 'Completed' : 'Pending'}
-                          </span>
-                        </td>
-                      </tr>
+          <TabsContent value="membership" className="mt-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Membership Accounts</CardTitle>
+                <CardDescription>
+                  Manage monthly, annual, and lifetime membership accounts.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Member ID</TableHead>
+                      <TableHead>Member Name</TableHead>
+                      <TableHead>Plan</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Last Payment</TableHead>
+                      <TableHead>Amount</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {[
+                      {
+                        id: "MEM-2023-0042",
+                        name: "Raj Kumar",
+                        plan: "Premium",
+                        status: "Active",
+                        date: "10 May 2023",
+                        amount: "₹1,999",
+                      },
+                      {
+                        id: "MEM-2023-0065",
+                        name: "Priya Singh",
+                        plan: "VIP",
+                        status: "Active",
+                        date: "15 May 2023",
+                        amount: "₹4,999",
+                      },
+                      {
+                        id: "MEM-2023-0078",
+                        name: "Arun Prakash",
+                        plan: "Basic",
+                        status: "Expired",
+                        date: "02 Apr 2023",
+                        amount: "₹999",
+                      },
+                      {
+                        id: "MEM-2023-0096",
+                        name: "Meena Devi",
+                        plan: "Premium",
+                        status: "Active",
+                        date: "20 May 2023",
+                        amount: "₹1,999",
+                      },
+                      {
+                        id: "MEM-2023-0114",
+                        name: "Suresh Kumar",
+                        plan: "Basic",
+                        status: "Active",
+                        date: "22 May 2023",
+                        amount: "₹999",
+                      },
+                    ].map((account) => (
+                      <TableRow key={account.id}>
+                        <TableCell className="font-medium">{account.id}</TableCell>
+                        <TableCell>{account.name}</TableCell>
+                        <TableCell>{account.plan}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={account.status === "Active" ? "default" : "destructive"}
+                          >
+                            {account.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{account.date}</TableCell>
+                        <TableCell>{account.amount}</TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem>View details</DropdownMenuItem>
+                              <DropdownMenuItem>Edit account</DropdownMenuItem>
+                              <DropdownMenuItem>Renew membership</DropdownMenuItem>
+                              <DropdownMenuItem className="text-destructive">
+                                Suspend membership
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="income" className="mt-0">
-          <Card>
-            <CardContent className="py-6">
-              <div className="text-center">
-                <TrendingUp className="h-16 w-16 mx-auto text-ui-blue-300 mb-4" />
-                <h3 className="text-lg font-medium mb-2">Income Transactions</h3>
-                <p className="text-gray-500 max-w-md mx-auto">
-                  This tab would show only income transactions filtered from the all transactions list.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        
-        <TabsContent value="expense" className="mt-0">
-          <Card>
-            <CardContent className="py-6">
-              <div className="text-center">
-                <CreditCard className="h-16 w-16 mx-auto text-ui-blue-300 mb-4" />
-                <h3 className="text-lg font-medium mb-2">Expense Transactions</h3>
-                <p className="text-gray-500 max-w-md mx-auto">
-                  This tab would show only expense transactions filtered from the all transactions list.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+                  </TableBody>
+                </Table>
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Showing 5 of 123 accounts
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button variant="outline" size="sm" disabled>
+                    Previous
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    Next
+                  </Button>
+                </div>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="events" className="mt-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Event Accounts</CardTitle>
+                <CardDescription>
+                  Manage revenue and registrations for all events.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Event ID</TableHead>
+                      <TableHead>Event Name</TableHead>
+                      <TableHead>Registrations</TableHead>
+                      <TableHead>Revenue</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {[
+                      {
+                        id: "EVT-2023-001",
+                        name: "Annual Members Meet",
+                        registrations: 156,
+                        revenue: "₹78,000",
+                        status: "Completed",
+                      },
+                      {
+                        id: "EVT-2023-002",
+                        name: "Documentation Workshop",
+                        registrations: 42,
+                        revenue: "₹84,000",
+                        status: "Active",
+                      },
+                      {
+                        id: "EVT-2023-003",
+                        name: "Loan Processing Seminar",
+                        registrations: 38,
+                        revenue: "₹57,000",
+                        status: "Active",
+                      },
+                      {
+                        id: "EVT-2023-004",
+                        name: "Business Documentation Training",
+                        registrations: 25,
+                        revenue: "₹26,000",
+                        status: "Upcoming",
+                      },
+                    ].map((event) => (
+                      <TableRow key={event.id}>
+                        <TableCell className="font-medium">{event.id}</TableCell>
+                        <TableCell>{event.name}</TableCell>
+                        <TableCell>{event.registrations}</TableCell>
+                        <TableCell>{event.revenue}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              event.status === "Completed"
+                                ? "secondary"
+                                : event.status === "Active"
+                                ? "default"
+                                : "outline"
+                            }
+                          >
+                            {event.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem>View details</DropdownMenuItem>
+                              <DropdownMenuItem>Download report</DropdownMenuItem>
+                              <DropdownMenuItem>View registrations</DropdownMenuItem>
+                              <DropdownMenuItem className="text-destructive">
+                                Close registrations
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <div className="text-sm text-muted-foreground">
+                  Showing 4 of 12 events
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Button variant="outline" size="sm" disabled>
+                    Previous
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    Next
+                  </Button>
+                </div>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };
 
-export default AdminAccounts;
+export default Accounts;
