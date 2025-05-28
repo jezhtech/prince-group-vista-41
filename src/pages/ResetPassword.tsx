@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { User, Mail, Phone, Lock } from 'lucide-react';
+import { Lock, ShieldCheck } from 'lucide-react';
 import Logo from '@/components/Logo';
 
-const Register = () => {
+const ResetPassword = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    mobile: '',
     password: '',
     confirmPassword: ''
   });
-  
   const [isLoading, setIsLoading] = useState(false);
   const [passwordError, setPasswordError] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // In a real application, you would extract the token from the URL
+  // and validate it on the server
+  const searchParams = new URLSearchParams(location.search);
+  const token = searchParams.get('token') || 'invalid-token';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,7 +35,12 @@ const Register = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check if passwords match
+    // Validate passwords
+    if (formData.password.length < 8) {
+      setPasswordError('Password must be at least 8 characters long');
+      return;
+    }
+    
     if (formData.password !== formData.confirmPassword) {
       setPasswordError('Passwords do not match');
       return;
@@ -40,16 +48,16 @@ const Register = () => {
     
     setIsLoading(true);
 
-    // Simulate account creation
+    // Simulate password reset API call
     setTimeout(() => {
       setIsLoading(false);
       toast({
-        title: "Registration Successful",
-        description: "Your account has been created successfully.",
+        title: "Password Reset Successful",
+        description: "Your password has been reset successfully. You can now log in with your new password.",
       });
       
-      // In a real app, this would navigate to dashboard or login
-      window.location.href = '/login';
+      // Redirect to login page
+      navigate('/login');
     }, 1500);
   };
 
@@ -67,70 +75,24 @@ const Register = () => {
           <Logo />
         </div>
         
-        <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
-          Create an Account
+        <div className="flex justify-center mb-6">
+          <div className="w-16 h-16 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center">
+            <ShieldCheck className="h-8 w-8 text-[#4eb4a7]" />
+          </div>
+        </div>
+        
+        <h2 className="text-2xl font-bold text-center mb-2 text-gray-800">
+          Reset Your Password
         </h2>
+        
+        <p className="text-center text-gray-600 mb-6">
+          Please create a new secure password for your account.
+        </p>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="name" className="text-sm font-medium text-gray-700">
-              Full Name
-            </label>
-            <div className="relative">
-              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-5 w-5" />
-              <Input
-                id="name"
-                name="name"
-                placeholder="Enter your full name"
-                className="pl-10 border-gray-200"
-                value={formData.name}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">
-              Email Address
-            </label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-5 w-5" />
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="your@email.com"
-                className="pl-10 border-gray-200"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <label htmlFor="mobile" className="text-sm font-medium text-gray-700">
-              Mobile Number
-            </label>
-            <div className="relative">
-              <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-5 w-5" />
-              <Input
-                id="mobile"
-                name="mobile"
-                type="tel"
-                placeholder="Enter your mobile number"
-                className="pl-10 border-gray-200"
-                value={formData.mobile}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          </div>
-          
-          <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium text-gray-700">
-              Password
+              New Password
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-5 w-5" />
@@ -138,7 +100,7 @@ const Register = () => {
                 id="password"
                 name="password"
                 type="password"
-                placeholder="Create a strong password"
+                placeholder="Enter your new password"
                 className="pl-10 border-gray-200"
                 value={formData.password}
                 onChange={handleInputChange}
@@ -146,6 +108,7 @@ const Register = () => {
                 minLength={8}
               />
             </div>
+            <p className="text-xs text-gray-500">Password must be at least 8 characters long</p>
           </div>
           
           <div className="space-y-2">
@@ -158,7 +121,7 @@ const Register = () => {
                 id="confirmPassword"
                 name="confirmPassword"
                 type="password"
-                placeholder="Confirm your password"
+                placeholder="Confirm your new password"
                 className="pl-10 border-gray-200"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
@@ -166,7 +129,7 @@ const Register = () => {
               />
             </div>
             {passwordError && (
-              <p className="text-red-500 text-xs mt-1">{passwordError}</p>
+              <p className="text-red-500 text-xs">{passwordError}</p>
             )}
           </div>
           
@@ -175,13 +138,12 @@ const Register = () => {
             className="w-full bg-[#4eb4a7] hover:bg-[#60afb4] transition-colors" 
             disabled={isLoading}
           >
-            {isLoading ? "Creating Account..." : "Register"}
+            {isLoading ? "Resetting Password..." : "Reset Password"}
           </Button>
           
           <div className="text-center text-sm mt-6">
-            <p className="text-gray-600">Already have an account?</p>
             <Link to="/login" className="text-[#4eb4a7] font-medium hover:underline">
-              Login Here
+              Back to Login
             </Link>
           </div>
         </form>
@@ -190,4 +152,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default ResetPassword; 

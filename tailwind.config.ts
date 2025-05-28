@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -64,7 +63,21 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				// New modern color palette based on the reference images
-				"prince-green": "#0B6E4F",
+				"prince-green": {
+					DEFAULT: "#4eb4a7",
+					light: "#85cbc3",
+					dark: "#60afb4",
+					50: "#f1f9f8",
+					100: "#ddf0ed",
+					200: "#bfe3dd",
+					300: "#93cdc4",
+					400: "#60afb4",
+					500: "#4eb4a7",
+					600: "#399287",
+					700: "#31776f",
+					800: "#2c615b",
+					900: "#28514c"
+				},
 				"prince-accent": "#08A045",
 				"prince-light": "#E4F5ED",
 				"prince-dark": "#053B29",

@@ -1,20 +1,19 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Shield, Check } from 'lucide-react';
 
 const Logo: React.FC = () => {
   return (
     <Link to="/" className="flex items-center group">
-      <div className="h-10 w-10 relative mr-3 group-hover:scale-110 transition-transform duration-300">
-        <div className="absolute inset-0 bg-ui-blue-500 rounded-full flex items-center justify-center text-white shadow-lg">
-          <Shield className="h-5 w-5 text-white" strokeWidth={2} />
-          <Check className="h-3 w-3 text-white absolute transform translate-x-[1px] translate-y-[1px]" strokeWidth={3} />
-        </div>
-        <div className="absolute -inset-1 bg-ui-blue-400 rounded-full opacity-30 blur-md -z-10"></div>
+      <div className="h-12 w-12 relative mr-3 group-hover:scale-110 transition-transform duration-300">
+        <img 
+          src="/teal-cg-logo.png" 
+          alt="Prince Group Logo" 
+          className="w-full h-full object-contain"
+        />
+        <div className="absolute -inset-1 bg-[#4eb4a7]/30 rounded-full opacity-30 blur-md -z-10"></div>
       </div>
       <div className="text-2xl font-bold flex flex-col">
-        <span className="text-ui-blue-600">Prince Group</span>
+        <span className="text-[#4eb4a7]">Prince Group</span>
         <span className="text-xs text-gray-500 font-normal -mt-1">Documentation & Loan Services</span>
       </div>
     </Link>
