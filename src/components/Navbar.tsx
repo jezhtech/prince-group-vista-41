@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, ChevronDown, User, Search } from 'lucide-react';
@@ -29,7 +28,7 @@ const Navbar = () => {
       path: '/services',
       dropdown: [
         { name: 'Documentation Services', path: '/services/documentation' },
-        { name: 'Loan Services', path: '/services/loans' },
+        { name: 'Loan Services', path: '/loan-services' },
       ]
     },
     { name: 'Branches', path: '/branches' },

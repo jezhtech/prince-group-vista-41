@@ -39,13 +39,13 @@ const MainNavbar = () => {
       title: "Documentation Services",
       description: "Quick & reliable document processing",
       icon: <FileText className="w-8 h-8" />,
-      stats: "10k+ Documents Processed"
+      stats: "7807+ Documents Processed"
     },
     loans: {
       title: "Loan Services", 
       description: "Flexible loans with competitive rates",
       icon: <CreditCard className="w-8 h-8" />,
-      stats: "₹50L+ Loans Disbursed"
+      stats: "40crore + Loans Disbursed"
     }
   };
 
@@ -65,22 +65,22 @@ const MainNavbar = () => {
 
   return (
     <>
-      <nav 
+    <nav 
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled 
             ? 'bg-white/80 backdrop-blur-xl shadow-xl py-2' 
             : 'bg-white/70 backdrop-blur-md shadow-md py-4'
-        }`}
-      >
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center">
+      }`}
+    >
+      <div className="container mx-auto px-4">
+        <div className="flex justify-between items-center">
             {/* Logo with animated underline */}
             <motion.div 
               className="flex-shrink-0"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
-              <Logo />
+            <Logo />
               <motion.div 
                 className="h-0.5 bg-gradient-to-r from-[#4eb4a7] to-[#85cbc3] mt-1"
                 initial={{ width: 0 }}
@@ -90,7 +90,7 @@ const MainNavbar = () => {
             </motion.div>
 
             {/* Desktop Navigation - Floating Pill Design */}
-            <div className="hidden md:block">
+          <div className="hidden md:block">
               <motion.div 
                 className={`flex items-center gap-2 ${
                   scrolled 
@@ -110,15 +110,15 @@ const MainNavbar = () => {
                       >
                         <motion.button
                           className={`px-4 py-2 flex items-center gap-2 rounded-full transition-all ${
-                            isActive(item.path) 
+                          isActive(item.path) 
                               ? 'bg-[#4eb4a7] text-white' 
                               : 'text-gray-700 hover:bg-[#85cbc3]/20'
                           }`}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                        >
+                      >
                           {item.icon}
-                          {item.name}
+                        {item.name}
                           <ChevronDown className={`ml-1 h-4 w-4 transition-transform duration-200 ${
                             activeDropdown === item.name ? 'rotate-180' : ''
                           }`} />
@@ -126,7 +126,7 @@ const MainNavbar = () => {
 
                         {/* Service Preview Dropdown */}
                         <AnimatePresence>
-                          {activeDropdown === item.name && (
+                      {activeDropdown === item.name && (
                             <motion.div 
                               className="absolute top-full mt-4 left-1/2 transform -translate-x-1/2 w-[600px] bg-white rounded-2xl shadow-2xl overflow-hidden"
                               initial={{ opacity: 0, y: -10 }}
@@ -136,9 +136,9 @@ const MainNavbar = () => {
                             >
                               <div className="grid grid-cols-2 p-4 gap-4">
                                 {Object.entries(servicePreview).map(([key, service]) => (
-                                  <Link
+                            <Link
                                     key={key}
-                                    to={`/services#${key}`}
+                                    to={key === "documentation" ? "/documentation-services" : key === "loans" ? "/loan-services" : `/services#${key}`}
                                     className="group relative p-6 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 hover:from-[#4eb4a7]/10 hover:to-[#85cbc3]/10 transition-all duration-300"
                                     onMouseEnter={() => setHoveredService(key)}
                                     onMouseLeave={() => setHoveredService(null)}
@@ -166,28 +166,28 @@ const MainNavbar = () => {
                                         </div>
                                       </div>
                                     </div>
-                                  </Link>
-                                ))}
-                              </div>
+                            </Link>
+                          ))}
+                        </div>
                             </motion.div>
-                          )}
+                      )}
                         </AnimatePresence>
-                      </div>
-                    ) : (
-                      <Link
-                        to={item.path}
+                    </div>
+                  ) : (
+                    <Link
+                      to={item.path}
                         className={`px-4 py-2 rounded-full flex items-center gap-2 transition-all ${
-                          isActive(item.path) 
+                        isActive(item.path) 
                             ? 'bg-[#4eb4a7] text-white' 
                             : 'text-gray-700 hover:bg-[#85cbc3]/20'
-                        }`}
-                      >
+                      }`}
+                    >
                         {item.icon}
-                        {item.name}
-                      </Link>
-                    )}
-                  </div>
-                ))}
+                      {item.name}
+                    </Link>
+                  )}
+                </div>
+              ))}
 
                 {/* Animated divider */}
                 <motion.div 
@@ -213,25 +213,25 @@ const MainNavbar = () => {
                       <User className="mr-2 h-4 w-4" /> 
                       <span className="hidden lg:inline">Login</span>
                     </Link>
-                  </Button>
+                </Button>
                   <Button 
                     asChild 
                     className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300"
                   >
                     <Link to="/contact">Get Started</Link>
-                  </Button>
+                </Button>
                 </motion.div>
               </motion.div>
-            </div>
+          </div>
 
-            {/* Mobile menu button */}
+          {/* Mobile menu button */}
             <div className="md:hidden">
               <motion.button
-                onClick={toggleMenu}
+              onClick={toggleMenu}
                 className={`p-2 rounded-lg text-gray-700 hover:bg-gray-100/50`}
                 whileTap={{ scale: 0.9 }}
-              >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </motion.button>
             </div>
           </div>
@@ -239,7 +239,7 @@ const MainNavbar = () => {
 
         {/* Mobile Menu - Slide from right */}
         <AnimatePresence>
-          {isMenuOpen && (
+        {isMenuOpen && (
             <motion.div 
               className="fixed inset-0 top-16 bg-black/50 md:hidden z-50"
               initial={{ opacity: 0 }}
@@ -256,7 +256,7 @@ const MainNavbar = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="p-6 space-y-4">
-                  {navItems.map((item) => (
+              {navItems.map((item) => (
                     <motion.div 
                       key={item.name}
                       initial={{ opacity: 0, x: 20 }}
@@ -274,21 +274,21 @@ const MainNavbar = () => {
                       >
                         {item.icon}
                         {item.name}
-                      </Link>
+                            </Link>
                     </motion.div>
                   ))}
                   
                   <div className="pt-4 border-t border-gray-200 space-y-3">
                     <Button asChild variant="outline" className="w-full rounded-full">
-                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                        <User className="mr-2 h-4 w-4" /> Login
-                      </Link>
-                    </Button>
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                    <User className="mr-2 h-4 w-4" /> Login
+                  </Link>
+                </Button>
                     <Button asChild className="w-full bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] rounded-full">
                       <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
-                    </Button>
-                  </div>
-                </div>
+                </Button>
+              </div>
+            </div>
               </motion.div>
             </motion.div>
           )}
@@ -311,14 +311,14 @@ const MainNavbar = () => {
                 <FileText className="w-3 h-3" /> Documents
               </Link>
               <span className="text-gray-300">|</span>
-              <Link to="/services#loans" className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1">
+              <Link to="/loan-services" className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1">
                 <CreditCard className="w-3 h-3" /> Loans
               </Link>
               <span className="text-gray-300">|</span>
               <Link to="/branches" className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1">
                 <Building2 className="w-3 h-3" /> Find Branch
               </Link>
-            </div>
+          </div>
           </motion.div>
         )}
       </AnimatePresence>

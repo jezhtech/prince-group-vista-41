@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import Services from "./pages/Services";
 import DocumentationServices from "./pages/DocumentationServices";
 import LoanServices from "./pages/LoanServices";
+import NewLoanServices from "./pages/NewLoanServices";
 import Branches from "./pages/Branches";
 import TariffComparison from "./pages/TariffComparison";
 import Events from "./pages/Events";
@@ -47,7 +48,9 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/documentation" element={<DocumentationServices />} />
-            <Route path="/services/loans" element={<LoanServices />} />
+            <Route path="/documentation-services" element={<DocumentationServices />} />
+            <Route path="/services/loans" element={<NewLoanServices />} />
+            <Route path="/loan-services" element={<NewLoanServices />} />
             <Route path="/branches" element={<Branches />} />
             <Route path="/tariff-comparison" element={<TariffComparison />} />
             <Route path="/events" element={<Events />} />

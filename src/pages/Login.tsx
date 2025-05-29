@@ -160,93 +160,93 @@ const Login = () => {
           {/* Passwordless Login Tab */}
           <TabsContent value="passwordless">
             {loginMethod === 'passwordless' && !otpSent ? (
-              <form onSubmit={handleSendOtp} className="space-y-4">
-                <div className="space-y-2">
+          <form onSubmit={handleSendOtp} className="space-y-4">
+            <div className="space-y-2">
                   <label htmlFor="email" className="text-sm font-medium text-gray-700">
                     Email Address
-                  </label>
-                  <div className="relative">
+              </label>
+              <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-5 w-5" />
-                    <Input
+                <Input
                       id="email"
                       type="email"
                       placeholder="your@email.com"
                       className="pl-10 border-gray-200"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <Button 
-                  type="submit" 
+                  required
+                />
+              </div>
+            </div>
+            
+            <Button 
+              type="submit" 
                   className="w-full bg-[#4eb4a7] hover:bg-[#60afb4] transition-colors" 
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Sending OTP..." : "Send OTP"}
-                </Button>
-                
-                <div className="text-center text-sm mt-6">
+              disabled={isLoading}
+            >
+              {isLoading ? "Sending OTP..." : "Send OTP"}
+            </Button>
+            
+            <div className="text-center text-sm mt-6">
                   <p className="text-gray-600">New User?</p>
                   <Link to="/register" className="text-[#4eb4a7] font-medium hover:underline">
-                    Register Now
-                  </Link>
-                </div>
-              </form>
+                Register Now
+              </Link>
+            </div>
+          </form>
             ) : loginMethod === 'passwordless' && otpSent ? (
-              <form onSubmit={handleVerifyOtp} className="space-y-4">
-                <div className="space-y-2">
-                  <label htmlFor="otp" className="text-sm font-medium text-gray-700">
-                    Verification Code
-                  </label>
-                  <div className="relative">
+          <form onSubmit={handleVerifyOtp} className="space-y-4">
+            <div className="space-y-2">
+              <label htmlFor="otp" className="text-sm font-medium text-gray-700">
+                Verification Code
+              </label>
+              <div className="relative">
                     <KeySquare className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-5 w-5" />
-                    <Input
-                      id="otp"
-                      type="text"
-                      placeholder="Enter 6-digit OTP"
+                <Input
+                  id="otp"
+                  type="text"
+                  placeholder="Enter 6-digit OTP"
                       className="pl-10 text-center tracking-wider font-medium border-gray-200"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                      required
-                      maxLength={6}
-                    />
-                  </div>
-                  <p className="text-sm text-gray-500 text-center">
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  required
+                  maxLength={6}
+                />
+              </div>
+              <p className="text-sm text-gray-500 text-center">
                     OTP sent to {email}
-                  </p>
-                </div>
-                
-                <Button 
-                  type="submit" 
+              </p>
+            </div>
+            
+            <Button 
+              type="submit" 
                   className="w-full bg-[#4eb4a7] hover:bg-[#60afb4] transition-colors" 
-                  disabled={isLoading}
-                >
-                  {isLoading ? "Verifying..." : "Verify & Login"}
-                </Button>
-                
-                <div className="text-center">
-                  <button 
-                    type="button"
-                    onClick={() => setOtpSent(false)}
+              disabled={isLoading}
+            >
+              {isLoading ? "Verifying..." : "Verify & Login"}
+            </Button>
+            
+            <div className="text-center">
+              <button 
+                type="button"
+                onClick={() => setOtpSent(false)}
                     className="text-sm text-[#4eb4a7] hover:underline"
-                  >
+              >
                     Change Email Address
-                  </button>
-                  
-                  <p className="text-gray-500 text-sm mt-2">
-                    Didn't receive the code?{" "}
-                    <button 
-                      type="button"
-                      onClick={handleSendOtp}
+              </button>
+              
+              <p className="text-gray-500 text-sm mt-2">
+                Didn't receive the code?{" "}
+                <button 
+                  type="button"
+                  onClick={handleSendOtp}
                       className="text-[#4eb4a7] hover:underline"
-                    >
-                      Resend OTP
-                    </button>
-                  </p>
-                </div>
-              </form>
+                >
+                  Resend OTP
+                </button>
+              </p>
+            </div>
+          </form>
             ) : null}
           </TabsContent>
         </Tabs>

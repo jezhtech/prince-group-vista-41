@@ -1,0 +1,107 @@
+import { useEffect, useState } from "react";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import { 
+  ArrowRight, 
+  Clock, 
+  MapPin, 
+  Users, 
+  CheckCircle, 
+  Shield, 
+  FileText, 
+  CreditCard, 
+  Calendar, 
+  ChevronDown,
+  ArrowUpRight,
+  Cpu,
+  Database,
+  Lock,
+  BarChart3,
+  FileCheck,
+  Home,
+  Car,
+  Briefcase,
+  GraduationCap,
+  Heart,
+  TrendingUp,
+  Sparkles,
+  Phone,
+  Building2,
+  Timer
+} from "lucide-react";
+
+const Index = () => {
+  const [isVisible, setIsVisible] = useState(false);
+  const [selectedService, setSelectedService] = useState<'documentation' | 'loans'>('documentation');
+  const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
+  const { scrollYProgress } = useScroll();
+  const opacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+  const scale = useTransform(scrollYProgress, [0, 0.1], [1, 0.95]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsVisible(true);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, []);
+
+  const scrollToContent = () => {
+    window.scrollTo({
+      top: window.innerHeight - 100,
+      behavior: "smooth"
+    });
+  };
+
+  const serviceDetails = {
+    documentation: {
+      title: "Document Registration & Processing",
+      subtitle: "Fast, Secure, Hassle-free",
+      features: [
+        { icon: <FileCheck className="w-5 h-5" />, text: "Property Registration" },
+        { icon: <Shield className="w-5 h-5" />, text: "Legal Documentation" },
+        { icon: <Briefcase className="w-5 h-5" />, text: "Business Permits" },
+        { icon: <GraduationCap className="w-5 h-5" />, text: "Educational Certificates" }
+      ],
+      stats: { value: "10k+", label: "Documents Processed" },
+      color: "from-[#4eb4a7] to-[#60afb4]"
+    },
+    loans: {
+      title: "Personal & Business Loans",
+      subtitle: "Flexible Terms, Quick Approval",
+      features: [
+        { icon: <Home className="w-5 h-5" />, text: "Home Loans" },
+        { icon: <Car className="w-5 h-5" />, text: "Vehicle Loans" },
+        { icon: <Briefcase className="w-5 h-5" />, text: "Business Loans" },
+        { icon: <Heart className="w-5 h-5" />, text: "Personal Loans" }
+      ],
+      stats: { value: "₹50L+", label: "Loans Disbursed" },
+      color: "from-[#60afb4] to-[#85cbc3]"
+    }
+  };
+
+  return (
+    <>
+      <Helmet>
+        <title>Prince Group - Professional Document & Loan Solutions in Kanyakumari District</title>
+        <meta name="description" content="Prince Group offers trusted document registration and loan services across 20+ branches in Kanyakumari District. Same-day processing, expert guidance, and competitive rates." />
+        <meta name="keywords" content="document registration, loan services, Kanyakumari, property registration, legal documentation, business loans, personal loans, home loans" />
+        <meta property="og:title" content="Prince Group - Documentation & Loan Services in Kanyakumari" />
+        <meta property="og:description" content="Trusted documentation and financial solutions with 20+ branches across Kanyakumari District since 2018." />
+        <meta property="og:type" content="website" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://princegroupcompanies.co.in" />
+      </Helmet>
+      
+      {/* Innovative Hero Section */}
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-gray-50 to-white">
+        {/* Rest of the component... */}
+      </section>
+    </>
+  );
+};
+
+export default Index;
+

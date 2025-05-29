@@ -15,17 +15,99 @@ const MainFooter = () => {
   };
 
   return (
-    <footer className="relative overflow-hidden pt-24">
-      {/* Top Wave */}
-      <div className="absolute top-0 left-0 right-0 h-24 overflow-hidden">
-        <svg className="absolute bottom-0 w-full h-auto" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-          <path fill="#4eb4a7" fillOpacity="0.3" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,106.7C1248,96,1344,96,1392,96L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-          <path fill="#4eb4a7" fillOpacity="0.4" d="M0,96L48,122.7C96,149,192,203,288,213.3C384,224,480,192,576,186.7C672,181,768,203,864,213.3C960,224,1056,224,1152,208C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-        </svg>
+    <footer className="relative mt-0">
+      {/* Innovative Wave Transition */}
+      <div className="relative h-28 overflow-hidden">
+        {/* Main wave with animation */}
+        <motion.div
+          initial={{ y: 10, opacity: 0.9 }}
+          animate={{ 
+            y: [10, 5, 10],
+            opacity: [0.9, 1, 0.9],
+          }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: 6,
+            ease: "easeInOut" 
+          }}
+          className="absolute w-full h-full bottom-0"
+        >
+          <svg
+            className="absolute bottom-0 w-full h-full"
+            preserveAspectRatio="none"
+            viewBox="0 0 1440 320"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0,192L60,170.7C120,149,240,107,360,122.7C480,139,600,213,720,229.3C840,245,960,203,1080,181.3C1200,160,1320,160,1380,160L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+              fill="#4eb4a7"
+              fillOpacity="0.95"
+            ></path>
+          </svg>
+        </motion.div>
+
+        {/* Secondary overlapping wave */}
+        <motion.div
+          initial={{ y: 20, opacity: 0.8 }}
+          animate={{ 
+            y: [20, 10, 20],
+            opacity: [0.8, 0.95, 0.8],
+          }}
+          transition={{ 
+            repeat: Infinity, 
+            duration: 7,
+            ease: "easeInOut",
+            delay: 0.5
+          }}
+          className="absolute w-full h-full bottom-0"
+        >
+          <svg
+            className="absolute bottom-0 w-full h-full"
+            preserveAspectRatio="none"
+            viewBox="0 0 1440 320"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0,256L48,266.7C96,277,192,299,288,277.3C384,256,480,192,576,186.7C672,181,768,235,864,234.7C960,235,1056,181,1152,170.7C1248,160,1344,192,1392,208L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+              fill="#4eb4a7"
+              fillOpacity="0.9"
+            ></path>
+          </svg>
+        </motion.div>
+
+        {/* Decorative particles */}
+        <div className="absolute inset-0 overflow-hidden">
+          {[...Array(6)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute rounded-full bg-white"
+              style={{
+                width: Math.random() * 6 + 3 + 'px',
+                height: Math.random() * 6 + 3 + 'px',
+                left: Math.random() * 100 + '%',
+                top: Math.random() * 70 + 20 + '%',
+                opacity: Math.random() * 0.2 + 0.1,
+              }}
+              animate={{
+                y: [0, -10, 0],
+                opacity: [0.1, 0.2, 0.1],
+              }}
+              transition={{
+                repeat: Infinity,
+                duration: Math.random() * 3 + 2,
+                ease: "easeInOut",
+                delay: Math.random() * 2,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Ensure seamless connection with footer */}
+        <div className="absolute bottom-0 left-0 right-0 h-4 bg-[#4eb4a7]"></div>
       </div>
 
       {/* Footer Content */}
-      <div className="relative bg-[#4eb4a7] pt-16 pb-12">
+      <div className="bg-[#4eb4a7] pt-8 pb-12">
         <div className="container mx-auto px-4">
           {/* Upper Section */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 mb-16">
@@ -38,7 +120,7 @@ const MainFooter = () => {
                 transition={{ duration: 0.5 }}
                 className="mb-8"
               >
-                <Logo />
+              <Logo />
               </motion.div>
               
               <motion.p 
@@ -67,7 +149,7 @@ const MainFooter = () => {
                 </div>
                 <div className="ml-2 text-white/90 text-sm">
                   <span className="font-bold text-white">5000+</span> Happy Customers
-                </div>
+            </div>
               </motion.div>
               
               <motion.div 
@@ -92,10 +174,10 @@ const MainFooter = () => {
                   </motion.a>
                 ))}
               </motion.div>
-            </div>
+          </div>
 
             {/* Quick Links */}
-            <div>
+          <div>
               <motion.h3 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -104,7 +186,7 @@ const MainFooter = () => {
                 className="text-lg font-semibold mb-6 flex items-center gap-2 text-white"
               >
                 <div className="w-1.5 h-6 bg-white rounded-full"></div>
-                Quick Links
+              Quick Links
               </motion.h3>
               <motion.ul 
                 initial={{ opacity: 0, y: 20 }}
@@ -127,14 +209,14 @@ const MainFooter = () => {
                     >
                       <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                       {link.name}
-                    </Link>
-                  </li>
+                </Link>
+              </li>
                 ))}
               </motion.ul>
-            </div>
+          </div>
 
             {/* Our Services */}
-            <div>
+          <div>
               <motion.h3 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -166,14 +248,14 @@ const MainFooter = () => {
                     >
                       {link.icon}
                       {link.name}
-                    </Link>
-                  </li>
+                </Link>
+              </li>
                 ))}
               </motion.ul>
-            </div>
+          </div>
 
             {/* Contact Info */}
-            <div>
+          <div>
               <motion.h3 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -182,7 +264,7 @@ const MainFooter = () => {
                 className="text-lg font-semibold mb-6 flex items-center gap-2 text-white"
               >
                 <div className="w-1.5 h-6 bg-white rounded-full"></div>
-                Contact Us
+              Contact Us
               </motion.h3>
               <motion.ul 
                 initial={{ opacity: 0, y: 20 }}
@@ -191,31 +273,31 @@ const MainFooter = () => {
                 transition={{ duration: 0.5, delay: 0.1 }}
                 className="space-y-4"
               >
-                <li className="flex items-start">
+              <li className="flex items-start">
                   <div className="mt-1 mr-3 p-2 bg-white/20 rounded-full">
                     <MapPin size={14} className="text-white" />
                   </div>
                   <span className="text-white/80 text-sm">
-                    Sri Sai Complex, Court Road, Vepamoodu Junction, Nagercoil, Tamil Nadu, India - 629001
-                  </span>
-                </li>
-                <li className="flex items-center">
+                  Sri Sai Complex, Court Road, Vepamoodu Junction, Nagercoil, Tamil Nadu, India - 629001
+                </span>
+              </li>
+              <li className="flex items-center">
                   <div className="mr-3 p-2 bg-white/20 rounded-full">
                     <Phone size={14} className="text-white" />
                   </div>
                   <span className="text-white/80 text-sm">9150537718, 9385722102</span>
-                </li>
-                <li className="flex items-center">
+              </li>
+              <li className="flex items-center">
                   <div className="mr-3 p-2 bg-white/20 rounded-full">
                     <Mail size={14} className="text-white" />
                   </div>
-                  <a
-                    href="mailto:info@princegroup.com"
+                <a
+                  href="mailto:info@princegroup.com"
                     className="text-white/80 text-sm hover:text-white transition-colors"
-                  >
-                    info@princegroup.com
-                  </a>
-                </li>
+                >
+                  info@princegroup.com
+                </a>
+              </li>
               </motion.ul>
             </div>
           </div>
@@ -244,14 +326,14 @@ const MainFooter = () => {
                     <ArrowRight size={18} />
                   </Button>
                 </div>
-              </div>
-            </div>
+          </div>
+        </div>
           </motion.div>
 
           {/* Footer Bottom */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-t border-white/20 pt-8">
             <div className="text-white/80 text-sm">
-              &copy; {year} Prince Group. All rights reserved.
+            &copy; {year} Prince Group. All rights reserved.
             </div>
             <div className="flex items-center gap-2">
               <span className="text-white/80 text-sm">Designed & Developed by</span>

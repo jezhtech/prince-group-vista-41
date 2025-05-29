@@ -67,7 +67,7 @@ const Index = () => {
         { icon: <Briefcase className="w-5 h-5" />, text: "Business Permits" },
         { icon: <GraduationCap className="w-5 h-5" />, text: "Educational Certificates" }
       ],
-      stats: { value: "10k+", label: "Documents Processed" },
+      stats: { value: "7807+", label: "Documents Processed" },
       color: "from-[#4eb4a7] to-[#60afb4]"
     },
     loans: {
@@ -79,7 +79,7 @@ const Index = () => {
         { icon: <Briefcase className="w-5 h-5" />, text: "Business Loans" },
         { icon: <Heart className="w-5 h-5" />, text: "Personal Loans" }
       ],
-      stats: { value: "₹50L+", label: "Loans Disbursed" },
+      stats: { value: "40crore +", label: "Loans Disbursed" },
       color: "from-[#60afb4] to-[#85cbc3]"
     }
   };
@@ -570,8 +570,8 @@ const Index = () => {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-white text-center">
                 {[
                   { value: "15+", label: "Years in Kanyakumari" },
-                  { value: "10k+", label: "Documents Processed" },
-                  { value: "₹50L+", label: "Loans Disbursed" },
+                  { value: "7807+", label: "Documents Processed" },
+                  { value: "40crore +", label: "Loans Disbursed" },
                   { value: "98%", label: "Customer Satisfaction" }
                 ].map((stat, index) => (
                   <motion.div 
@@ -630,7 +630,7 @@ const Index = () => {
                     "Business & Partnership Agreements",
                     "Educational Certificates & Affidavits"
                   ],
-                  stats: { label: "Documents Processed", value: "10,000+" },
+                  stats: { label: "Documents Processed", value: "7807+" },
                   image: "/lovable-uploads/43081f16-3e26-46ee-bec6-e85ef9aadbbc.png",
                   gradient: "from-[#4eb4a7] to-[#60afb4]",
                   path: "/services",
@@ -646,7 +646,7 @@ const Index = () => {
                     "Vehicle & Equipment Loans",
                     "Educational & Agricultural Loans"
                   ],
-                  stats: { label: "Loans Disbursed", value: "₹50L+" },
+                  stats: { label: "Loans Disbursed", value: "40crore +" },
                   image: "/lovable-uploads/f4f5c039-d495-44e1-83bd-cc24c888ca39.png",
                   gradient: "from-[#60afb4] to-[#85cbc3]",
                   path: "/services#loans",
