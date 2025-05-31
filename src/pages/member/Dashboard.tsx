@@ -147,9 +147,9 @@ const MemberDashboard = () => {
                         <p className="text-gray-500 flex items-center gap-1 mt-1">
                           <User className="h-4 w-4" />
                           Member ID: {memberInfo.membershipId}
-                        </p>
-                      </div>
-                      
+            </p>
+          </div>
+
                       <div className="flex gap-3">
                         <Badge className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] hover:from-[#4eb4a7] hover:to-[#60afb4] py-1.5 px-3">
                           <Star className="h-3.5 w-3.5 mr-1" />
@@ -163,22 +163,22 @@ const MemberDashboard = () => {
                         >
                           <Edit className="h-4 w-4 mr-1" />
                           Edit Profile
-                        </Button>
+                  </Button>
                       </div>
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Membership status bar */}
                 <div className="bg-[#4eb4a7]/5 rounded-xl p-4 border border-[#4eb4a7]/10 flex flex-wrap gap-8 justify-between">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
                       <Calendar className="h-5 w-5" />
-                    </div>
+                  </div>
                     <div>
                       <p className="text-sm text-gray-500">Member Since</p>
                       <p className="font-medium">{memberInfo.memberSince}</p>
-                    </div>
+            </div>
                   </div>
                   
                   <div className="flex items-center gap-3">
@@ -294,7 +294,7 @@ const MemberDashboard = () => {
                       >
                         <Edit className="h-4 w-4 mr-2" />
                         Edit Profile
-                      </Button>
+                  </Button>
                     </CardFooter>
                   </Card>
                 </motion.div>
@@ -355,7 +355,7 @@ const MemberDashboard = () => {
                           className="h-32 w-32 mx-auto mb-2"
                         />
                         <p className="text-xs text-gray-500">Scan to verify membership</p>
-                      </div>
+                </div>
                     </CardContent>
                     <CardFooter className="bg-gray-50 border-t border-gray-100 p-4">
                       <Button 
@@ -366,7 +366,7 @@ const MemberDashboard = () => {
                         Download Membership Card
                       </Button>
                     </CardFooter>
-                  </Card>
+              </Card>
                 </motion.div>
               </motion.div>
             </TabsContent>
@@ -417,7 +417,7 @@ const MemberDashboard = () => {
                                         >
                                           <Download className="h-4 w-4 mr-1" />
                                           Download
-                                        </Button>
+                  </Button>
                                       )}
                                     </div>
                                     
@@ -484,11 +484,11 @@ const MemberDashboard = () => {
                           <p className="text-gray-500 mb-6">You haven't purchased any event tickets yet.</p>
                           <Button asChild className="bg-[#4eb4a7] hover:bg-[#3da296]">
                             <Link to="/events">Browse Events</Link>
-                          </Button>
-                        </div>
+                  </Button>
+                </div>
                       )}
                     </CardContent>
-                  </Card>
+              </Card>
                 </motion.div>
               </motion.div>
             </TabsContent>
@@ -572,8 +572,8 @@ const MemberDashboard = () => {
                             <p className="font-medium">Preferential Loan Rates</p>
                             <p className="text-sm text-gray-500">Special interest rates on all loan services</p>
                           </div>
-                        </div>
-                      </div>
+            </div>
+          </div>
                     </CardContent>
                     
                     <CardFooter className="bg-gray-50 border-t border-gray-100 p-6 flex justify-between items-center">

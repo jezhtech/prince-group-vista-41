@@ -328,7 +328,7 @@ const Membership = () => {
                         <h3 className="text-2xl font-semibold mb-2">Thank You!</h3>
                         <p className="text-gray-600 mb-6">
                           We'll notify you at <span className="text-[#4eb4a7] font-medium">{notificationEmail}</span> when our membership program launches.
-                        </p>
+              </p>
                         <Button 
                           variant="outline" 
                           className="text-[#4eb4a7] border-[#4eb4a7]/30 hover:bg-[#4eb4a7]/10"
@@ -359,7 +359,7 @@ const Membership = () => {
             </svg>
           </div>
         </section>
-        
+
         {/* Membership Tiers Preview */}
         <section className="py-16 bg-white relative">
           <div className="container mx-auto px-4">
@@ -377,10 +377,10 @@ const Membership = () => {
                 </h2>
                 <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                   We're designing three membership tiers to cater to your specific needs. Each tier offers unique benefits and privileges.
-                </p>
+              </p>
               </motion.div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {membershipTiers.map((tier, index) => (
                   <motion.div
                     key={tier.name}
@@ -392,7 +392,7 @@ const Membership = () => {
                   >
                     <div className="relative h-full bg-white rounded-2xl overflow-hidden shadow-lg border border-[#4eb4a7]/20 p-6">
                       {/* Top Corner "Coming Soon" Ribbon */}
-                      <div className="absolute top-0 right-0">
+                    <div className="absolute top-0 right-0">
                         <div className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white text-xs font-semibold py-1 px-4 transform rotate-45 translate-y-[6px] translate-x-[30px] shadow-md">
                           Coming Soon
                         </div>
@@ -401,19 +401,19 @@ const Membership = () => {
                       <div className="text-center py-6">
                         <div className="w-16 h-16 mx-auto bg-gradient-to-br ${tier.color} rounded-full flex items-center justify-center mb-4 text-white">
                           {tier.icon}
-                        </div>
+                    </div>
                         
                         <h3 className="text-xl font-bold mb-2">{tier.name}</h3>
                         <div className="flex justify-center items-baseline mb-6">
                           <span className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]">{tier.price}</span>
                           <span className="text-gray-500 ml-1">/month</span>
-                        </div>
+                    </div>
                         
                         <div className="mt-6 text-center">
                           <div className="h-2.5 w-8 bg-gradient-to-r from-[#4eb4a7]/40 to-[#60afb4]/40 rounded-full inline-block mx-1"></div>
                           <div className="h-2.5 w-8 bg-gradient-to-r from-[#4eb4a7]/40 to-[#60afb4]/40 rounded-full inline-block mx-1"></div>
                           <div className="h-2.5 w-8 bg-gradient-to-r from-[#4eb4a7]/40 to-[#60afb4]/40 rounded-full inline-block mx-1"></div>
-                        </div>
+                  </div>
                         
                         <div className="mt-8">
                           <Button 
@@ -422,17 +422,17 @@ const Membership = () => {
                           >
                             <div className="absolute inset-0 bg-gradient-to-r from-[#4eb4a7]/0 to-[#60afb4]/0 group-hover:from-[#4eb4a7]/20 group-hover:to-[#60afb4]/20 transition-all duration-300"></div>
                             <span>Coming Soon</span>
-                          </Button>
-                        </div>
-                      </div>
+                    </Button>
+                  </div>
+                </div>
                     </div>
                   </motion.div>
-                ))}
-              </div>
+              ))}
+            </div>
             </div>
           </div>
         </section>
-        
+
         {/* Features Preview */}
         <section className="py-16 bg-gradient-to-br from-white to-[#f0faf9]" ref={planFeaturesRef}>
           <div className="container mx-auto px-4">
@@ -475,7 +475,7 @@ const Membership = () => {
                         <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
                         <p className="text-gray-600">{feature.description}</p>
                       </div>
-                    </div>
+                  </div>
                   </motion.div>
                 ))}
               </div>

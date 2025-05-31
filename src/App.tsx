@@ -26,15 +26,19 @@ import PasswordResetSent from "./pages/PasswordResetSent";
 import ResetPassword from "./pages/ResetPassword";
 import AdminLayout from "./layouts/AdminLayout";
 import AdminDashboard from "./pages/admin/Dashboard";
-import AdminEvents from "./pages/admin/Events";
+import AdminEventAnalytics from "./pages/admin/event-analytics";
+import AdminTickets from "./pages/admin/tickets";
 import AdminMembership from "./pages/admin/Membership";
 import AdminUsers from "./pages/admin/Users";
+import AdminRevenue from "./pages/admin/revenue";
+import AdminReferrals from "./pages/admin/Referrals";
 import AdminAccounts from "./pages/admin/Accounts";
 import AdminTicketDesigner from "./pages/admin/TicketDesigner";
 import AdminMembershipCardDesigner from "./pages/admin/MembershipCardDesigner";
 import MemberDashboard from "./pages/member/Dashboard";
 import MemberTickets from "./pages/member/Tickets";
 import MemberEvents from "./pages/member/Events";
+import ReferralLandingPage from "./pages/ReferralLandingPage";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +71,9 @@ const App = () => (
             <Route path="/password-reset-sent" element={<PasswordResetSent />} />
             <Route path="/reset-password" element={<ResetPassword />} />
             
+            {/* Referral landing pages */}
+            <Route path="/events/concert/ref/:refCode" element={<ReferralLandingPage />} />
+            
             {/* Member routes */}
             <Route path="/member/dashboard" element={<MemberDashboard />} />
             <Route path="/member/tickets" element={<MemberTickets />} />
@@ -75,12 +82,12 @@ const App = () => (
             {/* Admin routes */}
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
-              <Route path="events" element={<AdminEvents />} />
+              <Route path="event-analytics" element={<AdminEventAnalytics />} />
+              <Route path="tickets" element={<AdminTickets />} />
+              <Route path="referrals" element={<AdminReferrals />} />
               <Route path="membership" element={<AdminMembership />} />
               <Route path="users" element={<AdminUsers />} />
-              <Route path="accounts" element={<AdminAccounts />} />
-              <Route path="ticket-designer" element={<AdminTicketDesigner />} />
-              <Route path="membership-card-designer" element={<AdminMembershipCardDesigner />} />
+              <Route path="revenue" element={<AdminRevenue />} />
             </Route>
             
             {/* Catch-all route */}

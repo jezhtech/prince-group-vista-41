@@ -318,24 +318,24 @@ const Events = () => {
                           <span className="w-3 h-3 bg-red-400 rounded-full"></span>
                           <span className="w-3 h-3 bg-yellow-400 rounded-full"></span>
                           <span className="w-3 h-3 bg-green-400 rounded-full"></span>
-                        </div>
+                </div>
                         <div className="text-white/70 text-sm">Prince Group Mega Music Festival</div>
-                      </div>
-                      
+              </div>
+
                       <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 mb-4 border border-white/20">
                         <div className="flex items-center">
                           <div className="h-10 w-10 rounded-full bg-[#4eb4a7] flex items-center justify-center text-white mr-3">
                             <CalendarIcon className="h-5 w-5" />
-                          </div>
+                  </div>
                           <div>
                             <div className="text-white text-sm font-medium">Event Date</div>
                             <div className="text-white/80 text-lg">December 21, 2025</div>
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 mb-4 border border-white/20">
-                        <div className="flex items-center">
+                          <div className="flex items-center">
                           <div className="h-10 w-10 rounded-full bg-[#4eb4a7] flex items-center justify-center text-white mr-3">
                             <MapPin className="h-5 w-5" />
                           </div>
@@ -347,7 +347,7 @@ const Events = () => {
                       </div>
                       
                       <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
-                        <div className="flex items-center">
+                          <div className="flex items-center">
                           <div className="h-10 w-10 rounded-full bg-[#4eb4a7] flex items-center justify-center text-white mr-3">
                             <MusicIcon className="h-5 w-5" />
                           </div>
@@ -379,8 +379,8 @@ const Events = () => {
                   <div className="inline-block mb-6">
                     <div className="bg-[#4eb4a7]/10 text-[#4eb4a7] text-sm font-semibold py-1 px-3 rounded-full">
                       EVENT DETAILS
-                    </div>
-                  </div>
+                        </div>
+                      </div>
                   
                   <h2 className="text-3xl md:text-5xl font-bold mb-6">
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]">
@@ -415,7 +415,7 @@ const Events = () => {
                         <div>
                           <h3 className="text-lg font-semibold text-gray-800 mb-3">Prince Group Mega Music Festival 2025</h3>
                           <p className="text-gray-600">A spectacular night of music, entertainment, and celebration organized by Prince Group.</p>
-                        </div>
+                            </div>
                         
                         <div className="flex items-start gap-3">
                           <CalendarIcon className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
@@ -430,8 +430,8 @@ const Events = () => {
                           <div>
                             <h4 className="font-medium text-gray-800">Location</h4>
                             <p className="text-gray-600">Kanyakumari</p>
-                          </div>
-                        </div>
+                            </div>
+                            </div>
                         
                         <div className="flex items-start gap-3">
                           <Users className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
@@ -552,9 +552,9 @@ const Events = () => {
                         <div className="flex items-center gap-3">
                           <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
                             <Utensils className="h-4 w-4" />
-                          </div>
+                            </div>
                           <p className="text-gray-600">Food Court with Exotic and Local Cuisines</p>
-                        </div>
+                            </div>
                         
                         <div className="flex items-center gap-3">
                           <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
@@ -582,7 +582,7 @@ const Events = () => {
               <DialogDescription className="text-white/80">
                 Select your preferred ticket class and quantity
               </DialogDescription>
-            </div>
+                    </div>
             
             <div className="p-6">
               <div className="space-y-6">
@@ -639,8 +639,8 @@ const Events = () => {
                           className="rounded-l-none"
                         >
                           <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
+                  </Button>
+                </div>
                     </div>
                     
                     <div className="bg-gray-50 p-4 rounded-lg">
@@ -675,7 +675,7 @@ const Events = () => {
                 )}
               </div>
             </div>
-            
+
             <DialogFooter className="bg-gray-50 p-6">
               <Button
                 variant="outline"

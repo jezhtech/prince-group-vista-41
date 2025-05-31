@@ -1,311 +1,397 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Calendar, CreditCard, Ticket, TrendingUp, ArrowDownRight } from "lucide-react";
+import { 
+  Tabs, 
+  TabsContent, 
+  TabsList, 
+  TabsTrigger 
+} from "@/components/ui/tabs";
+import { 
+  Users, 
+  Ticket, 
+  CreditCard, 
+  TrendingUp, 
+  UserPlus, 
+  BarChart3, 
+  Calendar, 
+  ArrowRight,
+  Download,
+  RefreshCw
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 
 const AdminDashboard = () => {
   return (
-    <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-        <p className="text-gray-500">Welcome back, Admin</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        {[
-          {
-            title: "Total Users",
-            value: "3,456",
-            change: "+12%",
-            trend: "up",
-            icon: <Users className="h-5 w-5 text-white" />,
-            color: "bg-blue-500",
-          },
-          {
-            title: "Upcoming Events",
-            value: "12",
-            change: "+4",
-            trend: "up",
-            icon: <Calendar className="h-5 w-5 text-white" />,
-            color: "bg-green-500",
-          },
-          {
-            title: "Total Revenue",
-            value: "₹1,45,500",
-            change: "+8%",
-            trend: "up",
-            icon: <CreditCard className="h-5 w-5 text-white" />,
-            color: "bg-prince-green",
-          },
-          {
-            title: "Tickets Issued",
-            value: "846",
-            change: "-2%",
-            trend: "down",
-            icon: <Ticket className="h-5 w-5 text-white" />,
-            color: "bg-orange-500",
-          },
-        ].map((item, index) => (
-          <Card key={index}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-gray-500">
-                {item.title}
+    <div className="space-y-8 animate-fade-in">
+      {/* Header with event info and quick stats */}
+      <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-ui-gray-900">Annual Developers Conference 2023</h1>
+            <p className="text-ui-gray-500 flex items-center mt-1">
+              <Calendar className="h-4 w-4 mr-2" /> 
+              June 15-16, 2023 • Nagercoil Convention Center
+            </p>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+              Active Event
+            </span>
+            <Button variant="outline" size="sm" className="flex items-center">
+              <RefreshCw className="h-4 w-4 mr-2" /> Refresh Data
+            </Button>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="bg-gradient-to-br from-ui-blue-50 to-white">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-ui-gray-500 flex items-center">
+                <Ticket className="h-4 w-4 mr-2 text-ui-blue-500" /> Total Registrations
               </CardTitle>
-              <div className={`p-2 rounded-full ${item.color}`}>{item.icon}</div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{item.value}</div>
-              <p className="text-xs flex items-center mt-1">
-                {item.trend === "up" ? (
-                  <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
-                ) : (
-                  <ArrowDownRight className="h-3 w-3 mr-1 text-red-500" />
-                )}
-                <span
-                  className={
-                    item.trend === "up" ? "text-green-500" : "text-red-500"
-                  }
-                >
-                  {item.change} from last month
-                </span>
-              </p>
+              <div className="flex justify-between items-end">
+                <div>
+                  <div className="text-3xl font-bold text-ui-gray-900">783</div>
+                  <p className="text-xs flex items-center mt-1">
+                    <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
+                    <span className="text-green-500">+12% from last week</span>
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-medium text-ui-gray-900">1,000</div>
+                  <div className="text-xs text-ui-gray-500">Capacity</div>
+                </div>
+              </div>
+              <Progress className="h-2 mt-3" value={78.3} />
             </CardContent>
           </Card>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Members</CardTitle>
-            <CardDescription>
-              New members who joined in the last 7 days
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                {
-                  name: "Rajesh Kumar",
-                  email: "rajesh.kumar@example.com",
-                  date: "May 5, 2023",
-                  plan: "Premium",
-                },
-                {
-                  name: "Priya Sharma",
-                  email: "priya.sharma@example.com",
-                  date: "May 4, 2023",
-                  plan: "Basic",
-                },
-                {
-                  name: "Suresh Patel",
-                  email: "suresh.patel@example.com",
-                  date: "May 3, 2023",
-                  plan: "VIP",
-                },
-                {
-                  name: "Anita Singh",
-                  email: "anita.singh@example.com",
-                  date: "May 2, 2023",
-                  plan: "Basic",
-                },
-              ].map((member, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{member.name}</p>
-                    <p className="text-sm text-gray-500">{member.email}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm">{member.date}</p>
-                    <p className={`text-xs font-medium ${
-                      member.plan === 'VIP' ? 'text-purple-600' : 
-                      member.plan === 'Premium' ? 'text-prince-green' : 
-                      'text-blue-600'
-                    }`}>
-                      {member.plan}
-                    </p>
-                  </div>
+          
+          <Card className="bg-gradient-to-br from-prince-light to-white">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-ui-gray-500 flex items-center">
+                <UserPlus className="h-4 w-4 mr-2 text-prince-green" /> Membership Signups
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-end">
+                <div>
+                  <div className="text-3xl font-bold text-ui-gray-900">245</div>
+                  <p className="text-xs flex items-center mt-1">
+                    <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
+                    <span className="text-green-500">+8% from last week</span>
+                  </p>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Upcoming Events</CardTitle>
-            <CardDescription>
-              Events scheduled for the next 30 days
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                {
-                  title: "Document Registration Workshop",
-                  date: "Jun 15, 2023",
-                  time: "10:00 AM - 12:00 PM",
-                  attendees: 45,
-                  capacity: 50,
-                },
-                {
-                  title: "Financial Planning Seminar",
-                  date: "Jun 22, 2023",
-                  time: "2:00 PM - 4:00 PM",
-                  attendees: 28,
-                  capacity: 40,
-                },
-                {
-                  title: "Loan Application Workshop",
-                  date: "Jun 29, 2023",
-                  time: "11:00 AM - 1:00 PM",
-                  attendees: 32,
-                  capacity: 35,
-                },
-                {
-                  title: "Members Networking Event",
-                  date: "Jul 5, 2023",
-                  time: "5:00 PM - 7:00 PM",
-                  attendees: 38,
-                  capacity: 50,
-                },
-              ].map((event, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <p className="font-medium">{event.title}</p>
-                    <span className="text-sm text-gray-500">{event.date}</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-500">{event.time}</span>
-                    <span className="text-gray-500">
-                      {event.attendees}/{event.capacity}
-                    </span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5">
-                    <div
-                      className="bg-prince-green h-1.5 rounded-full"
-                      style={{
-                        width: `${(event.attendees / event.capacity) * 100}%`,
-                      }}
-                    />
-                  </div>
+                <div className="text-right">
+                  <div className="text-sm font-medium text-ui-gray-900">31.3%</div>
+                  <div className="text-xs text-ui-gray-500">Conversion</div>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+              <Progress className="h-2 mt-3 bg-green-100" value={31.3} />
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gradient-to-br from-orange-50 to-white">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-ui-gray-500 flex items-center">
+                <CreditCard className="h-4 w-4 mr-2 text-orange-500" /> Ticket Revenue
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-end">
+                <div>
+                  <div className="text-3xl font-bold text-ui-gray-900">₹4,15,000</div>
+                  <p className="text-xs flex items-center mt-1">
+                    <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
+                    <span className="text-green-500">+15% from target</span>
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-medium text-ui-gray-900">₹5,30</div>
+                  <div className="text-xs text-ui-gray-500">Avg. Ticket</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card className="bg-gradient-to-br from-purple-50 to-white">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-ui-gray-500 flex items-center">
+                <Users className="h-4 w-4 mr-2 text-purple-500" /> Membership Revenue
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-end">
+                <div>
+                  <div className="text-3xl font-bold text-ui-gray-900">₹2,45,000</div>
+                  <p className="text-xs flex items-center mt-1">
+                    <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
+                    <span className="text-green-500">+5% from target</span>
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-medium text-ui-gray-900">₹1,000</div>
+                  <div className="text-xs text-ui-gray-500">Avg. Signup</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      {/* Ticket breakdown and analytics */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Recent Transactions</CardTitle>
-            <CardDescription>
-              Latest financial transactions across all branches
-            </CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Ticket Sales Breakdown</CardTitle>
+              <CardDescription>Distribution by ticket type and sales over time</CardDescription>
+            </div>
+            <Button variant="outline" size="sm" className="flex items-center">
+              <Download className="h-4 w-4 mr-2" /> Export
+            </Button>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                {
-                  id: "TXN-001",
-                  description: "Membership Renewal - Rajesh Kumar",
-                  amount: "₹1,999",
-                  status: "Completed",
-                  date: "May 5, 2023",
-                },
-                {
-                  id: "TXN-002",
-                  description: "Documentation Service - Priya Sharma",
-                  amount: "₹1,200",
-                  status: "Completed",
-                  date: "May 4, 2023",
-                },
-                {
-                  id: "TXN-003",
-                  description: "Loan Processing Fee - Suresh Patel",
-                  amount: "₹2,000",
-                  status: "Pending",
-                  date: "May 3, 2023",
-                },
-                {
-                  id: "TXN-004",
-                  description: "Event Registration - Anita Singh",
-                  amount: "₹500",
-                  status: "Completed",
-                  date: "May 2, 2023",
-                },
-              ].map((transaction, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{transaction.description}</p>
-                    <p className="text-sm text-gray-500">
-                      {transaction.id} | {transaction.date}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium">{transaction.amount}</p>
-                    <p
-                      className={`text-xs font-medium ${
-                        transaction.status === "Completed"
-                          ? "text-green-600"
-                          : "text-orange-500"
-                      }`}
-                    >
-                      {transaction.status}
-                    </p>
-                  </div>
+          <CardContent className="px-2">
+            <div className="h-80 w-full">
+              <div className="flex justify-center items-center h-full">
+                <BarChart3 className="h-16 w-16 text-ui-gray-300" />
+                <div className="ml-4">
+                  <p className="text-ui-gray-500">Bar chart visualization would go here</p>
+                  <p className="text-ui-gray-400 text-sm">Showing ticket sales trends over time</p>
                 </div>
-              ))}
+              </div>
             </div>
           </CardContent>
         </Card>
-
-        <Card>
+        
+        <Card className="h-auto">
           <CardHeader>
-            <CardTitle>Branch Performance</CardTitle>
-            <CardDescription>Top performing branches this month</CardDescription>
+            <CardTitle>Ticket Types</CardTitle>
+            <CardDescription>Current sales by ticket category</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-5">
               {[
-                {
-                  name: "Nagercoil Headquarters",
-                  revenue: "₹45,500",
-                  growth: "+12%",
-                },
-                {
-                  name: "Thuckalay Branch",
-                  revenue: "₹32,750",
-                  growth: "+8%",
-                },
-                {
-                  name: "Marthandam Branch",
-                  revenue: "₹28,900",
-                  growth: "+5%",
-                },
-                {
-                  name: "Colachel Branch",
-                  revenue: "₹24,650",
-                  growth: "+3%",
-                },
-                {
-                  name: "Kanyakumari Branch",
-                  revenue: "₹22,800",
-                  growth: "+2%",
-                },
-              ].map((branch, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <p className="font-medium">{branch.name}</p>
-                  <div className="text-right">
-                    <p className="font-medium">{branch.revenue}</p>
-                    <p className="text-xs text-green-600">{branch.growth}</p>
+                { name: "Early Bird", count: 250, total: 250, percent: 100, color: "bg-prince-green" },
+                { name: "Regular", count: 375, total: 500, percent: 75, color: "bg-ui-blue-500" },
+                { name: "VIP", count: 108, total: 150, percent: 72, color: "bg-purple-500" },
+                { name: "Workshop", count: 50, total: 100, percent: 50, color: "bg-orange-500" },
+              ].map((type, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="font-medium">{type.name}</div>
+                      <div className="text-sm text-ui-gray-500">
+                        {type.count} / {type.total} sold
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-medium">{type.percent}%</div>
+                      <div className={`text-sm ${type.percent === 100 ? 'text-prince-green' : 'text-ui-gray-500'}`}>
+                        {type.percent === 100 ? 'Sold out' : 'Available'}
+                      </div>
+                    </div>
                   </div>
+                  <Progress 
+                    className={`h-2 ${type.percent === 100 ? 'bg-prince-green/20' : 'bg-ui-gray-100'}`} 
+                    value={type.percent} 
+                  />
                 </div>
               ))}
             </div>
+            
+            <Button variant="ghost" className="w-full mt-6 text-ui-blue-600">
+              Manage Ticket Types <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
           </CardContent>
         </Card>
       </div>
+      
+      {/* Recent registrations and membership */}
+      <Tabs defaultValue="recent" className="w-full">
+        <TabsList className="mb-6 bg-ui-gray-100">
+          <TabsTrigger value="recent">Recent Registrations</TabsTrigger>
+          <TabsTrigger value="members">New Members</TabsTrigger>
+          <TabsTrigger value="revenue">Revenue Breakdown</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="recent" className="space-y-4 animate-fade-in">
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-ui-gray-200">
+                      <th className="text-left p-4 font-medium text-ui-gray-500">Name</th>
+                      <th className="text-left p-4 font-medium text-ui-gray-500">Ticket Type</th>
+                      <th className="text-left p-4 font-medium text-ui-gray-500">Purchase Date</th>
+                      <th className="text-left p-4 font-medium text-ui-gray-500">Amount</th>
+                      <th className="text-right p-4 font-medium text-ui-gray-500">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { name: "Rajesh Kumar", email: "rajesh.kumar@example.com", type: "VIP", date: "May 5, 2023", amount: "₹2,999", status: "Confirmed" },
+                      { name: "Priya Sharma", email: "priya.sharma@example.com", type: "Regular", date: "May 4, 2023", amount: "₹999", status: "Confirmed" },
+                      { name: "Suresh Patel", email: "suresh.patel@example.com", type: "Early Bird", date: "May 3, 2023", amount: "₹599", status: "Confirmed" },
+                      { name: "Anita Singh", email: "anita.singh@example.com", type: "Workshop", date: "May 2, 2023", amount: "₹1,499", status: "Pending" },
+                      { name: "Vikram Mehta", email: "vikram.mehta@example.com", type: "Regular", date: "May 1, 2023", amount: "₹999", status: "Confirmed" },
+                    ].map((registration, index) => (
+                      <tr key={index} className="border-b border-ui-gray-100 hover:bg-ui-gray-50">
+                        <td className="p-4">
+                          <div className="font-medium">{registration.name}</div>
+                          <div className="text-sm text-ui-gray-500">{registration.email}</div>
+                        </td>
+                        <td className="p-4">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            registration.type === 'VIP' ? 'bg-purple-100 text-purple-800' :
+                            registration.type === 'Early Bird' ? 'bg-prince-light text-prince-green' :
+                            registration.type === 'Workshop' ? 'bg-orange-100 text-orange-800' :
+                            'bg-blue-100 text-blue-800'
+                          }`}>
+                            {registration.type}
+                          </span>
+                        </td>
+                        <td className="p-4 text-ui-gray-500">{registration.date}</td>
+                        <td className="p-4 font-medium">{registration.amount}</td>
+                        <td className="p-4 text-right">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            registration.status === 'Confirmed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {registration.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <div className="flex justify-center">
+            <Button variant="outline">View All Registrations</Button>
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="members" className="animate-fade-in">
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-ui-gray-200">
+                      <th className="text-left p-4 font-medium text-ui-gray-500">Member</th>
+                      <th className="text-left p-4 font-medium text-ui-gray-500">Membership Type</th>
+                      <th className="text-left p-4 font-medium text-ui-gray-500">Joined Date</th>
+                      <th className="text-left p-4 font-medium text-ui-gray-500">Fee</th>
+                      <th className="text-right p-4 font-medium text-ui-gray-500">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { name: "Rajesh Kumar", email: "rajesh.kumar@example.com", type: "Premium", date: "May 5, 2023", amount: "₹1,999", status: "Active" },
+                      { name: "Priya Sharma", email: "priya.sharma@example.com", type: "Basic", date: "May 4, 2023", amount: "₹999", status: "Active" },
+                      { name: "Suresh Patel", email: "suresh.patel@example.com", type: "VIP", date: "May 3, 2023", amount: "₹2,999", status: "Active" },
+                      { name: "Anita Singh", email: "anita.singh@example.com", type: "Basic", date: "May 2, 2023", amount: "₹999", status: "Pending" },
+                    ].map((member, index) => (
+                      <tr key={index} className="border-b border-ui-gray-100 hover:bg-ui-gray-50">
+                        <td className="p-4">
+                          <div className="font-medium">{member.name}</div>
+                          <div className="text-sm text-ui-gray-500">{member.email}</div>
+                        </td>
+                        <td className="p-4">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            member.type === 'VIP' ? 'bg-purple-100 text-purple-800' :
+                            member.type === 'Premium' ? 'bg-prince-light text-prince-green' :
+                            'bg-blue-100 text-blue-800'
+                          }`}>
+                            {member.type}
+                          </span>
+                        </td>
+                        <td className="p-4 text-ui-gray-500">{member.date}</td>
+                        <td className="p-4 font-medium">{member.amount}</td>
+                        <td className="p-4 text-right">
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                            member.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                          }`}>
+                            {member.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        
+        <TabsContent value="revenue" className="animate-fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Revenue by Source</CardTitle>
+                <CardDescription>Breakdown of event income</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64 flex justify-center items-center">
+                  <div className="text-center">
+                    <div className="text-ui-gray-400 mb-2">Pie chart visualization would go here</div>
+                    <div className="grid grid-cols-2 gap-4 text-sm mt-4">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-ui-blue-500 rounded-full mr-2"></div>
+                        <span>Tickets (63%)</span>
+                      </div>
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-prince-green rounded-full mr-2"></div>
+                        <span>Membership (37%)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Total Revenue</CardTitle>
+                <CardDescription>All income from the event</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col items-center justify-center h-64">
+                  <div className="text-4xl font-bold mb-2">₹6,60,000</div>
+                  <div className="text-ui-gray-500 mb-6">Total event revenue</div>
+                  
+                  <div className="w-full space-y-4">
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Ticket Revenue</span>
+                        <span className="font-medium">₹4,15,000</span>
+                      </div>
+                      <Progress value={63} className="h-2" />
+                    </div>
+                    
+                    <div>
+                      <div className="flex justify-between text-sm mb-1">
+                        <span>Membership Revenue</span>
+                        <span className="font-medium">₹2,45,000</span>
+                      </div>
+                      <Progress value={37} className="h-2 bg-prince-light" />
+                    </div>
+                  </div>
+                  
+                  <Button variant="outline" size="sm" className="mt-6">
+                    <Download className="h-4 w-4 mr-2" /> Export Report
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

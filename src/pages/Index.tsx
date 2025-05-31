@@ -668,7 +668,7 @@ const Index = () => {
                           src={service.image} 
                           alt={service.title} 
                         className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
-                      />
+                        />
                       <div className={`absolute inset-0 bg-gradient-to-t ${service.gradient} opacity-80`} />
                       
                       {/* Icon Overlay */}
@@ -712,7 +712,7 @@ const Index = () => {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                             transition={{ duration: 0.3, delay: service.delay + 0.1 + idx * 0.05 }}
-                          >
+                      >
                             <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${service.gradient}`} />
                             <span className="text-gray-700">{feature}</span>
                           </motion.div>
@@ -853,7 +853,7 @@ const Index = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: testimonial.delay }}
-                  >
+                >
                     <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 h-full relative overflow-hidden">
                       {/* Quote Icon */}
                       <div className="absolute top-4 right-4 text-[#4eb4a7]/10">
@@ -916,7 +916,7 @@ const Index = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-              >
+                >
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                   <div>
                     <div className="text-3xl font-bold mb-1">5000+</div>
@@ -973,8 +973,8 @@ const Index = () => {
             <div className="relative">
               <div className="overflow-x-auto pb-4 scrollbar-hide">
                 <div className="flex gap-6 w-max auto-scroll-carousel">
-                  {[
-                    {
+              {[
+                {
                       name: "Thingal Nagar Branch",
                       phone: "9489359755",
                       address: "Near Thingal Nagar Sub-Register office, Anbu Complex 1st Floor, Thingal Nagar"
@@ -998,8 +998,8 @@ const Index = () => {
                       name: "Verlilambi Branch",
                       phone: "7339070114",
                       address: "Opposite to fish Market, Near Verkilambi Register Office, Mallanvillai, Verkilambi, 629166"
-                    },
-                    {
+                },
+                {
                       name: "Karungal Branch",
                       phone: "9384170178",
                       address: "Opposite Royal Enfield Service Showroom 1st Floor, Karungal"
@@ -1028,8 +1028,8 @@ const Index = () => {
                       name: "Colachel Branch",
                       phone: "9363916484",
                       address: "Opposite Colachel Sub-Register Office, Near David Driving School, Colachel, 629251"
-                    },
-                    {
+                },
+                {
                       name: "Edalagudi Branch",
                       phone: "9363914982",
                       address: "Near Edalagudi Sub-Register Office, Opposit to Government High School, Jaganathan Complex, 1st floor, Edalagudi"
@@ -1072,7 +1072,7 @@ const Index = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: index * 0.05 }}
-                    >
+                >
                       <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group h-full">
                         {/* Branch Header with Gradient */}
                         <div className="relative h-32 bg-gradient-to-br from-[#4eb4a7] to-[#85cbc3] p-6">
@@ -1348,7 +1348,7 @@ const Index = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: 0.3 }}
-                    >
+                      >
                       <div className="text-2xl font-bold text-[#4eb4a7]">20+</div>
                       <div className="text-xs text-gray-600">Branches</div>
                       </motion.div>
@@ -1375,7 +1375,7 @@ const Index = () => {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: 0.4 }}
-                    >
+                      >
                       <div className="text-2xl font-bold text-[#4eb4a7]">5k+</div>
                       <div className="text-xs text-gray-600">Members</div>
                       </motion.div>
@@ -1402,7 +1402,7 @@ const Index = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: 0.5 }}
-                    >
+                      >
                       <div className="text-2xl font-bold text-[#4eb4a7]">10k+</div>
                       <div className="text-xs text-gray-600">Services</div>
                       </motion.div>

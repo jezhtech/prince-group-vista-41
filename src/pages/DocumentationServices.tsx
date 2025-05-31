@@ -162,8 +162,8 @@ const DocumentationServices = () => {
                   <Button 
                     className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white rounded-full px-8 py-6 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                   >
-                    Schedule a Consultation
-                  </Button>
+                Schedule a Consultation
+              </Button>
                   <Button 
                     variant="outline" 
                     className="rounded-full px-8 py-6 border-2 border-[#4eb4a7] text-[#4eb4a7] hover:bg-[#4eb4a7]/10"
@@ -406,7 +406,7 @@ const DocumentationServices = () => {
                 <Card key={index} className="p-6 border-0 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
                   <div className="relative">
                     <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${service.bgGradient} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                      {service.icon}
+                    {service.icon}
                       
                       {/* Decorative dots */}
                       <div className="absolute top-0 right-0 w-3 h-3 bg-white/20 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>

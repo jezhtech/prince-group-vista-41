@@ -279,7 +279,7 @@ const About = () => {
         <section id="story" className="py-20 bg-gradient-to-br from-white to-[#f0faf9]">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <motion.div
                   initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
@@ -324,7 +324,7 @@ const About = () => {
                 >
                   <div className="inline-block mb-6">
                     <div className="bg-[#4eb4a7]/10 text-[#4eb4a7] text-sm font-semibold py-1 px-3 rounded-full">
-                      OUR JOURNEY
+                    OUR JOURNEY
                     </div>
                   </div>
                   
@@ -334,17 +334,17 @@ const About = () => {
                     </span>
                   </h2>
                   
-                  <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 mb-6">
                     Founded in 2010, Prince Group started with a vision to simplify documentation services in Kanyakumari district. 
                     What began as a small office with three dedicated staff members has now grown into a network of over 18 branches 
                     serving thousands of satisfied customers.
-                  </p>
+                </p>
                   
-                  <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 mb-6">
                     Our journey has been marked by continuous improvement, innovation, and an unwavering commitment to customer satisfaction. 
                     Today, we are proud to be the leading documentation and loan service provider in the region, with a team of 36 experts 
                     dedicated to excellence.
-                  </p>
+                </p>
                   
                   <div className="mb-10">
                     <div className="flex items-center gap-4 mb-5">
@@ -405,9 +405,9 @@ const About = () => {
               >
                 <div className="inline-block mb-6">
                   <div className="bg-[#4eb4a7]/10 text-[#4eb4a7] text-sm font-semibold py-1 px-3 rounded-full">
-                    OUR PURPOSE
-                  </div>
+                  OUR PURPOSE
                 </div>
+              </div>
                 
                 <h2 className="text-3xl md:text-4xl font-bold mb-6">
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]">
@@ -416,11 +416,11 @@ const About = () => {
                 </h2>
                 
                 <p className="text-gray-600 max-w-3xl mx-auto">
-                  Our guiding principles that drive everything we do at Prince Group
-                </p>
+                Our guiding principles that drive everything we do at Prince Group
+              </p>
               </motion.div>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -432,7 +432,7 @@ const About = () => {
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#4eb4a7]/10 h-full transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
                   <div className="h-16 bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] flex items-center justify-center">
                     <h3 className="text-2xl font-bold text-white">Vision</h3>
-                  </div>
+                </div>
                   <div className="p-8">
                     <div className="bg-[#4eb4a7]/10 p-4 rounded-full inline-block mb-6">
                       <Target className="h-8 w-8 text-[#4eb4a7]" />
@@ -454,12 +454,12 @@ const About = () => {
                         <li key={index} className="flex items-start">
                           <div className="mt-1 mr-3 text-[#4eb4a7]">
                             <Check className="h-5 w-5" />
-                          </div>
+                    </div>
                           <span className="text-gray-700">{item}</span>
-                        </li>
+                  </li>
                       ))}
-                    </ul>
-                  </div>
+                </ul>
+              </div>
                 </div>
               </motion.div>
               
@@ -473,7 +473,7 @@ const About = () => {
                 <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#4eb4a7]/10 h-full transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
                   <div className="h-16 bg-gradient-to-r from-[#60afb4] to-[#85cbc3] flex items-center justify-center">
                     <h3 className="text-2xl font-bold text-white">Mission</h3>
-                  </div>
+                    </div>
                   <div className="p-8">
                     <div className="bg-[#60afb4]/10 p-4 rounded-full inline-block mb-6">
                       <Zap className="h-8 w-8 text-[#60afb4]" />
@@ -494,12 +494,12 @@ const About = () => {
                         <li key={index} className="flex items-start">
                           <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#60afb4]/10 flex items-center justify-center mt-1 mr-3">
                             <span className="text-[#60afb4] font-bold">{index + 1}</span>
-                          </div>
+                    </div>
                           <span className="text-gray-700">{item}</span>
-                        </li>
+                  </li>
                       ))}
-                    </ul>
-                  </div>
+                </ul>
+              </div>
                 </div>
               </motion.div>
             </div>
@@ -510,7 +510,7 @@ const About = () => {
         <section id="team" className="py-20 bg-white relative">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-16">
+            <div className="text-center mb-16">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -546,10 +546,10 @@ const About = () => {
                       </div>
                       <span className="text-gray-600">15 Contract Professionals</span>
                     </div>
-                  </div>
+                </div>
                 </motion.div>
-              </div>
-              
+            </div>
+
               {/* Team Carousel */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
@@ -567,14 +567,14 @@ const About = () => {
                   setApi={setCarouselApi}
                 >
                   <CarouselContent>
-                    {[
-                      {
+              {[
+                {
                         name: "Rajesh Kumar",
                         position: "Founder & CEO",
                         bio: "With over 15 years of experience in documentation services, Rajesh founded Prince Group with a vision to simplify the complex process for customers across Kanyakumari district.",
                         imagePlaceholder: "RK"
-                      },
-                      {
+                },
+                {
                         name: "Priya Sharma",
                         position: "Operations Director",
                         bio: "Priya brings 10 years of operational expertise, ensuring our 18+ branches maintain consistent quality standards and exceptional customer service.",
@@ -585,14 +585,14 @@ const About = () => {
                         position: "Finance Manager",
                         bio: "With a strong background in banking and finance, Anand oversees our loan services, ensuring compliance with regulations and competitive offerings.",
                         imagePlaceholder: "AP"
-                      },
-                      {
+                },
+                {
                         name: "Lakshmi Narayan",
                         position: "Documentation Specialist",
                         bio: "Lakshmi's meticulous attention to detail and deep knowledge of legal documentation has helped thousands of clients navigate complex paperwork effortlessly.",
                         imagePlaceholder: "LN"
-                      },
-                      {
+                },
+                {
                         name: "Vikram Singh",
                         position: "Regional Manager",
                         bio: "Vikram oversees our branch expansion, strategically growing our presence to ensure Prince Group services are accessible across Kanyakumari district.",
@@ -603,7 +603,7 @@ const About = () => {
                         position: "Customer Relations Lead",
                         bio: "With her people-first approach, Deepa ensures every client receives personalized attention and solutions tailored to their specific needs.",
                         imagePlaceholder: "DM"
-                      }
+                }
                     ].map((member, index) => (
                       <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                         <div className="p-2 h-full">
@@ -667,7 +667,7 @@ const About = () => {
         <section id="growth" className="py-20 bg-gradient-to-br from-white to-[#f0faf9]">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-16">
+            <div className="text-center mb-16">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -678,7 +678,7 @@ const About = () => {
                     <div className="bg-[#4eb4a7]/10 text-[#4eb4a7] text-sm font-semibold py-1 px-3 rounded-full">
                       OUR PROGRESS
                     </div>
-                  </div>
+                </div>
                   
                   <h2 className="text-3xl md:text-4xl font-bold mb-6">
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]">
@@ -746,8 +746,8 @@ const About = () => {
                             <div className="font-semibold text-[#4eb4a7]">7500</div>
                             <div className="bg-[#4eb4a7] w-full rounded-t-md mt-2" style={{ height: "136px" }}></div>
                             <div className="text-xs text-gray-500 mt-2">2023-24</div>
-                          </div>
-                          
+            </div>
+
                           <div className="text-center">
                             <div className="font-semibold text-[#4eb4a7]">7807+</div>
                             <div className="bg-[#4eb4a7] w-full rounded-t-md mt-2" style={{ height: "152px" }}></div>
@@ -839,7 +839,7 @@ const About = () => {
                     </p>
                   </div>
                 </motion.div>
-              </div>
+                </div>
             </div>
           </div>
           
@@ -937,7 +937,7 @@ const About = () => {
             </div>
           </div>
         </section>
-        
+
         {/* CTA Section */}
         <section className="py-20 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]"></div>
@@ -1007,16 +1007,16 @@ const About = () => {
                 </h2>
                 <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
                   Visit any of our 18+ branches across Kanyakumari District or get in touch with our team to learn more.
-                </p>
+            </p>
                 
-                <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
                   <Button 
                     size="lg" 
                     className="bg-white text-[#4eb4a7] hover:bg-gray-100 shadow-xl hover:shadow-2xl transition-all px-8 py-6 rounded-full"
                   >
                     <span>Find Nearest Branch</span>
                     <MapPin className="ml-2 h-5 w-5" />
-                  </Button>
+              </Button>
                   <Button 
                     size="lg" 
                     variant="outline"
@@ -1024,7 +1024,7 @@ const About = () => {
                   >
                     <span>Contact Us</span>
                     <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
+              </Button>
                 </div>
               </motion.div>
             </div>

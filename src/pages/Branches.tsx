@@ -149,7 +149,7 @@ const Branches = () => {
   const filteredBranches = branchData.filter(branch => {
     return searchTerm === "" || 
            branch.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-           branch.address.toLowerCase().includes(searchTerm.toLowerCase());
+                        branch.address.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   return (
@@ -470,7 +470,7 @@ const Branches = () => {
                     Hover or click on a branch for details
                   </motion.p>
                 </div>
-              </div>
+            </div>
             </motion.div>
           </div>
         </section>
@@ -515,12 +515,12 @@ const Branches = () => {
                       Clear Search
                     </Button>
                   </motion.div>
-                </div>
-              ) : (
+                    </div>
+                  ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredBranches.map((branch, index) => (
                     <motion.div
-                      key={branch.id}
+                        key={branch.id} 
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.5, delay: index * 0.05 }}
@@ -535,7 +535,7 @@ const Branches = () => {
                           <div className="flex items-start gap-4">
                             <div className="p-3 rounded-xl bg-gradient-to-br from-[#4eb4a7]/10 to-[#85cbc3]/20 text-[#4eb4a7] group-hover:from-[#4eb4a7] group-hover:to-[#60afb4] group-hover:text-white transition-all duration-300">
                               <MapPin className="h-6 w-6" />
-                            </div>
+                              </div>
                             
                             <div className="flex-1">
                               <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-[#4eb4a7] transition-colors duration-300">{branch.name}</h3>
@@ -552,18 +552,18 @@ const Branches = () => {
                                 <div className="flex items-center gap-2 text-sm text-gray-600">
                                   <Clock className="h-4 w-4 text-[#4eb4a7]" />
                                   <span>9:00 AM - 5:00 PM</span>
-                                </div>
-                              </div>
-                              
+                            </div>
+                          </div>
+                          
                               <Button 
                                 className="mt-5 w-full bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] hover:from-[#3da296] hover:to-[#4e9da3] text-white shadow-md group-hover:shadow-lg transition-all"
                                 asChild
                               >
-                                <a 
-                                  href={`https://maps.google.com/?q=${encodeURIComponent(branch.address)}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                >
+                              <a 
+                                href={`https://maps.google.com/?q=${encodeURIComponent(branch.address)}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
                                   <div className="flex items-center gap-2 justify-center">
                                     <span>Get Directions</span>
                                     <motion.div
@@ -579,8 +579,8 @@ const Branches = () => {
                                       <ArrowRight className="h-4 w-4" />
                                     </motion.div>
                                   </div>
-                                </a>
-                              </Button>
+                              </a>
+                            </Button>
                             </div>
                           </div>
                         </div>
@@ -592,7 +592,7 @@ const Branches = () => {
             </div>
           </div>
         </section>
-        
+
         {/* CTA Section */}
         <section className="py-20 relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] transform -skew-y-6 scale-110"></div>
@@ -617,7 +617,7 @@ const Branches = () => {
                   >
                     Contact Support
                   </Button>
-                </div>
+            </div>
               </motion.div>
             </div>
           </div>
