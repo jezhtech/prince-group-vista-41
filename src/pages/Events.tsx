@@ -1,32 +1,50 @@
-import { useState } from "react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { useState, useEffect, useRef } from "react";
+import MainNavbar from "@/components/MainNavbar";
+import MainFooter from "@/components/MainFooter";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Helmet } from "react-helmet-async";
 import { 
-  CalendarCheck, 
-  List, 
-  Grid, 
+  Calendar as CalendarIcon, 
   MapPin, 
   Clock, 
   Users,
   Search,
   Filter,
   ChevronDown,
-  Check
+  Music as MusicIcon,
+  Ticket,
+  Star,
+  Trophy,
+  Sparkles,
+  Flame,
+  PartyPopper,
+  Gift,
+  Utensils,
+  CheckCircle,
+  Plus,
+  Minus,
+  ShoppingCart
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const Events = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("all");
+  const [activeTab, setActiveTab] = useState("upcoming");
+  const [ticketCategory, setTicketCategory] = useState("");
+  const [ticketQuantity, setTicketQuantity] = useState(1);
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const events = [
     {
@@ -111,292 +129,789 @@ const Events = () => {
     return matchesSearch && matchesFilter;
   });
 
+  // Ticket categories and pricing
+  const ticketClasses = [
+    { id: "business", name: "Business Class", price: 25000, description: "Premium experience with celebrity dinner" },
+    { id: "ultra", name: "Ultra Luxury Class", price: 15000, description: "Top-tier seating with premium amenities" },
+    { id: "luxury", name: "Luxury Class", price: 10000, description: "Superior comfort with great views" },
+    { id: "vvip", name: "VVIP Class", price: 5000, description: "Exclusive access with premium seating" },
+    { id: "vip", name: "VIP Class", price: 3000, description: "Enhanced experience with special amenities" }
+  ];
+  
+  // Update total price when ticket category or quantity changes
+  useEffect(() => {
+    if (ticketCategory) {
+      const selectedTicket = ticketClasses.find(ticket => ticket.id === ticketCategory);
+      if (selectedTicket) {
+        setTotalPrice(selectedTicket.price * ticketQuantity);
+      }
+    } else {
+      setTotalPrice(0);
+    }
+  }, [ticketCategory, ticketQuantity]);
+  
+  // Handle ticket quantity changes
+  const increaseQuantity = () => {
+    if (ticketQuantity < 10) {
+      setTicketQuantity(ticketQuantity + 1);
+    }
+  };
+  
+  const decreaseQuantity = () => {
+    if (ticketQuantity > 1) {
+      setTicketQuantity(ticketQuantity - 1);
+    }
+  };
+  
+  // Format price as Indian Rupees
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0
+    }).format(price);
+  };
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fdfc] via-white to-[#f0faf9]">
+      <Helmet>
+        <title>Events - Prince Group Mega Music Festival</title>
+        <meta name="description" content="Join us for the Prince Group Mega Music Festival 2025. Book your tickets now for an unforgettable experience." />
+      </Helmet>
+      <MainNavbar />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-r from-ui-blue-600 to-ui-blue-400 py-24">
-          <div className="absolute inset-0 bg-[url('https://placehold.co/1920x1080')] opacity-10 mix-blend-overlay bg-cover bg-center"></div>
+        <section className="relative pt-24 pb-32 overflow-hidden mt-16">
+          {/* Background Elements */}
+          <div className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-gradient-to-r from-[#4eb4a7]/90 to-[#60afb4]/90"></div>
+            
+            {/* Animated Waveform Background */}
+            <motion.div 
+              className="absolute bottom-0 left-0 w-full h-64"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}
+            >
+              <svg viewBox="0 0 1440 320" className="absolute bottom-0 w-full">
+                <motion.path 
+                  fill="#ffffff" 
+                  fillOpacity="0.2"
+                  d="M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,266.7C672,267,768,245,864,224C960,203,1056,181,1152,186.7C1248,192,1344,224,1392,240L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+                  animate={{
+                    d: [
+                      "M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,266.7C672,267,768,245,864,224C960,203,1056,181,1152,186.7C1248,192,1344,224,1392,240L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z",
+                      "M0,192L48,176C96,160,192,128,288,138.7C384,149,480,203,576,213.3C672,224,768,192,864,165.3C960,139,1056,117,1152,128C1248,139,1344,181,1392,202.7L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z",
+                      "M0,224L48,213.3C96,203,192,181,288,186.7C384,192,480,224,576,218.7C672,213,768,171,864,149.3C960,128,1056,128,1152,149.3C1248,171,1344,213,1392,234.7L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+                    ]
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    duration: 10,
+                    ease: "easeInOut"
+                  }}
+                />
+              </svg>
+              <svg viewBox="0 0 1440 320" className="absolute bottom-0 w-full">
+                <motion.path 
+                  fill="#ffffff" 
+                  fillOpacity="0.3"
+                  d="M0,192L60,176C120,160,240,128,360,112C480,96,600,96,720,122.7C840,149,960,203,1080,208C1200,213,1320,171,1380,149.3L1440,128L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+                  animate={{
+                    d: [
+                      "M0,192L60,176C120,160,240,128,360,112C480,96,600,96,720,122.7C840,149,960,203,1080,208C1200,213,1320,171,1380,149.3L1440,128L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z",
+                      "M0,64L60,96C120,128,240,192,360,202.7C480,213,600,171,720,165.3C840,160,960,192,1080,197.3C1200,203,1320,181,1380,170.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z",
+                      "M0,96L60,117.3C120,139,240,181,360,213.3C480,245,600,267,720,250.7C840,235,960,181,1080,170.7C1200,160,1320,192,1380,208L1440,224L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+                    ]
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    duration: 8,
+                    ease: "easeInOut",
+                    delay: 0.5
+                  }}
+                />
+              </svg>
+            </motion.div>
+            
+            {/* Animated Particles */}
+            {[...Array(20)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full bg-white/30"
+                style={{
+                  width: Math.random() * 10 + 5,
+                  height: Math.random() * 10 + 5,
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  y: [0, -Math.random() * 100 - 50],
+                  opacity: [0.2, 0.8, 0],
+                }}
+                transition={{
+                  duration: Math.random() * 5 + 10,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            ))}
+          </div>
+          
+          {/* Content */}
           <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">Upcoming Events</h1>
-              <p className="text-xl text-white/90">
-                Join us for educational workshops, seminars, and networking opportunities.
-              </p>
-              <Button size="lg" className="mt-8 bg-white text-ui-blue-600 hover:bg-gray-100">
-                Register for an Event
-              </Button>
-            </div>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none" className="fill-white h-16 w-full">
-              <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" />
-              <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" />
-              <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" />
-            </svg>
-          </div>
-        </section>
-
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-              <div className="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
-                <Tabs defaultValue="upcoming" className="w-full max-w-md">
-                  <TabsList className="grid w-full grid-cols-3 bg-gray-100">
-                    <TabsTrigger value="upcoming" className="data-[state=active]:bg-ui-blue-500 data-[state=active]:text-white">Upcoming</TabsTrigger>
-                    <TabsTrigger value="past" className="data-[state=active]:bg-ui-blue-500 data-[state=active]:text-white">Past</TabsTrigger>
-                    <TabsTrigger value="members" className="data-[state=active]:bg-ui-blue-500 data-[state=active]:text-white">Members Only</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-
-                <div className="flex items-center space-x-2">
+            <div className="flex flex-col md:flex-row items-center">
+              {/* Festival Information */}
+              <motion.div
+                className="md:w-1/2 text-white"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <Badge className="bg-white/20 hover:bg-white/30 text-white mb-6 backdrop-blur-sm py-1.5 px-4 text-sm">
+                  <CalendarIcon className="w-4 h-4 mr-1" /> December 21, 2025
+                </Badge>
+                
+                <h1 className="text-5xl md:text-7xl font-bold mb-6">
+                  Prince Group
+                  <br />
+                  <span className="flex items-center">
+                    <MusicIcon className="w-12 h-12 mr-3" />
+                    Mega Music Festival
+                  </span>
+                </h1>
+                
+                <p className="text-xl text-white/90 mb-8 max-w-xl">
+                  Join us for an unforgettable night of music, entertainment, and celebration
+                  at Kanyakumari's biggest music festival of 2025!
+                </p>
+                
+                <div className="flex flex-wrap gap-4">
                   <Button
-                    variant={viewMode === "grid" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setViewMode("grid")}
-                    className={viewMode === "grid" ? "bg-ui-blue-500 hover:bg-ui-blue-600" : ""}
+                    size="lg"
+                    className="bg-white text-[#4eb4a7] hover:bg-white/90 px-8 py-6 rounded-full"
+                    onClick={() => setIsBookingOpen(true)}
                   >
-                    <Grid className="h-4 w-4 mr-2" /> Grid
-                  </Button>
-                  <Button
-                    variant={viewMode === "list" ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => setViewMode("list")}
-                    className={viewMode === "list" ? "bg-ui-blue-500 hover:bg-ui-blue-600" : ""}
-                  >
-                    <List className="h-4 w-4 mr-2" /> List
+                    <Ticket className="mr-2 h-5 w-5" />
+                    Book Tickets Now
                   </Button>
                 </div>
-              </div>
-
-              <div className="flex flex-col md:flex-row gap-4 mb-8">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
-                  <Input 
-                    type="text" 
-                    placeholder="Search events..." 
-                    className="pl-10"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="flex items-center gap-2">
-                      <Filter className="h-4 w-4" />
-                      {filter === "all" ? "All Categories" : 
-                       filter === "documentation" ? "Documentation" :
-                       filter === "loans" ? "Loans" : "Financial Planning"}
-                      <ChevronDown className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => setFilter("all")}>All Categories</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("documentation")}>Documentation</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("loans")}>Loans</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("financial")}>Financial Planning</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-
-              {filteredEvents.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="mb-4">
-                    <CalendarCheck className="h-16 w-16 mx-auto text-gray-300" />
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No events found</h3>
-                  <p className="text-gray-500">Try adjusting your search or filter criteria</p>
-                </div>
-              ) : viewMode === "grid" ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredEvents.map((event) => (
-                    <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100">
-                      <div className="h-48 relative">
-                        <img
-                          src={event.image}
-                          alt={event.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute top-0 right-0 bg-ui-blue-500 text-white py-1 px-3 text-sm font-medium rounded-bl-lg">
-                          {event.date}
+              </motion.div>
+              
+              {/* Festival Image or Animation */}
+              <motion.div
+                className="md:w-1/2 mt-12 md:mt-0"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <div className="relative">
+                  <div className="absolute -top-6 -left-6 w-full h-full bg-[#85cbc3]/30 rounded-2xl transform rotate-3"></div>
+                  <div className="absolute -bottom-6 -right-6 w-full h-full bg-[#4eb4a7]/20 rounded-2xl transform -rotate-2"></div>
+                  <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/20 shadow-xl overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#4eb4a7]/10 to-[#60afb4]/10"></div>
+                    <div className="relative">
+                      <div className="flex justify-between items-center mb-4">
+                        <div className="flex gap-2">
+                          <span className="w-3 h-3 bg-red-400 rounded-full"></span>
+                          <span className="w-3 h-3 bg-yellow-400 rounded-full"></span>
+                          <span className="w-3 h-3 bg-green-400 rounded-full"></span>
                         </div>
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
-                          <div className="inline-block px-3 py-1 bg-white/20 backdrop-blur-sm text-white text-xs rounded-full">
-                            {event.category === "documentation" ? "Documentation" :
-                             event.category === "loans" ? "Loans" : "Financial Planning"}
+                        <div className="text-white/70 text-sm">Prince Group Mega Music Festival</div>
+                      </div>
+                      
+                      <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 mb-4 border border-white/20">
+                        <div className="flex items-center">
+                          <div className="h-10 w-10 rounded-full bg-[#4eb4a7] flex items-center justify-center text-white mr-3">
+                            <CalendarIcon className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <div className="text-white text-sm font-medium">Event Date</div>
+                            <div className="text-white/80 text-lg">December 21, 2025</div>
                           </div>
                         </div>
                       </div>
-                      <div className="p-6">
-                        <h3 className="text-xl font-semibold mb-3">{event.title}</h3>
-                        <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
-
-                        <div className="space-y-3 mb-6">
-                          <div className="flex items-center">
-                            <CalendarCheck className="h-5 w-5 text-ui-blue-500 mr-3 flex-shrink-0" />
-                            <span className="text-gray-600">{event.date}</span>
+                      
+                      <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 mb-4 border border-white/20">
+                        <div className="flex items-center">
+                          <div className="h-10 w-10 rounded-full bg-[#4eb4a7] flex items-center justify-center text-white mr-3">
+                            <MapPin className="h-5 w-5" />
                           </div>
-                          <div className="flex items-center">
-                            <Clock className="h-5 w-5 text-ui-blue-500 mr-3 flex-shrink-0" />
-                            <span className="text-gray-600">{event.time}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <MapPin className="h-5 w-5 text-ui-blue-500 mr-3 flex-shrink-0" />
-                            <span className="text-gray-600">{event.location}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <Users className="h-5 w-5 text-ui-blue-500 mr-3 flex-shrink-0" />
-                            <div className="w-full">
-                              <div className="flex justify-between mb-1">
-                                <span className="text-sm text-gray-600">
-                                  {event.attendees} / {event.capacity} registered
-                                </span>
-                                {event.attendees / event.capacity > 0.8 && (
-                                  <span className="text-sm text-orange-600 font-medium">
-                                    Almost Full!
-                                  </span>
-                                )}
-                              </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div
-                                  className={`h-2 rounded-full ${
-                                    event.attendees / event.capacity > 0.8 ? "bg-orange-500" : "bg-ui-blue-500"
-                                  }`}
-                                  style={{ width: `${(event.attendees / event.capacity) * 100}%` }}
-                                ></div>
-                              </div>
-                            </div>
+                          <div>
+                            <div className="text-white text-sm font-medium">Location</div>
+                            <div className="text-white/80 text-lg">Kanyakumari</div>
                           </div>
                         </div>
-
-                        <Button className="w-full bg-ui-blue-500 hover:bg-ui-blue-600">
-                          Register Now
-                        </Button>
+                      </div>
+                      
+                      <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
+                        <div className="flex items-center">
+                          <div className="h-10 w-10 rounded-full bg-[#4eb4a7] flex items-center justify-center text-white mr-3">
+                            <MusicIcon className="h-5 w-5" />
+                          </div>
+                          <div>
+                            <div className="text-white text-sm font-medium">Chief Guest</div>
+                            <div className="text-white/80 text-lg">Singer & Actor, Vijay Antony</div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              ) : (
-                <div className="space-y-6">
-                  {filteredEvents.map((event) => (
-                    <div
-                      key={event.id}
-                      className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 flex flex-col md:flex-row"
-                    >
-                      <div className="md:w-1/4 h-48 md:h-auto relative">
-                        <img
-                          src={event.image}
-                          alt={event.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute top-0 left-0 bg-ui-blue-500 text-white py-1 px-3 text-sm font-medium">
-                          {event.date}
-                        </div>
-                      </div>
-                      <div className="p-6 md:w-3/4 flex flex-col justify-between">
+              </motion.div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Event Details Section */}
+        <section className="py-24 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <div className="inline-block mb-6">
+                    <div className="bg-[#4eb4a7]/10 text-[#4eb4a7] text-sm font-semibold py-1 px-3 rounded-full">
+                      EVENT DETAILS
+                    </div>
+                  </div>
+                  
+                  <h2 className="text-3xl md:text-5xl font-bold mb-6">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]">
+                      The Ultimate Music Experience
+                    </span>
+                  </h2>
+                  
+                  <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Experience an unforgettable night of music, entertainment, and celebration at the Prince Group Mega Music Festival
+                  </p>
+                </motion.div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {/* Event Overview Card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6 }}
+                  className="col-span-1 md:col-span-2 lg:col-span-1"
+                >
+                  <Card className="h-full overflow-hidden border-[#4eb4a7]/20 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <CardHeader className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white">
+                      <CardTitle className="flex items-center">
+                        <Star className="mr-2 h-5 w-5" />
+                        Event Overview
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                      <div className="space-y-6">
                         <div>
-                          <div className="flex items-center mb-2">
-                            <h3 className="text-xl font-semibold">{event.title}</h3>
-                            <div className="ml-3 px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
-                              {event.category === "documentation" ? "Documentation" :
-                               event.category === "loans" ? "Loans" : "Financial Planning"}
-                            </div>
-                          </div>
-                          <p className="text-gray-600 mb-4">{event.description}</p>
-                          
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
-                            <div className="flex items-center">
-                              <CalendarCheck className="h-5 w-5 text-ui-blue-500 mr-2 flex-shrink-0" />
-                              <span className="text-gray-600">{event.date}</span>
-                            </div>
-                            <div className="flex items-center">
-                              <Clock className="h-5 w-5 text-ui-blue-500 mr-2 flex-shrink-0" />
-                              <span className="text-gray-600">{event.time}</span>
-                            </div>
-                            <div className="flex items-center">
-                              <MapPin className="h-5 w-5 text-ui-blue-500 mr-2 flex-shrink-0" />
-                              <span className="text-gray-600">{event.location}</span>
-                            </div>
+                          <h3 className="text-lg font-semibold text-gray-800 mb-3">Prince Group Mega Music Festival 2025</h3>
+                          <p className="text-gray-600">A spectacular night of music, entertainment, and celebration organized by Prince Group.</p>
+                        </div>
+                        
+                        <div className="flex items-start gap-3">
+                          <CalendarIcon className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
+                          <div>
+                            <h4 className="font-medium text-gray-800">Date</h4>
+                            <p className="text-gray-600">December 21, 2025</p>
                           </div>
                         </div>
                         
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                        <div className="flex items-start gap-3">
+                          <MapPin className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
                           <div>
-                            <div className="text-sm text-gray-600 mb-1">
-                              {event.attendees} / {event.capacity} registered
-                              {event.attendees / event.capacity > 0.8 && (
-                                <span className="ml-2 text-orange-600 font-medium">
-                                  Almost Full!
-                                </span>
-                              )}
-                            </div>
-                            <div className="w-36 bg-gray-200 rounded-full h-2">
-                              <div
-                                className={`h-2 rounded-full ${
-                                  event.attendees / event.capacity > 0.8 ? "bg-orange-500" : "bg-ui-blue-500"
-                                }`}
-                                style={{ width: `${(event.attendees / event.capacity) * 100}%` }}
-                              ></div>
-                            </div>
+                            <h4 className="font-medium text-gray-800">Location</h4>
+                            <p className="text-gray-600">Kanyakumari</p>
                           </div>
-                          <Button className="bg-ui-blue-500 hover:bg-ui-blue-600">Register Now</Button>
+                        </div>
+                        
+                        <div className="flex items-start gap-3">
+                          <Users className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
+                          <div>
+                            <h4 className="font-medium text-gray-800">Organizer</h4>
+                            <p className="text-gray-600">Prince Group (20 branches in Kanyakumari)</p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-start gap-3">
+                          <MusicIcon className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
+                          <div>
+                            <h4 className="font-medium text-gray-800">Chief Guest</h4>
+                            <p className="text-gray-600">Singer & Actor, Vijay Antony</p>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+                
+                {/* Ticket Classes Card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6, delay: 0.1 }}
+                >
+                  <Card className="h-full overflow-hidden border-[#4eb4a7]/20 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <CardHeader className="bg-gradient-to-r from-[#60afb4] to-[#85cbc3] text-white">
+                      <CardTitle className="flex items-center">
+                        <Ticket className="mr-2 h-5 w-5" />
+                        Ticket Classes
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="bg-[#4eb4a7]/5 p-3 rounded-lg border border-[#4eb4a7]/10">
+                          <h3 className="text-[#4eb4a7] font-semibold">Business Class</h3>
+                          <p className="text-sm text-gray-600">Premium experience with celebrity dinner</p>
+                        </div>
+                        
+                        <div className="bg-[#4eb4a7]/5 p-3 rounded-lg border border-[#4eb4a7]/10">
+                          <h3 className="text-[#4eb4a7] font-semibold">Ultra Luxury Class</h3>
+                          <p className="text-sm text-gray-600">Top-tier seating with premium amenities</p>
+                        </div>
+                        
+                        <div className="bg-[#4eb4a7]/5 p-3 rounded-lg border border-[#4eb4a7]/10">
+                          <h3 className="text-[#4eb4a7] font-semibold">Luxury Class</h3>
+                          <p className="text-sm text-gray-600">Superior comfort with great views</p>
+                        </div>
+                        
+                        <div className="bg-[#4eb4a7]/5 p-3 rounded-lg border border-[#4eb4a7]/10">
+                          <h3 className="text-[#4eb4a7] font-semibold">VVIP Class</h3>
+                          <p className="text-sm text-gray-600">Exclusive access with premium seating</p>
+                        </div>
+                        
+                        <div className="bg-[#4eb4a7]/5 p-3 rounded-lg border border-[#4eb4a7]/10">
+                          <h3 className="text-[#4eb4a7] font-semibold">VIP Class</h3>
+                          <p className="text-sm text-gray-600">Enhanced experience with special amenities</p>
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        className="w-full mt-6 bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] hover:from-[#3da296] hover:to-[#4e9da3]"
+                        onClick={() => setIsBookingOpen(true)}
+                      >
+                        Book Tickets
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+                
+                {/* Special Attractions Card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                >
+                  <Card className="h-full overflow-hidden border-[#4eb4a7]/20 shadow-lg hover:shadow-xl transition-all duration-300">
+                    <CardHeader className="bg-gradient-to-r from-[#85cbc3] to-[#4eb4a7] text-white">
+                      <CardTitle className="flex items-center">
+                        <Sparkles className="mr-2 h-5 w-5" />
+                        Special Attractions
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
+                            <Flame className="h-4 w-4" />
+                          </div>
+                          <p className="text-gray-600">Helicopter Ride</p>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
+                            <PartyPopper className="h-4 w-4" />
+                          </div>
+                          <p className="text-gray-600">Theme Park Area</p>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
+                            <Gift className="h-4 w-4" />
+                          </div>
+                          <p className="text-gray-600">Water Games</p>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
+                            <Trophy className="h-4 w-4" />
+                          </div>
+                          <p className="text-gray-600">Petting Zoo</p>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
+                            <Utensils className="h-4 w-4" />
+                          </div>
+                          <p className="text-gray-600">Food Court with Exotic and Local Cuisines</p>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
+                            <Gift className="h-4 w-4" />
+                          </div>
+                          <p className="text-gray-600">Toys Store</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* Ticket Booking Dialog */}
+        <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
+          <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden">
+            <div className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] py-6 px-6">
+              <DialogTitle className="text-white text-2xl font-bold flex items-center gap-2">
+                <Ticket className="h-6 w-6" />
+                Book Your Festival Tickets
+              </DialogTitle>
+              <DialogDescription className="text-white/80">
+                Select your preferred ticket class and quantity
+              </DialogDescription>
+            </div>
+            
+            <div className="p-6">
+              <div className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="ticketCategory" className="text-gray-700">Select Ticket Class</Label>
+                  <Select
+                    value={ticketCategory}
+                    onValueChange={setTicketCategory}
+                  >
+                    <SelectTrigger id="ticketCategory" className="w-full">
+                      <SelectValue placeholder="Select a ticket class" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ticketClasses.map((ticket) => (
+                        <SelectItem key={ticket.id} value={ticket.id}>
+                          <span className="font-medium">{ticket.name}</span>
+                          <span className="ml-2 text-gray-500">({formatPrice(ticket.price)})</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {ticketCategory && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="ticketQuantity" className="text-gray-700">Number of Tickets</Label>
+                      <div className="flex items-center">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={decreaseQuantity}
+                          disabled={ticketQuantity <= 1}
+                          className="rounded-r-none"
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <Input
+                          id="ticketQuantity"
+                          type="number"
+                          min="1"
+                          max="10"
+                          value={ticketQuantity}
+                          onChange={(e) => setTicketQuantity(parseInt(e.target.value) || 1)}
+                          className="w-16 text-center rounded-none"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon"
+                          onClick={increaseQuantity}
+                          disabled={ticketQuantity >= 10}
+                          className="rounded-l-none"
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-gray-600">Ticket Price:</span>
+                        <span className="font-medium">
+                          {formatPrice(ticketClasses.find(t => t.id === ticketCategory)?.price || 0)} x {ticketQuantity}
+                        </span>
+                      </div>
+                      
+                      <div className="border-t border-gray-200 my-2 pt-2">
+                        <div className="flex justify-between items-center font-bold">
+                          <span>Total Amount:</span>
+                          <span className="text-[#4eb4a7] text-xl">{formatPrice(totalPrice)}</span>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
-
-              {filteredEvents.length > 0 && (
-                <div className="mt-12 text-center">
-                  <Button variant="outline" size="lg">
-                    Load More Events
-                  </Button>
-                </div>
-              )}
-            </div>
-
-            <div className="bg-white rounded-xl shadow-md p-8 border border-gray-100">
-              <h2 className="text-2xl font-bold mb-6">Host Your Own Event</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                  <p className="text-gray-600 mb-4">
-                    Are you interested in hosting an event at one of our branches? We offer our facilities for community-focused workshops, seminars, and networking events.
-                  </p>
-                  <ul className="space-y-3 mb-6">
-                    <li className="flex items-start">
-                      <div className="bg-ui-blue-100 p-1 rounded-full mr-2 mt-1">
-                        <Check className="h-4 w-4 text-ui-blue-600" />
-                      </div>
-                      <span>Modern facilities with audiovisual equipment</span>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="bg-ui-blue-100 p-1 rounded-full mr-2 mt-1">
-                        <Check className="h-4 w-4 text-ui-blue-600" />
-                      </div>
-                      <span>Centrally located branches across the district</span>
-                    </li>
-                    <li className="flex items-start">
-                      <div className="bg-ui-blue-100 p-1 rounded-full mr-2 mt-1">
-                        <Check className="h-4 w-4 text-ui-blue-600" />
-                      </div>
-                      <span>Support staff available to assist with setup</span>
-                    </li>
-                  </ul>
-                  <Button asChild className="bg-ui-blue-500 hover:bg-ui-blue-600">
-                    <a href="/contact">Contact Us About Hosting</a>
-                  </Button>
-                </div>
-                <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
-                  <p className="text-gray-600">Event Space Image</p>
-                </div>
+                    
+                    <div className="bg-[#4eb4a7]/5 p-4 rounded-lg border border-[#4eb4a7]/10">
+                      <h3 className="flex items-center text-[#4eb4a7] font-semibold mb-2">
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        Ticket Benefits
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-2">
+                        {ticketClasses.find(t => t.id === ticketCategory)?.description}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        All tickets include entry to the festival and access to general areas.
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
+            </div>
+            
+            <DialogFooter className="bg-gray-50 p-6">
+              <Button
+                variant="outline"
+                onClick={() => setIsBookingOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] hover:from-[#3da296] hover:to-[#4e9da3]"
+                disabled={!ticketCategory}
+              >
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                Proceed to Payment
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Event Layout Section */}
+        <section className="py-24 bg-gradient-to-br from-[#f8fdfc] to-[#f0faf9]">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <div className="inline-block mb-6">
+                    <div className="bg-[#4eb4a7]/10 text-[#4eb4a7] text-sm font-semibold py-1 px-3 rounded-full">
+                      EVENT LAYOUT
+                    </div>
+                  </div>
+                  
+                  <h2 className="text-3xl md:text-5xl font-bold mb-6">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]">
+                      Festival Layout & Experience
+                    </span>
+                  </h2>
+                  
+                  <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                    View our carefully designed festival layout with dedicated zones for all attendees
+                  </p>
+                </motion.div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6 }}
+                  className="relative"
+                >
+                  <div className="relative bg-white p-6 rounded-2xl shadow-xl overflow-hidden border border-[#4eb4a7]/10">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]"></div>
+                    <div className="aspect-[16/10] bg-gradient-to-br from-[#4eb4a7]/10 to-[#60afb4]/5 rounded-lg overflow-hidden">
+                      {/* This would be replaced with an actual event layout image */}
+                      <div className="w-full h-full flex items-center justify-center">
+                        <div className="text-[#4eb4a7] font-medium">Festival Layout Diagram</div>
+                      </div>
+                    </div>
+                    <div className="mt-6 grid grid-cols-2 gap-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-[#4eb4a7] rounded-sm"></div>
+                        <span className="text-sm text-gray-600">Stage Area</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-[#85cbc3] rounded-sm"></div>
+                        <span className="text-sm text-gray-600">VIP Seating</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-[#60afb4] rounded-sm"></div>
+                        <span className="text-sm text-gray-600">Business Class</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-[#4eb4a7]/40 rounded-sm"></div>
+                        <span className="text-sm text-gray-600">Luxury Class</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-[#85cbc3]/40 rounded-sm"></div>
+                        <span className="text-sm text-gray-600">Theme Park</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-[#60afb4]/40 rounded-sm"></div>
+                        <span className="text-sm text-gray-600">Food Court</span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.6, delay: 0.2 }}
+                  className="space-y-6"
+                >
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-800 mb-4">Experience the Perfect Setup</h3>
+                    <p className="text-gray-600">
+                      Our festival layout is meticulously designed to provide the best experience for all attendees.
+                      With dedicated areas for different ticket classes, attractions, and amenities, you'll enjoy
+                      a seamless and unforgettable experience.
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="bg-white p-4 rounded-lg shadow-md border border-[#4eb4a7]/10">
+                      <h4 className="font-semibold text-[#4eb4a7] mb-2">300+ Stalls</h4>
+                      <p className="text-gray-600 text-sm">Browse through over 300 stalls offering a wide range of products and services.</p>
+                    </div>
+                    
+                    <div className="bg-white p-4 rounded-lg shadow-md border border-[#4eb4a7]/10">
+                      <h4 className="font-semibold text-[#4eb4a7] mb-2">30,000 sq. ft Area</h4>
+                      <p className="text-gray-600 text-sm">A massive venue with ample space for all activities and entertainment.</p>
+                    </div>
+                    
+                    <div className="bg-white p-4 rounded-lg shadow-md border border-[#4eb4a7]/10">
+                      <h4 className="font-semibold text-[#4eb4a7] mb-2">Helicopter Ride Experience</h4>
+                      <p className="text-gray-600 text-sm">Take to the skies with our exclusive helicopter ride experience for pre-booked ticket holders.</p>
+                    </div>
+                  </div>
+                  
+                  <Button 
+                    size="lg" 
+                    className="w-full bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] hover:from-[#3da296] hover:to-[#4e9da3] mt-4"
+                    onClick={() => setIsBookingOpen(true)}
+                  >
+                    <Ticket className="mr-2 h-5 w-5" />
+                    Book Your Tickets Now
+                  </Button>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        {/* CTA Section */}
+        <section className="py-20 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]"></div>
+          
+          {/* Decorative Elements */}
+          <div className="absolute inset-0 pointer-events-none">
+            <motion.div 
+              className="absolute -top-20 -right-20 w-80 h-80 bg-white/5 rounded-full"
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 10, 0]
+              }}
+              transition={{ 
+                duration: 10, 
+                repeat: Infinity,
+                repeatType: "reverse" 
+              }}
+            />
+            <motion.div 
+              className="absolute -bottom-40 -left-40 w-96 h-96 bg-white/5 rounded-full"
+              animate={{ 
+                scale: [1, 1.15, 1],
+                rotate: [0, -10, 0]
+              }}
+              transition={{ 
+                duration: 12, 
+                repeat: Infinity,
+                repeatType: "reverse",
+                delay: 1
+              }}
+            />
+          </div>
+          
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="max-w-4xl mx-auto text-center">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+              >
+                <h2 className="text-3xl md:text-5xl font-bold mb-6 text-white">
+                  Don't Miss the Biggest Music Event of 2025
+                </h2>
+                <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
+                  Book your tickets now to secure your spot at the Prince Group Mega Music Festival.
+                  Limited tickets available!
+                </p>
+                
+                <div className="flex flex-wrap justify-center gap-6">
+                  <Button 
+                    size="lg" 
+                    className="bg-white text-[#4eb4a7] hover:bg-gray-100 shadow-xl hover:shadow-2xl transition-all px-8 py-6 rounded-full"
+                    onClick={() => setIsBookingOpen(true)}
+                  >
+                    <Ticket className="mr-2 h-5 w-5" />
+                    Book Your Tickets
+                  </Button>
+                </div>
+                
+                <div className="mt-16 flex flex-wrap justify-center gap-8">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center text-white">
+                      <CalendarIcon className="h-6 w-6" />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-white/70 text-sm">Date</div>
+                      <div className="text-white font-medium">December 21, 2025</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center text-white">
+                      <Clock className="h-6 w-6" />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-white/70 text-sm">Time</div>
+                      <div className="text-white font-medium">9:00 AM - 10:00 PM</div>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center text-white">
+                      <MapPin className="h-6 w-6" />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-white/70 text-sm">Location</div>
+                      <div className="text-white font-medium">Kanyakumari</div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
         </section>
       </main>
-      <Footer />
+      <MainFooter />
     </div>
   );
 };

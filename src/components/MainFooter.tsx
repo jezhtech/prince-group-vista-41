@@ -278,7 +278,7 @@ const MainFooter = () => {
                     <MapPin size={14} className="text-white" />
                   </div>
                   <span className="text-white/80 text-sm">
-                  Sri Sai Complex, Court Road, Vepamoodu Junction, Nagercoil, Tamil Nadu, India - 629001
+                  Thingal Nager, Nagercoil, Tamil Nadu, India - 629001
                 </span>
               </li>
               <li className="flex items-center">

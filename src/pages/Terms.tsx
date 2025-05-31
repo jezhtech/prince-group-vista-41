@@ -1,4 +1,3 @@
-
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -79,7 +78,7 @@ const Terms = () => {
                 <p>
                   If you have questions about these Terms, please contact us at:<br />
                   Prince Group<br />
-                  Sri Sai Complex, Court Road<br />
+                  Thingal Nager<br />
                   Vepamoodu Junction, Nagercoil<br />
                   Tamil Nadu, India - 629001<br />
                   Phone: 9150537718, 9385722102<br />

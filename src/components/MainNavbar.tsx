@@ -218,7 +218,7 @@ const MainNavbar = () => {
                     asChild 
                     className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300"
                   >
-                    <Link to="/contact">Get Started</Link>
+                    <Link to="/contact">Contact Us</Link>
                 </Button>
                 </motion.div>
               </motion.div>
@@ -285,7 +285,7 @@ const MainNavbar = () => {
                   </Link>
                 </Button>
                     <Button asChild className="w-full bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] rounded-full">
-                      <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
+                      <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
                 </Button>
               </div>
             </div>

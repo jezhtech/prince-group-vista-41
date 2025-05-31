@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
 import Logo from './Logo';
@@ -94,7 +93,7 @@ const Footer = () => {
               <li className="flex items-start">
                 <MapPin className="h-5 w-5 text-prince-accent mr-3 mt-1" />
                 <span className="text-gray-300">
-                  Sri Sai Complex, Court Road, Vepamoodu Junction, Nagercoil, Tamil Nadu, India - 629001
+                  Thingal Nager, Nagercoil, Tamil Nadu, India - 629001
                 </span>
               </li>
               <li className="flex items-center">
