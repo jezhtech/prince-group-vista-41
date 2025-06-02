@@ -3,6 +3,7 @@ import { Facebook, Instagram, Twitter, Mail, Phone, MapPin, ArrowRight, Heart, C
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Logo from './Logo';
+import FooterLogo from './footer-logo';
 
 const MainFooter = () => {
   const year = new Date().getFullYear();
@@ -107,10 +108,10 @@ const MainFooter = () => {
       </div>
 
       {/* Footer Content */}
-      <div className="bg-[#4eb4a7] pt-8 pb-12">
+      <div className="bg-[#4eb4a7] pt-6 pb-8">
         <div className="container mx-auto px-4">
           {/* Upper Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 mb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 mb-8">
             {/* Company Info */}
             <div className="lg:col-span-2">
               <motion.div 
@@ -120,7 +121,7 @@ const MainFooter = () => {
                 transition={{ duration: 0.5 }}
                 className="mb-8"
               >
-              <Logo />
+              <FooterLogo />
               </motion.div>
               
               <motion.p 
@@ -141,15 +142,24 @@ const MainFooter = () => {
                 className="flex items-center gap-2 mb-8"
               >
                 <div className="flex -space-x-3">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="w-10 h-10 rounded-full border-2 border-[#4eb4a7] bg-white flex items-center justify-center text-[#4eb4a7] font-bold text-xs">
-                      P{i}
+                  {[
+                    "/customer/1719583921449.jpeg",
+                    "/customer/1702451425744.jpeg",
+                    "/customer/1708925911487.jpeg",
+                    "/customer/1723221762842.jpeg"
+                  ].map((image, i) => (
+                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white overflow-hidden">
+                      <img 
+                        src={image} 
+                        alt={`Customer ${i+1}`} 
+                        className="w-full h-full object-cover transform scale-125"
+                      />
                     </div>
                   ))}
                 </div>
                 <div className="ml-2 text-white/90 text-sm">
-                  <span className="font-bold text-white">5000+</span> Happy Customers
-            </div>
+                  <span className="font-bold text-white">30000+</span> Happy Customers
+                </div>
               </motion.div>
               
               <motion.div 
@@ -278,7 +288,7 @@ const MainFooter = () => {
                     <MapPin size={14} className="text-white" />
                   </div>
                   <span className="text-white/80 text-sm">
-                  Thingal Nager, Nagercoil, Tamil Nadu, India - 629001
+                  Anbu Complex, Opposite to Bharathi Hospital, Thingal Nagar
                 </span>
               </li>
               <li className="flex items-center">
@@ -301,34 +311,6 @@ const MainFooter = () => {
               </motion.ul>
             </div>
           </div>
-
-          {/* Subscribe Box */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="bg-white/20 backdrop-blur-sm p-8 rounded-2xl mb-16 border border-white/20 shadow-xl"
-          >
-            <div className="grid md:grid-cols-3 gap-8 items-center">
-              <div className="md:col-span-2">
-                <h3 className="text-2xl font-bold mb-2 text-white">Join Our Newsletter</h3>
-                <p className="text-white/80">Stay updated with the latest services and offers from Prince Group</p>
-              </div>
-              <div>
-                <div className="flex gap-2">
-                  <input 
-                    type="email" 
-                    placeholder="Your email" 
-                    className="bg-white/30 text-white placeholder:text-white/70 rounded-lg px-4 py-2 flex-grow focus:outline-none focus:ring-2 focus:ring-white border border-white/30"
-                  />
-                  <Button className="bg-white hover:bg-white/90 text-[#4eb4a7]">
-                    <ArrowRight size={18} />
-                  </Button>
-                </div>
-          </div>
-        </div>
-          </motion.div>
 
           {/* Footer Bottom */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-t border-white/20 pt-8">

@@ -253,16 +253,16 @@ const Branches = () => {
         </section>
 
         {/* Interactive Branch Network Visualization */}
-        <section className="py-16 bg-white relative">
+        <section className="pt-12 pb-20 bg-white relative">
           <div className="container mx-auto px-4">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
-              className="max-w-6xl mx-auto relative"
+              className="max-w-7xl mx-auto relative"
               ref={containerRef}
             >
-              <div className="relative h-[500px] md:h-[600px] bg-gradient-to-br from-[#f9fffd] to-[#f0faf8] rounded-3xl shadow-lg overflow-hidden border border-[#4eb4a7]/10">
+              <div className="relative h-[600px] md:h-[700px] bg-gradient-to-br from-[#f9fffd] to-[#f0faf8] rounded-3xl shadow-lg overflow-hidden border border-[#4eb4a7]/10 my-4">
                 {/* Background Map Elements */}
                 <div className="absolute inset-0">
                   <motion.div
@@ -322,7 +322,7 @@ const Branches = () => {
                     {branchData.map((branch, index) => {
                       // Calculate position on a circle around the center
                       const angle = (index * (2 * Math.PI / branchData.length));
-                      const radius = Math.min(containerRef.current?.clientWidth || 600, containerRef.current?.clientHeight || 600) * 0.38;
+                      const radius = Math.min(containerRef.current?.clientWidth || 600, containerRef.current?.clientHeight || 600) * 0.42;
                       const x = Math.cos(angle) * radius;
                       const y = Math.sin(angle) * radius;
                       
@@ -371,15 +371,15 @@ const Branches = () => {
                             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
                             animate={{ 
                               scale: hoveredBranch === branch.id || selectedBranch === branch.id ? 1.1 : 1,
-                              zIndex: hoveredBranch === branch.id || selectedBranch === branch.id ? 30 : 10
+                              zIndex: hoveredBranch === branch.id || selectedBranch === branch.id ? 45 : 10
                             }}
                           >
-                            <div className={`flex items-center justify-center w-12 h-12 rounded-full ${
+                            <div className={`flex items-center justify-center w-14 h-14 rounded-full ${
                               hoveredBranch === branch.id || selectedBranch === branch.id 
                                 ? 'bg-gradient-to-br from-[#4eb4a7] to-[#60afb4] text-white' 
                                 : 'bg-white text-[#4eb4a7] border border-[#4eb4a7]/20'
                             } shadow-md transition-all duration-300`}>
-                              <MapPin className="h-6 w-6" />
+                              <MapPin className="h-7 w-7" />
                             </div>
                             
                             {/* Animated Pulse Effect */}
@@ -398,6 +398,11 @@ const Branches = () => {
                               }}
                             />
                             
+                            {/* Branch name label */}
+                            <div className="absolute whitespace-nowrap -mt-1 top-full left-1/2 transform -translate-x-1/2 pt-3 text-xs font-medium text-gray-700 bg-white/80 px-2 py-0.5 rounded-full shadow-sm">
+                              {branch.name.replace(' Branch', '')}
+                            </div>
+                            
                             {/* Branch Info Popup */}
                             <AnimatePresence>
                               {(hoveredBranch === branch.id || selectedBranch === branch.id) && (
@@ -406,7 +411,7 @@ const Branches = () => {
                                   animate={{ opacity: 1, y: 0, scale: 1 }}
                                   exit={{ opacity: 0, y: isBottomHalf ? -10 : 10, scale: 0.9 }}
                                   transition={{ duration: 0.2 }}
-                                  className={`absolute ${isBottomHalf ? 'bottom-full mb-4' : 'top-full mt-4'} left-1/2 transform -translate-x-1/2 bg-white rounded-xl shadow-xl p-4 w-60 z-40`}
+                                  className={`absolute ${isBottomHalf ? 'bottom-full mb-10' : 'top-full mt-10'} left-1/2 transform -translate-x-1/2 bg-white rounded-xl shadow-xl p-4 w-60 z-50`}
                                   onClick={(e) => e.stopPropagation()}
                                 >
                                   <div className="relative">
@@ -453,22 +458,6 @@ const Branches = () => {
                       );
                     })}
                   </div>
-                </div>
-                
-                {/* Interactive instructions */}
-                <div className="absolute bottom-4 left-0 right-0 text-center">
-                  <motion.p 
-                    className="text-sm text-gray-500 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full inline-block shadow-sm"
-                    animate={{ y: [0, 5, 0] }}
-                    transition={{ 
-                      duration: 2,
-                      repeat: Infinity,
-                      repeatType: "loop",
-                      ease: "easeInOut"
-                    }}
-                  >
-                    Hover or click on a branch for details
-                  </motion.p>
                 </div>
             </div>
             </motion.div>
@@ -534,7 +523,7 @@ const Branches = () => {
                         <div className="relative">
                           <div className="flex items-start gap-4">
                             <div className="p-3 rounded-xl bg-gradient-to-br from-[#4eb4a7]/10 to-[#85cbc3]/20 text-[#4eb4a7] group-hover:from-[#4eb4a7] group-hover:to-[#60afb4] group-hover:text-white transition-all duration-300">
-                              <MapPin className="h-6 w-6" />
+                              <MapPin className="h-7 w-7" />
                               </div>
                             
                             <div className="flex-1">

@@ -39,7 +39,7 @@ const MainNavbar = () => {
       title: "Documentation Services",
       description: "Quick & reliable document processing",
       icon: <FileText className="w-8 h-8" />,
-      stats: "7807+ Documents Processed"
+      stats: "33500+ Documents Processed"
     },
     loans: {
       title: "Loan Services", 

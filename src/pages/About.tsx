@@ -749,7 +749,7 @@ const About = () => {
             </div>
 
                           <div className="text-center">
-                            <div className="font-semibold text-[#4eb4a7]">7807+</div>
+                            <div className="font-semibold text-[#4eb4a7]">33500+</div>
                             <div className="bg-[#4eb4a7] w-full rounded-t-md mt-2" style={{ height: "152px" }}></div>
                             <div className="text-xs text-gray-500 mt-2">2024-25</div>
                           </div>

@@ -19,7 +19,7 @@ const DocumentationServices = () => {
     {
       id: "property",
       title: "Property Documents",
-      icon: <FileCheck className="w-6 h-6" />,
+      icon: <FileCheck className="w-6 h-6 text-[#4eb4a7]" />,
       documents: [
         "Sale Deed", 
         "Power of Attorney", 
@@ -143,7 +143,7 @@ const DocumentationServices = () => {
               >
                 <div className="inline-flex items-center gap-2 bg-[#4eb4a7]/10 px-4 py-2 rounded-full mb-6">
                   <Sparkles className="w-4 h-4 text-[#4eb4a7]" />
-                  <span className="text-sm font-medium text-[#4eb4a7]">7807+ Documents Processed</span>
+                  <span className="text-sm font-medium text-[#4eb4a7]">33500+ Documents Processed</span>
                 </div>
 
                 <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold mb-6">
@@ -183,7 +183,7 @@ const DocumentationServices = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <div className="text-2xl font-bold text-[#4eb4a7]">15+</div>
+                    <div className="text-2xl font-bold text-[#4eb4a7]">8+</div>
                     <div className="text-sm text-gray-600">Years Experience</div>
                   </motion.div>
                   <motion.div 
@@ -429,7 +429,7 @@ const DocumentationServices = () => {
           <div className="container mx-auto px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                <div className="text-3xl font-bold text-[#4eb4a7] mb-2">7807+</div>
+                <div className="text-3xl font-bold text-[#4eb4a7] mb-2">33500+</div>
                 <div className="text-gray-600">Documents Processed</div>
               </div>
               <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
@@ -437,7 +437,7 @@ const DocumentationServices = () => {
                 <div className="text-gray-600">Customer Satisfaction</div>
               </div>
               <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                <div className="text-3xl font-bold text-[#4eb4a7] mb-2">15+</div>
+                <div className="text-3xl font-bold text-[#4eb4a7] mb-2">8+</div>
                 <div className="text-gray-600">Years of Experience</div>
               </div>
               <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
@@ -671,7 +671,7 @@ const DocumentationServices = () => {
                   isPopular: false,
                   features: [
                     "Basic document processing",
-                    "5-7 business days turnaround",
+                    "1-3 business days turnaround",
                     "Email support",
                     "Standard verification"
                   ]
@@ -682,7 +682,7 @@ const DocumentationServices = () => {
                   isPopular: true,
                   features: [
                     "Priority document processing",
-                    "3-5 business days turnaround",
+                    "Same day processing",
                     "Phone & email support",
                     "Enhanced verification",
                     "Document pickup & delivery"
@@ -748,7 +748,7 @@ const DocumentationServices = () => {
                   },
                   {
                     question: "How long does the documentation process take?",
-                    answer: "The processing time varies depending on the type of document and the service package you choose. Standard processing takes 5-7 business days, Premium is 3-5 business days, and VIP service can be completed in 1-2 business days."
+                    answer: "The processing time varies depending on the type of document. Property registration can be completed in 1 day, and legal documentation typically takes 1-3 days. For other services, processing times may vary based on complexity and requirements."
                   },
                   {
                     question: "Do you provide document pickup and delivery services?",

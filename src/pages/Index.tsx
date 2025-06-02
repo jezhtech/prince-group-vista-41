@@ -35,6 +35,16 @@ import {
 } from "lucide-react";
 
 const Index = () => {
+  // Define TypeScript type for feature animation
+  type FeatureAnimation = {
+    type: 'pulse' | 'bounce' | 'spin' | 'ping';
+    scale?: number[];
+    y?: number[];
+    rotate?: number[];
+    opacity?: number[];
+    duration: number;
+  };
+
   const [isVisible, setIsVisible] = useState(false);
   const [selectedService, setSelectedService] = useState<'documentation' | 'loans'>('documentation');
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null);
@@ -67,7 +77,7 @@ const Index = () => {
         { icon: <Briefcase className="w-5 h-5" />, text: "Business Permits" },
         { icon: <GraduationCap className="w-5 h-5" />, text: "Educational Certificates" }
       ],
-      stats: { value: "7807+", label: "Documents Processed" },
+      stats: { value: "33500+", label: "Documents Processed" },
       color: "from-[#4eb4a7] to-[#60afb4]"
     },
     loans: {
@@ -149,7 +159,7 @@ const Index = () => {
                   <span className="text-sm font-medium text-gray-700">Trusted by 30000+ Customers</span>
                 </motion.div>
 
-                <h1 className="text-4xl lg:text-3xl font-bold text-gray-900 mb-6">Document & Loan Solutions in Kanyakumari</h1>
+                <h1 className="text-4xl lg:text-4xl font-bold text-gray-900 mb-6">Document, Loan & Revenue Services in Kanyakumari</h1>
                  
                   <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 mb-6"><span className="block mt-2 bg-gradient-to-r from-[#4eb4a7] to-[#85cbc3] bg-clip-text text-transparent">
                     {selectedService === 'documentation' ? 'Trusted Documentation Services' : 'Reliable Financial Solutions'}
@@ -311,14 +321,14 @@ const Index = () => {
                                   <FileCheck className="w-6 h-6 text-[#4eb4a7]" />
                                   <span className="font-medium">Property Registration</span>
                   </div>
-                                <span className="text-sm text-gray-500">3-5 days</span>
+                                <span className="text-sm text-gray-500">1 day</span>
                 </div>
                               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                 <div className="flex items-center gap-3">
                                   <Shield className="w-6 h-6 text-[#4eb4a7]" />
                                   <span className="font-medium">Legal Documents</span>
                                 </div>
-                                <span className="text-sm text-gray-500">2-3 days</span>
+                                <span className="text-sm text-gray-500">1-3 days</span>
                               </div>
                               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                                 <div className="flex items-center gap-3">
@@ -476,7 +486,7 @@ const Index = () => {
                 <span className="bg-gradient-to-r from-[#4eb4a7] to-[#85cbc3] bg-clip-text text-transparent"> Documentation Excellence</span>
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Since 2018, Prince Group has become the most trusted name in Kanyakumari District for document registration and loan services, with over 7,800+ successful document registrations and ₹40 crore in loan disbursements.
+                Since 2018, Prince Group has become the most trusted name in Kanyakumari District for document registration and loan services, with over 33,500+ successful document registrations and ₹40 crore in loan disbursements.
               </p>
             </motion.div>
 
@@ -486,10 +496,15 @@ const Index = () => {
                 {
                   icon: <Users className="h-8 w-8" />,
                   squareIcon: <Heart className="h-5 w-5" />,
-                  title: "5000+ Happy Customers",
+                  title: "30000+ Happy Customers",
                   description: "Trusted by thousands across Kanyakumari for reliable document processing and loan services",
                   color: "from-[#4eb4a7] to-[#60afb4]",
                   delay: 0,
+                  animation: {
+                    type: "pulse",
+                    scale: [1, 1.2, 1],
+                    duration: 1.5
+                  }
                 },
                 {
                   icon: <MapPin className="h-8 w-8" />,
@@ -498,6 +513,11 @@ const Index = () => {
                   description: "Extensive coverage with convenient branches throughout Kanyakumari District for easy document registration",
                   color: "from-[#60afb4] to-[#85cbc3]",
                   delay: 0.1,
+                  animation: {
+                    type: "bounce",
+                    y: [0, -3, 0],
+                    duration: 1.5
+                  }
                 },
                 {
                   icon: <Clock className="h-8 w-8" />,
@@ -506,6 +526,11 @@ const Index = () => {
                   description: "Fast document registration and loan approvals with efficient same-day processing systems",
                   color: "from-[#85cbc3] to-[#4eb4a7]",
                   delay: 0.2,
+                  animation: {
+                    type: "spin",
+                    rotate: [0, 360],
+                    duration: 4
+                  }
                 },
                 {
                   icon: <Shield className="h-8 w-8" />,
@@ -514,6 +539,12 @@ const Index = () => {
                   description: "Government authorized documentation services with complete legal compliance and transparency",
                   color: "from-[#4eb4a7] to-[#85cbc3]",
                   delay: 0.3,
+                  animation: {
+                    type: "ping",
+                    opacity: [0.7, 1, 0.7],
+                    scale: [1, 1.1, 1],
+                    duration: 1.5
+                  }
                 },
               ].map((feature, index) => (
                 <motion.div
@@ -536,9 +567,38 @@ const Index = () => {
                   </div>
                       </div>
                       {/* Small Icon Square */}
-                      <div className="absolute -right-2 -bottom-2 w-8 h-8 rounded-lg bg-gradient-to-br from-[#4eb4a7] to-[#85cbc3] flex items-center justify-center text-white shadow-md">
-                        {feature.squareIcon}
-                      </div>
+                      <motion.div 
+                        className="absolute -right-2 -bottom-2 w-8 h-8 rounded-lg bg-gradient-to-br from-[#4eb4a7] to-[#85cbc3] flex items-center justify-center text-white shadow-md"
+                        animate={
+                          feature.animation?.type === "pulse" ? { boxShadow: ["0 4px 6px rgba(78, 180, 167, 0.3)", "0 8px 15px rgba(78, 180, 167, 0.6)", "0 4px 6px rgba(78, 180, 167, 0.3)"] } :
+                          feature.animation?.type === "bounce" ? { y: [0, -5, 0], boxShadow: ["0 4px 6px rgba(78, 180, 167, 0.3)", "0 8px 15px rgba(78, 180, 167, 0.5)", "0 4px 6px rgba(78, 180, 167, 0.3)"] } :
+                          feature.animation?.type === "spin" ? { rotate: [0, 45, 0], borderRadius: ["0.5rem", "1rem", "0.5rem"] } :
+                          feature.animation?.type === "ping" ? { scale: [1, 1.1, 1], boxShadow: ["0 0 0 0 rgba(78, 180, 167, 0)", "0 0 0 8px rgba(78, 180, 167, 0.3)", "0 0 0 0 rgba(78, 180, 167, 0)"] } :
+                          {}
+                        }
+                        transition={{ 
+                          duration: (feature.animation?.duration || 1.5) * 1.5, 
+                          repeat: Infinity,
+                          ease: "easeInOut" 
+                        }}
+                      >
+                        <motion.div
+                          animate={
+                            feature.animation?.type === "pulse" ? { scale: feature.animation.scale } :
+                            feature.animation?.type === "bounce" ? { y: feature.animation.y } :
+                            feature.animation?.type === "spin" ? { rotate: feature.animation.rotate } :
+                            feature.animation?.type === "ping" ? { opacity: feature.animation.opacity, scale: feature.animation.scale } :
+                            {}
+                          }
+                          transition={{ 
+                            duration: feature.animation?.duration || 1.5, 
+                            repeat: Infinity,
+                            ease: "easeInOut" 
+                          }}
+                        >
+                          {feature.squareIcon}
+                        </motion.div>
+                      </motion.div>
                     </div>
                     
                     <h3 className="text-xl font-bold mb-2 text-gray-800 group-hover:text-[#4eb4a7] transition-colors">
@@ -569,8 +629,8 @@ const Index = () => {
             >
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-white text-center">
                 {[
-                  { value: "15+", label: "Years in Kanyakumari" },
-                  { value: "7807+", label: "Documents Processed" },
+                  { value: "8+", label: "Years in Kanyakumari" },
+                  { value: "33500+", label: "Documents Processed" },
                   { value: "40crore +", label: "Loans Disbursed" },
                   { value: "98%", label: "Customer Satisfaction" }
                 ].map((stat, index) => (
@@ -610,7 +670,7 @@ const Index = () => {
                 <span className="text-sm font-bold text-[#4eb4a7] uppercase tracking-wide">Our Services</span>
               </div>
               <h2 className="text-4xl md:text-5xl font-bold mb-6">
-                Premier Documentation & Loan Services in
+                Premier Documentation, Loan & Revenue Services in
                 <span className="bg-gradient-to-r from-[#4eb4a7] to-[#85cbc3] bg-clip-text text-transparent"> Kanyakumari</span>
               </h2>
               <p className="text-lg text-gray-600">
@@ -630,7 +690,7 @@ const Index = () => {
                     "Business & Partnership Agreements",
                     "Educational Certificates & Affidavits"
                   ],
-                  stats: { label: "Documents Processed", value: "7807+" },
+                  stats: { label: "Documents Processed", value: "33500+" },
                   image: "/lovable-uploads/43081f16-3e26-46ee-bec6-e85ef9aadbbc.png",
                   gradient: "from-[#4eb4a7] to-[#60afb4]",
                   path: "/services",
@@ -919,7 +979,7 @@ const Index = () => {
                 >
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                   <div>
-                    <div className="text-3xl font-bold mb-1">5000+</div>
+                    <div className="text-3xl font-bold mb-1">30000+</div>
                     <div className="text-sm opacity-90">Happy Customers</div>
                   </div>
                   <div>
@@ -931,7 +991,7 @@ const Index = () => {
                     <div className="text-sm opacity-90">Satisfaction Rate</div>
                       </div>
                   <div>
-                    <div className="text-3xl font-bold mb-1">15+</div>
+                    <div className="text-3xl font-bold mb-1">8+</div>
                     <div className="text-sm opacity-90">Years of Trust</div>
                     </div>
                   </div>
@@ -1212,7 +1272,7 @@ const Index = () => {
                   <span className="bg-gradient-to-r from-[#4eb4a7] to-[#85cbc3] bg-clip-text text-transparent"> Documentation Company</span>
                 </h2>
                 <p className="text-lg text-gray-600 mb-8">
-                  Since 2018, Prince Group has become the most trusted name in Kanyakumari District for document registration and loan services, with over 7,800+ successful document registrations and ₹40 crore in loan disbursements.
+                  Since 2018, Prince Group has become the most trusted name in Kanyakumari District for document registration and loan services, with over 33,500+ successful document registrations and ₹40 crore in loan disbursements.
                 </p>
 
                 {/* Trust Features Grid */}
@@ -1320,7 +1380,7 @@ const Index = () => {
                     <div className="bg-white rounded-full p-8 shadow-[0_10px_25px_-5px_rgba(78,180,167,0.3)] backdrop-blur-sm">
                       <div className="text-center">
                         <div className="text-5xl font-bold bg-gradient-to-r from-[#4eb4a7] to-[#85cbc3] bg-clip-text text-transparent mb-1">
-                          15+
+                          8+
                         </div>
                         <div className="text-sm text-gray-600 font-medium">Years in Kanyakumari</div>
                       </div>
@@ -1506,7 +1566,7 @@ const Index = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.7, delay: 0.1 }}
                 >
-                  Register for Document & Loan Services in Kanyakumari
+                  Register for Document, Loan & Revenue Services in Kanyakumari
                 </motion.h2>
                 <motion.p 
                   className="text-xl text-white/80 mb-10 max-w-3xl mx-auto"
@@ -1515,7 +1575,7 @@ const Index = () => {
                   viewport={{ once: true }}
                   transition={{ duration: 0.7, delay: 0.2 }}
                 >
-                  Join 5000+ satisfied customers who trust Prince Group for reliable document registration and loan services across Kanyakumari District. Same-day processing available.
+                  Join 30000+ satisfied customers who trust Prince Group for reliable document registration and loan services across Kanyakumari District. Same-day processing available.
                 </motion.p>
                 <motion.div 
                   className="flex justify-center"

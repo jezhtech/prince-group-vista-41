@@ -622,7 +622,7 @@ const NewLoanServices = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
               >
-                <div className="text-4xl font-bold text-[#4eb4a7] mb-2">15,000+</div>
+                <div className="text-4xl font-bold text-[#4eb4a7] mb-2">30,000+</div>
                 <div className="text-gray-600">Happy Customers</div>
               </motion.div>
               <motion.div 
@@ -652,7 +652,7 @@ const NewLoanServices = () => {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <div className="text-4xl font-bold text-[#4eb4a7] mb-2">15+</div>
+                <div className="text-4xl font-bold text-[#4eb4a7] mb-2">8+</div>
                 <div className="text-gray-600">Years of Service</div>
               </motion.div>
             </div>

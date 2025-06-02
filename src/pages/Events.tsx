@@ -131,11 +131,14 @@ const Events = () => {
 
   // Ticket categories and pricing
   const ticketClasses = [
-    { id: "business", name: "Business Class", price: 25000, description: "Premium experience with celebrity dinner" },
-    { id: "ultra", name: "Ultra Luxury Class", price: 15000, description: "Top-tier seating with premium amenities" },
-    { id: "luxury", name: "Luxury Class", price: 10000, description: "Superior comfort with great views" },
-    { id: "vvip", name: "VVIP Class", price: 5000, description: "Exclusive access with premium seating" },
-    { id: "vip", name: "VIP Class", price: 3000, description: "Enhanced experience with special amenities" }
+    { id: "business", name: "Business Class (Tagline sponsors)", price: 25000, description: "Premium experience with celebrity dinner and backstage access" },
+    { id: "elite", name: "Elite", price: 20000, description: "Elite experience with exclusive amenities and prime viewing" },
+    { id: "vvip", name: "VVIP", price: 15000, description: "Very exclusive access with premium services and seating" },
+    { id: "vip", name: "VIP", price: 10000, description: "Priority access with enhanced amenities" },
+    { id: "ultraluxury", name: "Ultraluxury", price: 8000, description: "Ultra-premium comfort with excellent views" },
+    { id: "luxury", name: "Luxury", price: 5000, description: "Superior comfort with great visibility" },
+    { id: "general", name: "General", price: 2000, description: "Standard admission with good experience" },
+    { id: "eco", name: "Eco Standing", price: 1000, description: "Affordable standing area with full event access" }
   ];
   
   // Update total price when ticket category or quantity changes
@@ -175,8 +178,8 @@ const Events = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fdfc] via-white to-[#f0faf9]">
       <Helmet>
-        <title>Events - Prince Group Mega Music Festival</title>
-        <meta name="description" content="Join us for the Prince Group Mega Music Festival 2025. Book your tickets now for an unforgettable experience." />
+        <title>Rhythm Of Carnival - Prince Group Events</title>
+        <meta name="description" content="Experience the Rhythm Of Carnival by Prince Group. Book your tickets now in various categories: Business Class, Elite, VVIP, VIP, Ultraluxury, Luxury, General, and Eco Standing. Join us for an unforgettable celebration in Kanyakumari." />
       </Helmet>
       <MainNavbar />
       <main className="flex-grow">
@@ -279,7 +282,7 @@ const Events = () => {
                   <br />
                   <span className="flex items-center">
                     <MusicIcon className="w-12 h-12 mr-3" />
-                    Mega Music Festival
+                    Rhythm Of Carnival
                   </span>
                 </h1>
                 
@@ -319,7 +322,7 @@ const Events = () => {
                           <span className="w-3 h-3 bg-yellow-400 rounded-full"></span>
                           <span className="w-3 h-3 bg-green-400 rounded-full"></span>
                 </div>
-                        <div className="text-white/70 text-sm">Prince Group Mega Music Festival</div>
+                        <div className="text-white/70 text-sm">Prince Group Rhythm Of Carnival</div>
               </div>
 
                       <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 mb-4 border border-white/20">
@@ -352,7 +355,7 @@ const Events = () => {
                             <MusicIcon className="h-5 w-5" />
                           </div>
                           <div>
-                            <div className="text-white text-sm font-medium">Chief Guest</div>
+                            <div className="text-white text-sm font-medium">Main Performer</div>
                             <div className="text-white/80 text-lg">Singer & Actor, Vijay Antony</div>
                           </div>
                         </div>
@@ -366,206 +369,404 @@ const Events = () => {
         </section>
         
         {/* Event Details Section */}
-        <section className="py-24 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-16">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <div className="inline-block mb-6">
-                    <div className="bg-[#4eb4a7]/10 text-[#4eb4a7] text-sm font-semibold py-1 px-3 rounded-full">
-                      EVENT DETAILS
-                        </div>
-                      </div>
-                  
-                  <h2 className="text-3xl md:text-5xl font-bold mb-6">
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]">
-                      The Ultimate Music Experience
-                    </span>
-                  </h2>
-                  
-                  <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Experience an unforgettable night of music, entertainment, and celebration at the Prince Group Mega Music Festival
-                  </p>
-                </motion.div>
+        <section className="py-24 bg-white relative overflow-hidden">
+          {/* Background Elements */}
+          <div className="absolute inset-0 pointer-events-none opacity-30">
+            <div className="absolute top-0 left-0 w-full h-full">
+              <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
+                <motion.path
+                  d="M0,0 L100,0 L100,100 L0,100 Z"
+                  fill="none"
+                  stroke="#4eb4a7"
+                  strokeWidth="0.1"
+                  strokeDasharray="5,5"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 5, repeat: Infinity, repeatType: "loop" }}
+                />
+              </svg>
+            </div>
+            {/* Decorative circles */}
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={`circle-${i}`}
+                className="absolute rounded-full bg-gradient-to-r from-[#4eb4a7]/10 to-[#60afb4]/10"
+                style={{
+                  width: Math.random() * 300 + 50,
+                  height: Math.random() * 300 + 50,
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                }}
+                initial={{ opacity: 0.1, scale: 0.8 }}
+                animate={{ 
+                  opacity: [0.1, 0.3, 0.1], 
+                  scale: [0.8, 1.2, 0.8],
+                  x: [0, Math.random() * 50 - 25, 0],
+                  y: [0, Math.random() * 50 - 25, 0],
+                }}
+                transition={{
+                  duration: 10 + Math.random() * 10,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: Math.random() * 5,
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="container mx-auto px-4 relative">
+            {/* Section Header */}
+            <div className="text-center mb-16">
+              <div className="inline-block relative mb-6">
+                <div className="bg-[#4eb4a7]/10 text-[#4eb4a7] text-sm font-semibold py-1 px-4 rounded-full backdrop-blur-sm">
+                  EVENT DETAILS
+                </div>
+                <motion.div 
+                  className="absolute -inset-1 rounded-full bg-gradient-to-r from-[#4eb4a7]/20 to-[#60afb4]/20 blur-sm -z-10"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {/* Event Overview Card */}
+              <h2 className="text-4xl md:text-6xl font-bold mb-6 relative">
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]">
+                  The Ultimate Music Experience
+                </span>
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6 }}
-                  className="col-span-1 md:col-span-2 lg:col-span-1"
+                  className="absolute inset-0 -z-10"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
                 >
-                  <Card className="h-full overflow-hidden border-[#4eb4a7]/20 shadow-lg hover:shadow-xl transition-all duration-300">
-                    <CardHeader className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white">
-                      <CardTitle className="flex items-center">
-                        <Star className="mr-2 h-5 w-5" />
-                        Event Overview
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                      <div className="space-y-6">
-                        <div>
-                          <h3 className="text-lg font-semibold text-gray-800 mb-3">Prince Group Mega Music Festival 2025</h3>
-                          <p className="text-gray-600">A spectacular night of music, entertainment, and celebration organized by Prince Group.</p>
-                            </div>
-                        
-                        <div className="flex items-start gap-3">
-                          <CalendarIcon className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
-                          <div>
-                            <h4 className="font-medium text-gray-800">Date</h4>
-                            <p className="text-gray-600">December 21, 2025</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-start gap-3">
-                          <MapPin className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
-                          <div>
-                            <h4 className="font-medium text-gray-800">Location</h4>
-                            <p className="text-gray-600">Kanyakumari</p>
-                            </div>
-                            </div>
-                        
-                        <div className="flex items-start gap-3">
-                          <Users className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
-                          <div>
-                            <h4 className="font-medium text-gray-800">Organizer</h4>
-                            <p className="text-gray-600">Prince Group (20 branches in Kanyakumari)</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex items-start gap-3">
-                          <MusicIcon className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
-                          <div>
-                            <h4 className="font-medium text-gray-800">Chief Guest</h4>
-                            <p className="text-gray-600">Singer & Actor, Vijay Antony</p>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  {[...Array(3)].map((_, i) => (
+                    <motion.div
+                      key={`line-${i}`}
+                      className="absolute h-[1px] bg-gradient-to-r from-transparent via-[#4eb4a7]/30 to-transparent"
+                      style={{ top: `${25 * (i + 1)}%`, left: 0, right: 0 }}
+                      initial={{ scaleX: 0, opacity: 0 }}
+                      animate={{ scaleX: 1, opacity: 1 }}
+                      transition={{ delay: 0.5 + i * 0.2, duration: 1.5 }}
+                    />
+                  ))}
                 </motion.div>
-                
-                {/* Ticket Classes Card */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, delay: 0.1 }}
-                >
-                  <Card className="h-full overflow-hidden border-[#4eb4a7]/20 shadow-lg hover:shadow-xl transition-all duration-300">
-                    <CardHeader className="bg-gradient-to-r from-[#60afb4] to-[#85cbc3] text-white">
-                      <CardTitle className="flex items-center">
-                        <Ticket className="mr-2 h-5 w-5" />
-                        Ticket Classes
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                      <div className="space-y-4">
-                        <div className="bg-[#4eb4a7]/5 p-3 rounded-lg border border-[#4eb4a7]/10">
-                          <h3 className="text-[#4eb4a7] font-semibold">Business Class</h3>
-                          <p className="text-sm text-gray-600">Premium experience with celebrity dinner</p>
-                        </div>
-                        
-                        <div className="bg-[#4eb4a7]/5 p-3 rounded-lg border border-[#4eb4a7]/10">
-                          <h3 className="text-[#4eb4a7] font-semibold">Ultra Luxury Class</h3>
-                          <p className="text-sm text-gray-600">Top-tier seating with premium amenities</p>
-                        </div>
-                        
-                        <div className="bg-[#4eb4a7]/5 p-3 rounded-lg border border-[#4eb4a7]/10">
-                          <h3 className="text-[#4eb4a7] font-semibold">Luxury Class</h3>
-                          <p className="text-sm text-gray-600">Superior comfort with great views</p>
-                        </div>
-                        
-                        <div className="bg-[#4eb4a7]/5 p-3 rounded-lg border border-[#4eb4a7]/10">
-                          <h3 className="text-[#4eb4a7] font-semibold">VVIP Class</h3>
-                          <p className="text-sm text-gray-600">Exclusive access with premium seating</p>
-                        </div>
-                        
-                        <div className="bg-[#4eb4a7]/5 p-3 rounded-lg border border-[#4eb4a7]/10">
-                          <h3 className="text-[#4eb4a7] font-semibold">VIP Class</h3>
-                          <p className="text-sm text-gray-600">Enhanced experience with special amenities</p>
-                        </div>
-                      </div>
-                      
+              </h2>
+              
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+                Experience an unforgettable night of music, entertainment, and celebration at the Prince Group Mega Music Festival
+              </p>
+            </div>
+
+            {/* Event Content Area */}
+            <div className="max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                {/* Left sidebar - CTA Card */}
+                <div className="lg:col-span-1">
+                  <div className="lg:sticky lg:top-24 space-y-6">
+                    {/* Book Ticket Card */}
+                    <motion.div 
+                      className="bg-gradient-to-br from-[#4eb4a7] to-[#60afb4] p-6 rounded-xl text-white shadow-lg"
+                      whileHover={{ scale: 1.03 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      <h3 className="text-xl font-bold mb-3 flex items-center">
+                        <CalendarIcon className="w-5 h-5 mr-2" />
+                        Mark Your Calendar
+                      </h3>
+                      <p className="mb-4 text-white/90">Secure your spot at the biggest musical event of 2025</p>
                       <Button 
-                        className="w-full mt-6 bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] hover:from-[#3da296] hover:to-[#4e9da3]"
+                        className="w-full bg-white text-[#4eb4a7] hover:bg-white/90 font-medium"
                         onClick={() => setIsBookingOpen(true)}
                       >
-                        Book Tickets
+                        Book Tickets Now
                       </Button>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-                
-                {/* Special Attractions Card */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                >
-                  <Card className="h-full overflow-hidden border-[#4eb4a7]/20 shadow-lg hover:shadow-xl transition-all duration-300">
-                    <CardHeader className="bg-gradient-to-r from-[#85cbc3] to-[#4eb4a7] text-white">
-                      <CardTitle className="flex items-center">
-                        <Sparkles className="mr-2 h-5 w-5" />
-                        Special Attractions
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
-                            <Flame className="h-4 w-4" />
-                          </div>
-                          <p className="text-gray-600">Helicopter Ride</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-3">
-                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
-                            <PartyPopper className="h-4 w-4" />
-                          </div>
-                          <p className="text-gray-600">Theme Park Area</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-3">
-                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
-                            <Gift className="h-4 w-4" />
-                          </div>
-                          <p className="text-gray-600">Water Games</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-3">
-                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
-                            <Trophy className="h-4 w-4" />
-                          </div>
-                          <p className="text-gray-600">Petting Zoo</p>
-                        </div>
-                        
-                        <div className="flex items-center gap-3">
-                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
-                            <Utensils className="h-4 w-4" />
+                    </motion.div>
+                  </div>
+                </div>
+
+                {/* Right content - Tabs */}
+                <div className="lg:col-span-3">
+                  <Tabs defaultValue="overview" className="w-full">
+                    <TabsList className="w-full h-auto flex mb-6 bg-[#4eb4a7]/5 p-1 rounded-xl">
+                      <TabsTrigger 
+                        value="overview" 
+                        className="flex-1 py-3 data-[state=active]:bg-white data-[state=active]:text-[#4eb4a7] data-[state=active]:shadow-md"
+                      >
+                        <Star className="w-4 h-4 mr-2" />
+                        Event Overview
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="tickets" 
+                        className="flex-1 py-3 data-[state=active]:bg-white data-[state=active]:text-[#4eb4a7] data-[state=active]:shadow-md"
+                      >
+                        <Ticket className="w-4 h-4 mr-2" />
+                        Ticket Classes
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="attractions" 
+                        className="flex-1 py-3 data-[state=active]:bg-white data-[state=active]:text-[#4eb4a7] data-[state=active]:shadow-md"
+                      >
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Attractions
+                      </TabsTrigger>
+                    </TabsList>
+                    
+                    <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-[#4eb4a7]/10">
+                      {/* Overview Tab Content */}
+                      <TabsContent value="overview" className="m-0 p-0 focus-visible:outline-none focus-visible:ring-0">
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70 z-10"></div>
+                          <div className="h-64 md:h-80 bg-gradient-to-r from-[#4eb4a7]/30 to-[#60afb4]/30 relative overflow-hidden">
+                            {/* This would be replaced with an actual event image */}
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <MusicIcon className="w-24 h-24 text-white/20" />
                             </div>
-                          <p className="text-gray-600">Food Court with Exotic and Local Cuisines</p>
-                            </div>
-                        
-                        <div className="flex items-center gap-3">
-                          <div className="flex-shrink-0 h-8 w-8 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
-                            <Gift className="h-4 w-4" />
+                            <motion.div 
+                              className="absolute inset-0 bg-gradient-to-r from-[#4eb4a7]/10 to-[#60afb4]/10"
+                              animate={{ 
+                                background: [
+                                  "linear-gradient(to right, rgba(78, 180, 167, 0.1), rgba(96, 175, 180, 0.1))",
+                                  "linear-gradient(to right, rgba(96, 175, 180, 0.1), rgba(78, 180, 167, 0.1))",
+                                  "linear-gradient(to right, rgba(78, 180, 167, 0.1), rgba(96, 175, 180, 0.1))",
+                                ]
+                              }}
+                              transition={{ duration: 10, repeat: Infinity }}
+                            />
                           </div>
-                          <p className="text-gray-600">Toys Store</p>
+                          <div className="absolute bottom-6 left-6 z-20">
+                            <h3 className="text-3xl font-bold text-white mb-2">Rhythm Of Carnival 2025</h3>
+                            <div className="flex items-center">
+                              <Badge className="bg-white/20 text-white mr-2 backdrop-blur-sm">Music Festival</Badge>
+                              <Badge className="bg-white/20 text-white backdrop-blur-sm">Kanyakumari</Badge>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+                        
+                        <div className="p-6">
+                          <p className="text-gray-700 mb-6">
+                            A spectacular night of music, entertainment, and celebration organized by Prince Group. 
+                            Experience the rhythm and carnival atmosphere in Kanyakumari with world-class performers and amenities.
+                          </p>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
+                            <motion.div 
+                              className="flex items-center gap-4 p-4 rounded-xl border border-[#4eb4a7]/10 bg-[#4eb4a7]/5"
+                              whileHover={{ scale: 1.02, backgroundColor: "rgba(78, 180, 167, 0.1)" }}
+                            >
+                              <div className="h-12 w-12 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center text-[#4eb4a7]">
+                                <CalendarIcon className="h-6 w-6" />
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-gray-800">Date</h4>
+                                <p className="text-[#4eb4a7] font-medium">December 21, 2025</p>
+                              </div>
+                            </motion.div>
+                            
+                            <motion.div 
+                              className="flex items-center gap-4 p-4 rounded-xl border border-[#4eb4a7]/10 bg-[#4eb4a7]/5"
+                              whileHover={{ scale: 1.02, backgroundColor: "rgba(78, 180, 167, 0.1)" }}
+                            >
+                              <div className="h-12 w-12 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center text-[#4eb4a7]">
+                                <MapPin className="h-6 w-6" />
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-gray-800">Location</h4>
+                                <p className="text-[#4eb4a7] font-medium">Kanyakumari</p>
+                              </div>
+                            </motion.div>
+                            
+                            <motion.div 
+                              className="flex items-center gap-4 p-4 rounded-xl border border-[#4eb4a7]/10 bg-[#4eb4a7]/5"
+                              whileHover={{ scale: 1.02, backgroundColor: "rgba(78, 180, 167, 0.1)" }}
+                            >
+                              <div className="h-12 w-12 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center text-[#4eb4a7]">
+                                <Users className="h-6 w-6" />
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-gray-800">Organizer</h4>
+                                <p className="text-[#4eb4a7] font-medium">Prince Group</p>
+                              </div>
+                            </motion.div>
+                            
+                            <motion.div 
+                              className="flex items-center gap-4 p-4 rounded-xl border border-[#4eb4a7]/10 bg-[#4eb4a7]/5"
+                              whileHover={{ scale: 1.02, backgroundColor: "rgba(78, 180, 167, 0.1)" }}
+                            >
+                              <div className="h-12 w-12 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center text-[#4eb4a7]">
+                                <MusicIcon className="h-6 w-6" />
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-gray-800">Main Performer</h4>
+                                <p className="text-[#4eb4a7] font-medium">Vijay Antony</p>
+                              </div>
+                            </motion.div>
+                          </div>
+                          
+                          <div className="flex justify-center">
+                            <Button 
+                              variant="outline"
+                              className="border-[#4eb4a7] text-[#4eb4a7] hover:bg-[#4eb4a7]/5 hover:text-[#4eb4a7]"
+                              onClick={() => setIsBookingOpen(true)}
+                            >
+                              <Ticket className="w-4 h-4 mr-2" />
+                              Book Your Tickets
+                            </Button>
+                          </div>
+                        </div>
+                      </TabsContent>
+                      
+                      {/* Tickets Tab Content */}
+                      <TabsContent value="tickets" className="m-0 p-0 focus-visible:outline-none focus-visible:ring-0">
+                        <div className="p-6 border-b border-gray-100">
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-2xl font-bold text-gray-800">Ticket Classes</h3>
+                            <Badge className="bg-[#4eb4a7]">8 Options</Badge>
+                          </div>
+                          <p className="text-gray-600 mb-4">
+                            Choose from our range of ticket classes to match your desired experience level
+                          </p>
+                        </div>
+                        
+                        <div className="divide-y divide-gray-100 max-h-[60vh] overflow-auto custom-scrollbar">
+                          {ticketClasses.map((ticket, index) => (
+                            <motion.div 
+                              key={ticket.id}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.1 }}
+                              className="p-6 hover:bg-[#4eb4a7]/5 transition-colors"
+                            >
+                              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                <div>
+                                  <h4 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+                                    {ticket.id === "business" && <Star className="h-4 w-4 text-yellow-500" />}
+                                    {ticket.id === "elite" && <Trophy className="h-4 w-4 text-purple-500" />}
+                                    {ticket.id === "vvip" && <Sparkles className="h-4 w-4 text-blue-500" />}
+                                    {ticket.name}
+                                  </h4>
+                                  <p className="text-gray-600 mt-1">{ticket.description}</p>
+                                </div>
+                                
+                                <div className="flex items-center gap-3">
+                                  <div className="text-2xl font-bold text-[#4eb4a7]">
+                                    {formatPrice(ticket.price)}
+                                  </div>
+                                  <Button 
+                                    size="sm"
+                                    className="bg-[#4eb4a7] hover:bg-[#3da296]"
+                                    onClick={() => {
+                                      setTicketCategory(ticket.id);
+                                      setIsBookingOpen(true);
+                                    }}
+                                  >
+                                    Select
+                                  </Button>
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </TabsContent>
+                      
+                      {/* Attractions Tab Content */}
+                      <TabsContent value="attractions" className="m-0 focus-visible:outline-none focus-visible:ring-0">
+                        <div className="p-6 bg-gradient-to-br from-[#4eb4a7]/5 to-[#60afb4]/5">
+                          <h3 className="text-2xl font-bold text-gray-800 mb-6">Special Attractions</h3>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <Carousel className="w-full">
+                              <CarouselContent>
+                                <CarouselItem>
+                                  <div className="bg-white rounded-xl overflow-hidden shadow-md border border-[#4eb4a7]/10 h-64">
+                                    <div className="h-40 bg-gradient-to-br from-[#4eb4a7]/20 to-[#60afb4]/20 flex items-center justify-center">
+                                      <Flame className="h-16 w-16 text-[#4eb4a7]/40" />
+                                    </div>
+                                    <div className="p-4">
+                                      <h4 className="font-semibold text-lg text-gray-800">Helicopter Ride</h4>
+                                      <p className="text-gray-600 text-sm">Experience breathtaking aerial views</p>
+                                    </div>
+                                  </div>
+                                </CarouselItem>
+                                <CarouselItem>
+                                  <div className="bg-white rounded-xl overflow-hidden shadow-md border border-[#4eb4a7]/10 h-64">
+                                    <div className="h-40 bg-gradient-to-br from-[#60afb4]/20 to-[#85cbc3]/20 flex items-center justify-center">
+                                      <PartyPopper className="h-16 w-16 text-[#60afb4]/40" />
+                                    </div>
+                                    <div className="p-4">
+                                      <h4 className="font-semibold text-lg text-gray-800">Theme Park Area</h4>
+                                      <p className="text-gray-600 text-sm">Fun rides and attractions for all ages</p>
+                                    </div>
+                                  </div>
+                                </CarouselItem>
+                                <CarouselItem>
+                                  <div className="bg-white rounded-xl overflow-hidden shadow-md border border-[#4eb4a7]/10 h-64">
+                                    <div className="h-40 bg-gradient-to-br from-[#85cbc3]/20 to-[#4eb4a7]/20 flex items-center justify-center">
+                                      <Gift className="h-16 w-16 text-[#85cbc3]/40" />
+                                    </div>
+                                    <div className="p-4">
+                                      <h4 className="font-semibold text-lg text-gray-800">Water Games</h4>
+                                      <p className="text-gray-600 text-sm">Refreshing water activities and games</p>
+                                    </div>
+                                  </div>
+                                </CarouselItem>
+                              </CarouselContent>
+                              <div className="flex justify-center mt-4 gap-1">
+                                <CarouselPrevious className="static transform-none mx-1 bg-[#4eb4a7]/10 hover:bg-[#4eb4a7]/20 text-[#4eb4a7] border-0" />
+                                <CarouselNext className="static transform-none mx-1 bg-[#4eb4a7]/10 hover:bg-[#4eb4a7]/20 text-[#4eb4a7] border-0" />
+                              </div>
+                            </Carousel>
+                            
+                            <div className="space-y-4">
+                              <motion.div 
+                                className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-[#4eb4a7]/10"
+                                whileHover={{ scale: 1.02, boxShadow: "0 4px 20px rgba(78, 180, 167, 0.15)" }}
+                              >
+                                <div className="h-12 w-12 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
+                                  <Trophy className="h-5 w-5" />
+                                </div>
+                                <div>
+                                  <h4 className="font-medium text-gray-800">Petting Zoo</h4>
+                                  <p className="text-gray-600 text-sm">Interact with friendly animals</p>
+                                </div>
+                              </motion.div>
+                              
+                              <motion.div 
+                                className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-[#4eb4a7]/10"
+                                whileHover={{ scale: 1.02, boxShadow: "0 4px 20px rgba(78, 180, 167, 0.15)" }}
+                              >
+                                <div className="h-12 w-12 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
+                                  <Utensils className="h-5 w-5" />
+                                </div>
+                                <div>
+                                  <h4 className="font-medium text-gray-800">Food Court</h4>
+                                  <p className="text-gray-600 text-sm">Exotic and local cuisines</p>
+                                </div>
+                              </motion.div>
+                              
+                              <motion.div 
+                                className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-[#4eb4a7]/10"
+                                whileHover={{ scale: 1.02, boxShadow: "0 4px 20px rgba(78, 180, 167, 0.15)" }}
+                              >
+                                <div className="h-12 w-12 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
+                                  <Gift className="h-5 w-5" />
+                                </div>
+                                <div>
+                                  <h4 className="font-medium text-gray-800">Toys Store</h4>
+                                  <p className="text-gray-600 text-sm">Special merchandise and souvenirs</p>
+                                </div>
+                              </motion.div>
+                              
+                              <div className="p-4 rounded-xl bg-[#4eb4a7]/10 mt-6">
+                                <p className="text-[#4eb4a7] text-sm font-medium text-center">
+                                  Many more attractions available at the venue!
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </TabsContent>
+                    </div>
+                  </Tabs>
+                </div>
               </div>
             </div>
           </div>
