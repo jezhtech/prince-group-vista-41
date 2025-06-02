@@ -94,7 +94,7 @@ const Index = () => {
         <meta property="og:description" content="Trusted documentation and financial solutions with 20+ branches across Kanyakumari District since 2018." />
         <meta property="og:type" content="website" />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://princegroupcompanies.co.in" />
+        <link rel="canonical" href="https://princegroupcompanies.in" />
       </Helmet>
       <MainNavbar />
       <main className="flex-grow">
@@ -146,7 +146,7 @@ const Index = () => {
                   whileHover={{ scale: 1.05 }}
                 >
                   <Sparkles className="w-4 h-4 text-[#4eb4a7]" />
-                  <span className="text-sm font-medium text-gray-700">Trusted by 5000+ Customers</span>
+                  <span className="text-sm font-medium text-gray-700">Trusted by 30000+ Customers</span>
                 </motion.div>
 
                 <h1 className="text-4xl lg:text-3xl font-bold text-gray-900 mb-6">Document & Loan Solutions in Kanyakumari</h1>
