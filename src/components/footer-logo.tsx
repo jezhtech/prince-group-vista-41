@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 const FooterLogo: React.FC = () => {
   return (
     <Link to="/" className="flex items-center group">
-      <div className="h-10 relative flex items-center mr-4 group-hover:scale-110 transition-transform duration-300">
+      <div className="h-10
+       relative flex items-center mr-4 group-hover:scale-110 transition-transform duration-300">
         <img 
           src="/footerlogo.png" 
           alt="Prince Group Logo" 
