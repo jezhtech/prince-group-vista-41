@@ -180,7 +180,7 @@ const About = () => {
                 </h1>
                 
                 <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
-                  Since 2010, Prince Group has been simplifying documentation and loan services 
+                  Since 2018, Prince Group has been simplifying documentation and loan services 
                   for thousands of clients across Kanyakumari District, built on a foundation of 
                   trust, innovation, and community service.
                 </p>
@@ -228,13 +228,13 @@ const About = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {[
                   {
-                    value: "2010",
+                    value: "2018",
                     label: "Year Established",
                     icon: <Calendar className="h-8 w-8" />,
                     delay: 0
                   },
                   {
-                    value: "18+",
+                    value: "20+",
                     label: "Branch Locations",
                     icon: <MapPin className="h-8 w-8" />,
                     delay: 0.1
@@ -325,8 +325,8 @@ const About = () => {
                   <div className="inline-block mb-6">
                     <div className="bg-[#4eb4a7]/10 text-[#4eb4a7] text-sm font-semibold py-1 px-3 rounded-full">
                     OUR JOURNEY
-                    </div>
                   </div>
+                </div>
                   
                   <h2 className="text-3xl md:text-4xl font-bold mb-6">
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#4eb4a7] to-[#60afb4]">
@@ -335,7 +335,7 @@ const About = () => {
                   </h2>
                   
                 <p className="text-gray-600 mb-6">
-                    Founded in 2010, Prince Group started with a vision to simplify documentation services in Kanyakumari district. 
+                    Founded in 2018, Prince Group started with a vision to simplify documentation services in Kanyakumari district. 
                     What began as a small office with three dedicated staff members has now grown into a network of over 18 branches 
                     serving thousands of satisfied customers.
                 </p>
@@ -357,13 +357,13 @@ const About = () => {
                       <div className="w-12 h-12 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center">
                         <Check className="h-6 w-6 text-[#4eb4a7]" />
                       </div>
-                      <p className="text-gray-700 font-medium">Expanded to 18+ branches across Kanyakumari District</p>
+                      <p className="text-gray-700 font-medium">Expanded to 20+ branches across Kanyakumari District</p>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center">
                         <Check className="h-6 w-6 text-[#4eb4a7]" />
                       </div>
-                      <p className="text-gray-700 font-medium">Processed over 7800 documents and disbursed 40+ crore in loans</p>
+                      <p className="text-gray-700 font-medium">Processed over 33,500+ documents and disbursed 40+ crore in loans</p>
                     </div>
                   </div>
                   
@@ -577,7 +577,7 @@ const About = () => {
                 {
                         name: "Priya Sharma",
                         position: "Operations Director",
-                        bio: "Priya brings 10 years of operational expertise, ensuring our 18+ branches maintain consistent quality standards and exceptional customer service.",
+                        bio: "Priya brings 10 years of operational expertise, ensuring our 20+ branches maintain consistent quality standards and exceptional customer service.",
                         imagePlaceholder: "PS"
                       },
                       {
@@ -1006,7 +1006,7 @@ const About = () => {
                   Ready to Experience Our Services?
                 </h2>
                 <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-                  Visit any of our 18+ branches across Kanyakumari District or get in touch with our team to learn more.
+                  Visit any of our 20+ branches across Kanyakumari District or get in touch with our team to learn more.
             </p>
                 
             <div className="flex flex-wrap justify-center gap-4">

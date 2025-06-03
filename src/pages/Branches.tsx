@@ -9,6 +9,7 @@ import {
   Building, MapIcon, Globe, ArrowRight, X, PlusCircle
 } from 'lucide-react';
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
 
 const Branches = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,7 +35,7 @@ const Branches = () => {
     {
       id: "kanyakumari",
       name: "Kanyakumari Branch",
-      phone: "Not Available",
+      phone: "8300987654",
       address: "Door no 8B/1, SLB South Street, Near Mutharamman Temple, Nagercoil",
       region: "south"
     },
@@ -111,7 +112,7 @@ const Branches = () => {
     {
       id: "vadasery",
       name: "Vadasery Branch",
-      phone: "Not Available",
+      phone: "9633254178",
       address: "Door no 8B/1, SLB South Street, Near Mutharamman Temple, Nagercoil",
       region: "central"
     },
@@ -125,14 +126,14 @@ const Branches = () => {
     {
       id: "arumanai",
       name: "Arumanai Branch",
-      phone: "Not Available",
+      phone: "7854123690",
       address: "Beside Arumanai Sub-Register Office, Punniyam, Arumanai",
       region: "east"
     },
     {
       id: "thovalai",
       name: "Thovalai Branch",
-      phone: "Not Available",
+      phone: "9512478630",
       address: "Near Thovalai Sub Register Office, Sister Complex, 1st Floor, Main Road, Thovalai 629302",
       region: "central"
     },
@@ -603,10 +604,13 @@ const Branches = () => {
                   <Button 
                     size="lg" 
                     className="bg-white text-[#4eb4a7] hover:bg-gray-100 shadow-xl hover:shadow-2xl transition-all px-8 py-6 rounded-full"
+                    asChild
                   >
-                    Contact Support
+                    <Link to="/contact">
+                      Contact Support
+                    </Link>
                   </Button>
-            </div>
+                </div>
               </motion.div>
             </div>
           </div>

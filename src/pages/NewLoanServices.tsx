@@ -142,8 +142,11 @@ const NewLoanServices = () => {
                 <div className="flex flex-wrap gap-4">
                   <Button 
                     className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white rounded-full px-8 py-6 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                    asChild
                   >
-                    Apply for a Loan
+                    <Link to="/contact">
+                      Apply for a Loan
+                    </Link>
                   </Button>
                   <Button 
                     variant="outline" 
@@ -601,8 +604,14 @@ const NewLoanServices = () => {
                   </div>
                   <p className="text-gray-600 mb-6 italic">"{testimonial.testimonial}"</p>
                   <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#4eb4a7]/20 to-[#60afb4]/20 flex items-center justify-center text-[#4eb4a7] font-bold">
-                      {testimonial.name.charAt(0)}
+                    <div className="w-12 h-12 rounded-full mr-4 overflow-hidden">
+                      <img 
+                        src={index === 0 ? "/customer/1740978306596.jpeg" : 
+                             index === 1 ? "/customer/1702451425744.jpeg" : 
+                             "/customer/1685698257032.jpeg"} 
+                        alt={testimonial.name} 
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                     <div className="ml-4">
                       <h4 className="font-semibold">{testimonial.name}</h4>
@@ -673,8 +682,10 @@ const NewLoanServices = () => {
                 Apply for a loan today and take the first step toward achieving your financial goals
               </p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Button size="lg" className="bg-white text-[#4eb4a7] hover:bg-gray-100 rounded-full px-8">
-                  Apply Now
+                <Button size="lg" className="bg-white text-[#4eb4a7] hover:bg-gray-100 rounded-full px-8" asChild>
+                  <Link to="/contact">
+                    Apply Now
+                  </Link>
                 </Button>
               </div>
             </motion.div>

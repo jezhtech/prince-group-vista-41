@@ -161,9 +161,12 @@ const DocumentationServices = () => {
                 <div className="flex flex-wrap gap-4">
                   <Button 
                     className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white rounded-full px-8 py-6 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                    asChild
                   >
-                Schedule a Consultation
-              </Button>
+                    <Link to="/contact">
+                      Schedule a Consultation
+                    </Link>
+                  </Button>
                   <Button 
                     variant="outline" 
                     className="rounded-full px-8 py-6 border-2 border-[#4eb4a7] text-[#4eb4a7] hover:bg-[#4eb4a7]/10"
@@ -415,9 +418,6 @@ const DocumentationServices = () => {
                   </div>
                   <h3 className="text-xl font-semibold mb-3 group-hover:text-[#4eb4a7] transition-colors">{service.title}</h3>
                   <p className="text-gray-600 mb-6">{service.description}</p>
-                  <Button variant="outline" className="w-full border-[#4eb4a7] text-[#4eb4a7] hover:bg-[#4eb4a7]/5 group-hover:bg-[#4eb4a7] group-hover:text-white transition-all duration-300">
-                    Learn More
-                  </Button>
                 </Card>
               ))}
             </div>
@@ -441,7 +441,7 @@ const DocumentationServices = () => {
                 <div className="text-gray-600">Years of Experience</div>
               </div>
               <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">
-                <div className="text-3xl font-bold text-[#4eb4a7] mb-2">20</div>
+                <div className="text-3xl font-bold text-[#4eb4a7] mb-2">20+</div>
                 <div className="text-gray-600">Office Locations</div>
               </div>
             </div>
@@ -796,19 +796,22 @@ const DocumentationServices = () => {
                   name: "Rajesh Kumar",
                   position: "Business Owner",
                   testimonial: "The documentation services provided by Prince Group were exceptional. They handled all the paperwork for my new business license with remarkable efficiency.",
-                  rating: 5
+                  rating: 5,
+                  image: "/customer/1740978306596.jpeg"
                 },
                 {
                   name: "Priya Sharma",
                   position: "Homeowner",
                   testimonial: "I was amazed by how smoothly the property registration process went with Prince Group's help. Their team managed everything professionally and saved me a lot of time.",
-                  rating: 5
+                  rating: 5,
+                  image: "/customer/1702451425744.jpeg"
                 },
                 {
                   name: "Sanjay Patel",
                   position: "Restaurant Manager",
                   testimonial: "Getting all the licenses for my new restaurant was a breeze thanks to Prince Group. Their staff was knowledgeable and supportive throughout the entire process.",
-                  rating: 4
+                  rating: 4,
+                  image: "/customer/1735796812076.jpeg"
                 }
               ].map((testimonial, index) => (
                 <Card key={index} className="p-6 border-0 shadow-md">
@@ -819,7 +822,13 @@ const DocumentationServices = () => {
                   </div>
                   <p className="text-gray-600 mb-6 italic">{`"${testimonial.testimonial}"`}</p>
                   <div className="flex items-center">
-                    <div className="w-12 h-12 bg-gray-200 rounded-full mr-4"></div>
+                    <div className="w-12 h-12 rounded-full mr-4 overflow-hidden">
+                      <img 
+                        src={testimonial.image} 
+                        alt={testimonial.name} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                     <div>
                       <h4 className="font-semibold">{testimonial.name}</h4>
                       <p className="text-sm text-gray-500">{testimonial.position}</p>
@@ -839,8 +848,10 @@ const DocumentationServices = () => {
               Contact us today for a free consultation and let us handle all your documentation needs
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" className="bg-white text-[#4eb4a7] hover:bg-gray-100">
-                Schedule a Consultation
+              <Button size="lg" className="bg-white text-[#4eb4a7] hover:bg-gray-100" asChild>
+                <Link to="/contact">
+                  Schedule a Consultation
+                </Link>
               </Button>
             </div>
           </div>

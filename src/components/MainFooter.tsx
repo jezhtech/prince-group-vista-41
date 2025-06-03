@@ -143,10 +143,10 @@ const MainFooter = () => {
               >
                 <div className="flex -space-x-3">
                   {[
-                    "/customer/1719583921449.jpeg",
-                    "/customer/1702451425744.jpeg",
-                    "/customer/1708925911487.jpeg",
-                    "/customer/1723221762842.jpeg"
+                    "/customer/1740978306596.jpeg",
+                    "/customer/1702451425744.jpeg", 
+                    "/customer/1685698257032.jpeg",
+                    "/customer/1748053508063.jpeg"
                   ].map((image, i) => (
                     <div key={i} className="w-10 h-10 rounded-full border-2 border-white overflow-hidden">
                       <img 

@@ -14,6 +14,8 @@ import NewLoanServices from "./pages/NewLoanServices";
 import Branches from "./pages/Branches";
 import TariffComparison from "./pages/TariffComparison";
 import Events from "./pages/Events";
+import EventTickets from "./pages/EventTickets";
+import EventAttractions from "./pages/EventAttractions";
 import Membership from "./pages/Membership";
 import About from "./pages/About";
 import Terms from "./pages/Terms";
@@ -60,6 +62,8 @@ const App = () => (
             <Route path="/branches" element={<Branches />} />
             <Route path="/tariff-comparison" element={<TariffComparison />} />
             <Route path="/events" element={<Events />} />
+            <Route path="/events/tickets" element={<EventTickets />} />
+            <Route path="/events/attractions" element={<EventAttractions />} />
             <Route path="/membership" element={<Membership />} />
             <Route path="/about" element={<About />} />
             <Route path="/terms" element={<Terms />} />

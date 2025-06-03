@@ -73,10 +73,10 @@ const MainNavbar = () => {
       }`}
     >
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center relative">
             {/* Logo with animated underline */}
             <motion.div 
-              className="flex-shrink-0"
+              className="flex-shrink-0 z-20"
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400 }}
             >
@@ -225,7 +225,7 @@ const MainNavbar = () => {
           </div>
 
           {/* Mobile menu button */}
-            <div className="md:hidden">
+            <div className="md:hidden z-20">
               <motion.button
               onClick={toggleMenu}
                 className={`p-2 rounded-lg text-gray-700 hover:bg-gray-100/50`}
@@ -241,14 +241,14 @@ const MainNavbar = () => {
         <AnimatePresence>
         {isMenuOpen && (
             <motion.div 
-              className="fixed inset-0 top-16 bg-black/50 md:hidden z-50"
+              className="fixed inset-0 top-16 bg-black/70 md:hidden z-50"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMenuOpen(false)}
             >
               <motion.div 
-                className="absolute right-0 top-0 h-full w-80 bg-white shadow-2xl"
+                className="absolute right-0 top-0 h-full w-80 bg-white shadow-2xl border-l border-[#4eb4a7]/20"
                 initial={{ x: "100%" }}
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
@@ -256,19 +256,24 @@ const MainNavbar = () => {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="p-6 space-y-4">
-              {navItems.map((item) => (
+                  <div className="flex items-center justify-between pb-4 mb-2 border-b border-gray-200 bg-white rounded-lg p-2">
+                    <h3 className="font-bold text-[#4eb4a7] text-xl">Prince Group</h3>
+                  </div>
+                  
+                  {navItems.map((item) => (
                     <motion.div 
                       key={item.name}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: navItems.indexOf(item) * 0.1 }}
+                      className="mb-2"
                     >
                       <Link
                         to={item.path}
                         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                           isActive(item.path) 
-                            ? 'bg-[#4eb4a7] text-white' 
-                            : 'text-gray-700 hover:bg-[#85cbc3]/10'
+                            ? 'bg-[#4eb4a7] text-white shadow-md' 
+                            : 'text-gray-700 bg-gray-50/80 border border-gray-100 shadow-sm hover:bg-gradient-to-r hover:from-[#4eb4a7]/10 hover:to-[#85cbc3]/10'
                         }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
@@ -278,17 +283,25 @@ const MainNavbar = () => {
                     </motion.div>
                   ))}
                   
-                  <div className="pt-4 border-t border-gray-200 space-y-3">
-                    <Button asChild variant="outline" className="w-full rounded-full">
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                    <User className="mr-2 h-4 w-4" /> Login
-                  </Link>
-                </Button>
-                    <Button asChild className="w-full bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] rounded-full">
+                  <div className="pt-6 mt-2 border-t border-gray-200 space-y-4">
+                    <Button 
+                      asChild 
+                      variant="outline" 
+                      className="w-full rounded-full border-[#4eb4a7]/30 hover:bg-[#4eb4a7]/5 hover:border-[#4eb4a7] bg-white"
+                    >
+                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                        <User className="mr-2 h-4 w-4" /> Login
+                      </Link>
+                    </Button>
+                    
+                    <Button 
+                      asChild 
+                      className="w-full bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] hover:from-[#3da296] hover:to-[#4e9da3] rounded-full shadow-md hover:shadow-lg transition-all"
+                    >
                       <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
-                </Button>
-              </div>
-            </div>
+                    </Button>
+                  </div>
+                </div>
               </motion.div>
             </motion.div>
           )}
@@ -307,7 +320,7 @@ const MainNavbar = () => {
           >
             <div className="bg-white/90 backdrop-blur-md rounded-full shadow-lg px-6 py-2 flex items-center gap-4">
               <span className="text-sm text-gray-600">Quick Access:</span>
-              <Link to="/services#documentation" className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1">
+              <Link to="/documentation-services" className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1">
                 <FileText className="w-3 h-3" /> Documents
               </Link>
               <span className="text-gray-300">|</span>
