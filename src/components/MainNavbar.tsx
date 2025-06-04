@@ -66,7 +66,7 @@ const MainNavbar = () => {
   return (
     <>
     <nav 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-[999] transform translate-z-0 will-change-transform transition-all duration-500 ${
           scrolled 
             ? 'bg-white/80 backdrop-blur-xl shadow-xl py-2' 
             : 'bg-white/70 backdrop-blur-md shadow-md py-4'
@@ -75,19 +75,17 @@ const MainNavbar = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center relative">
             {/* Logo with animated underline */}
-            <motion.div 
-              className="flex-shrink-0 z-20"
-              whileHover={{ scale: 1.05 }}
-              transition={{ type: "spring", stiffness: 400 }}
+            <div 
+              className="flex-shrink-0 z-[999]"
+              style={{ 
+                position: 'relative', 
+                display: 'block',
+                visibility: 'visible',
+                opacity: 1
+              }}
             >
-            <Logo />
-              <motion.div 
-                className="h-0.5 bg-gradient-to-r from-[#4eb4a7] to-[#85cbc3] mt-1"
-                initial={{ width: 0 }}
-                animate={{ width: scrolled ? "100%" : "0%" }}
-                transition={{ duration: 0.3 }}
-              />
-            </motion.div>
+              <Logo />
+            </div>
 
             {/* Desktop Navigation - Floating Pill Design */}
           <div className="hidden md:block">
@@ -225,14 +223,22 @@ const MainNavbar = () => {
           </div>
 
           {/* Mobile menu button */}
-            <div className="md:hidden z-20">
-              <motion.button
-              onClick={toggleMenu}
-                className={`p-2 rounded-lg text-gray-700 hover:bg-gray-100/50`}
-                whileTap={{ scale: 0.9 }}
+            <div 
+              className="md:hidden z-[999] mobile-menu-safari" 
+              style={{ 
+                position: "relative",
+              }}
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </motion.button>
+              <button 
+                onClick={toggleMenu}
+                className="p-2 rounded-full bg-white/80 shadow-md"
+                aria-label="Toggle menu"
+              >
+                {isMenuOpen ? 
+                  <X className="h-6 w-6 text-[#4eb4a7]" /> : 
+                  <Menu className="h-6 w-6 text-[#4eb4a7]" />
+                }
+              </button>
             </div>
           </div>
         </div>

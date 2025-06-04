@@ -1,0 +1,48 @@
+/* Safari-only fixes */
+@media not all and (min-resolution:.001dpcm) { 
+  @supports (-webkit-appearance:none) {
+    /* Safari-only CSS here */
+    .fixed {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 9999 !important;
+    }
+    
+    img {
+      max-width: 100% !important;
+      height: auto !important;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    .ios-visible, svg {
+      display: inline-flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    nav button {
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    /* Force mobile menu to be visible on Safari, but ONLY on mobile */
+    @media (max-width: 767px) {
+      .mobile-menu-safari {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+    }
+    
+    /* Hide mobile menu on larger screens */
+    @media (min-width: 768px) {
+      .mobile-menu-safari {
+        display: none !important;
+      }
+    }
+  }
+} 
