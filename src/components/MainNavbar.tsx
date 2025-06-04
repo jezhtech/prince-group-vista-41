@@ -254,14 +254,15 @@ const MainNavbar = () => {
               onClick={() => setIsMenuOpen(false)}
             >
               <motion.div 
-                className="absolute right-0 top-0 h-full w-80 bg-white shadow-2xl border-l border-[#4eb4a7]/20"
+                className="absolute right-0 top-0 h-full w-full max-w-xs bg-white shadow-xl border-l border-[#4eb4a7]/20"
+                style={{ background: "#ffffff" }}
                 initial={{ x: "100%" }}
                 animate={{ x: 0 }}
                 exit={{ x: "100%" }}
                 transition={{ type: "spring", bounce: 0.25 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="p-6 space-y-4">
+                <div className="p-6 space-y-4 bg-white">
                   <div className="flex items-center justify-between pb-4 mb-2 border-b border-gray-200 bg-white rounded-lg p-2">
                     <h3 className="font-bold text-[#4eb4a7] text-xl">Prince Group</h3>
                   </div>
@@ -279,32 +280,35 @@ const MainNavbar = () => {
                         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                           isActive(item.path) 
                             ? 'bg-[#4eb4a7] text-white shadow-md' 
-                            : 'text-gray-700 bg-gray-50/80 border border-gray-100 shadow-sm hover:bg-gradient-to-r hover:from-[#4eb4a7]/10 hover:to-[#85cbc3]/10'
+                            : 'text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5'
                         }`}
                         onClick={() => setIsMenuOpen(false)}
                       >
                         {item.icon}
-                        {item.name}
-                            </Link>
+                        <span className="font-medium">{item.name}</span>
+                      </Link>
                     </motion.div>
                   ))}
                   
-                  <div className="pt-6 mt-2 border-t border-gray-200 space-y-4">
+                  <div className="pt-6 mt-2 border-t border-gray-200 space-y-4 bg-white">
                     <Button 
                       asChild 
                       variant="outline" 
-                      className="w-full rounded-full border-[#4eb4a7]/30 hover:bg-[#4eb4a7]/5 hover:border-[#4eb4a7] bg-white"
+                      className="w-full rounded-full border-[#4eb4a7] hover:bg-[#4eb4a7]/5 hover:border-[#4eb4a7] bg-white text-[#4eb4a7]"
                     >
                       <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                        <User className="mr-2 h-4 w-4" /> Login
+                        <User className="mr-2 h-4 w-4" /> 
+                        <span className="font-medium">Login</span>
                       </Link>
                     </Button>
                     
                     <Button 
                       asChild 
-                      className="w-full bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] hover:from-[#3da296] hover:to-[#4e9da3] rounded-full shadow-md hover:shadow-lg transition-all"
+                      className="w-full bg-[#4eb4a7] hover:bg-[#3da296] text-white rounded-full shadow-md hover:shadow-lg transition-all"
                     >
-                      <Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact Us</Link>
+                      <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
+                        <span className="font-medium">Contact Us</span>
+                      </Link>
                     </Button>
                   </div>
                 </div>

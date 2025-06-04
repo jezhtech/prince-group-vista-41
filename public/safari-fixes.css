@@ -44,5 +44,25 @@
         display: none !important;
       }
     }
+    
+    /* Mobile menu specific fixes for Safari */
+    .fixed div[class*="bg-white"] {
+      background-color: #ffffff !important;
+      background: #ffffff !important;
+    }
+    
+    /* Make all menu items clearly visible */
+    a, button, span {
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    /* Force menu text to be visible */
+    a span {
+      color: currentColor !important;
+      visibility: visible !important;
+    }
+    
+    /* Force menu button to be visible on Safari */
   }
 } 

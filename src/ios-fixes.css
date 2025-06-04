@@ -49,6 +49,24 @@
     transform: translateZ(0) !important;
   }
   
+  /* iOS-specific mobile menu fixes */
+  .mobile-menu-safari {
+    background-color: #ffffff !important;
+  }
+  
+  /* Force solid white background for mobile menu */
+  nav ~ .fixed .bg-white {
+    background-color: #ffffff !important;
+    opacity: 1 !important;
+  }
+  
+  /* Ensure menu text is visible */
+  a span, button span {
+    color: inherit !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
   /* Fix menu button on iOS, but respect responsive breakpoints */
   @media (max-width: 767px) {
     button[aria-label="Toggle menu"] {
