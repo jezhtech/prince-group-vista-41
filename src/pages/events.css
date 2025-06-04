@@ -1,0 +1,132 @@
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Dialog animation enhancements */
+.dialog-content {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fix dialog alignment issues */
+.max-h-\[400px\].overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+}
+
+/* Fix dialog overflow issues */
+[role="dialog"] {
+  max-height: 95vh;
+  overflow-y: auto;
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  max-width: 95vw !important;
+  width: 100% !important;
+}
+
+/* Enhanced text color transitions */
+.text-color-transition {
+  transition: color 0.7s ease, background 0.7s ease, border-color 0.7s ease;
+}
+
+/* Add custom styling for dialog content */
+.dialog-content {
+  max-width: 95vw !important;
+  max-height: 85vh !important;
+  overflow-y: auto;
+  margin: 0 auto;
+  padding: 1rem !important;
+}
+
+@media (min-width: 768px) {
+  .dialog-content {
+    padding: 1.5rem !important;
+    max-width: 90vw !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .dialog-content {
+    padding: 2rem !important;
+    max-width: 85vw !important;
+  }
+}
+
+/* Add styling for info button */
+.info-button {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.info-button:hover {
+  opacity: 1;
+}
+
+/* Carousel styling */
+.ticket-carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.ticket-carousel-item {
+  transition: transform 0.5s ease;
+}
+
+/* Fix button alignment in footer */
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Prevent content from being hidden under the navbar */
+.content-padding-top {
+  padding-top: 72px;
+}
+
+@media (min-width: 768px) {
+  .content-padding-top {
+    padding-top: 76px;
+  }
+}
+
+/* Fix responsive layouts for iPads and tablets */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+  .ipad-landscape-fix {
+    padding-top: 80px;
+    min-height: calc(100vh - 80px);
+  }
+  
+  [role="dialog"] {
+    max-height: 90vh;
+  }
+} 
