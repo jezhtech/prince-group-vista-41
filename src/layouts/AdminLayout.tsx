@@ -98,18 +98,18 @@ const AdminLayout = () => {
                 <Button className="w-full flex items-center justify-center" variant="outline">
                   <Download size={18} className="mr-2" /> Export Data
                 </Button>
-                <Button className="w-full" variant="outline">
-                  <LogOut size={18} className="mr-2" /> Logout
-                </Button>
+              <Button className="w-full" variant="outline">
+                <LogOut size={18} className="mr-2" /> Logout
+              </Button>
               </div>
             ) : (
               <div className="space-y-2">
                 <Button className="w-full p-2 flex justify-center" variant="outline">
                   <Download size={18} />
                 </Button>
-                <Button className="w-full p-2 flex justify-center" variant="outline">
-                  <LogOut size={18} />
-                </Button>
+              <Button className="w-full p-2 flex justify-center" variant="outline">
+                <LogOut size={18} />
+              </Button>
               </div>
             )}
           </div>
@@ -121,12 +121,12 @@ const AdminLayout = () => {
         <header className="bg-white h-16 border-b border-gray-200 shadow-sm">
           <div className="container mx-auto h-full px-4 flex items-center justify-between">
             <div className="flex items-center">
-              <button
+            <button
                 className="p-2 rounded-md text-gray-500 hover:bg-gray-100 md:mr-4"
-                onClick={toggleSidebar}
-              >
-                <Menu size={24} />
-              </button>
+              onClick={toggleSidebar}
+            >
+              <Menu size={24} />
+            </button>
               <h1 className="text-lg font-bold hidden md:block">Event Management Console</h1>
             </div>
             <div className="flex items-center space-x-4">
@@ -134,9 +134,9 @@ const AdminLayout = () => {
                 <Settings size={18} className="mr-2" /> Settings
               </Button>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-700">Admin User</span>
-                <div className="h-8 w-8 bg-ui-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-xs font-medium text-ui-blue-600">AU</span>
+              <span className="text-sm font-medium text-gray-700">Admin User</span>
+              <div className="h-8 w-8 bg-ui-blue-100 rounded-full flex items-center justify-center">
+                <span className="text-xs font-medium text-ui-blue-600">AU</span>
                 </div>
               </div>
             </div>

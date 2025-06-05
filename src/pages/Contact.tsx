@@ -604,7 +604,7 @@ const Contact = () => {
             </MapContainer>
           </div>
         </section>
-        
+
         {/* Contact Form Section - Redesigned */}
         <section id="contact-form" className="py-20 bg-gradient-to-br from-[#f8fdfc] via-white to-[#f0faf9]">
           <div className="container mx-auto px-4">
@@ -670,108 +670,108 @@ const Contact = () => {
                                       <div className="flex items-center gap-2">
                                         <span className="text-[#4eb4a7]">{type.icon}</span>
                                         <span>{type.name}</span>
-                                      </div>
+                  </div>
                                     </SelectItem>
-                                  ))}
+                ))}
                                 </SelectContent>
                               </Select>
-                            </div>
-                            
+              </div>
+
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                              <div>
-                                <label htmlFor="name" className="block text-gray-700 mb-2 font-medium">
-                                  Full Name
-                                </label>
-                                <Input
-                                  id="name"
-                                  name="name"
-                                  value={formData.name}
-                                  onChange={handleChange}
-                                  placeholder="John Doe"
-                                  className="border-gray-200"
-                                  required
-                                />
-                              </div>
-                              <div>
-                                <label htmlFor="email" className="block text-gray-700 mb-2 font-medium">
-                                  Email Address
-                                </label>
-                                <Input
-                                  id="email"
-                                  name="email"
-                                  type="email"
-                                  value={formData.email}
-                                  onChange={handleChange}
-                                  placeholder="john@example.com"
-                                  className="border-gray-200"
-                                  required
-                                />
-                              </div>
-                            </div>
+                        <div>
+                          <label htmlFor="name" className="block text-gray-700 mb-2 font-medium">
+                            Full Name
+                          </label>
+                          <Input
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleChange}
+                            placeholder="John Doe"
+                            className="border-gray-200"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label htmlFor="email" className="block text-gray-700 mb-2 font-medium">
+                            Email Address
+                          </label>
+                          <Input
+                            id="email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="john@example.com"
+                            className="border-gray-200"
+                            required
+                          />
+                        </div>
+                      </div>
                             
                             <div>
-                              <label htmlFor="phone" className="block text-gray-700 mb-2 font-medium">
-                                Phone Number
-                              </label>
-                              <Input
-                                id="phone"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handleChange}
-                                placeholder="Your phone number"
-                                className="border-gray-200"
-                              />
-                            </div>
+                        <label htmlFor="phone" className="block text-gray-700 mb-2 font-medium">
+                          Phone Number
+                        </label>
+                        <Input
+                          id="phone"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          placeholder="Your phone number"
+                          className="border-gray-200"
+                        />
+                      </div>
                             
                             <div>
-                              <label htmlFor="subject" className="block text-gray-700 mb-2 font-medium">
-                                Subject
-                              </label>
-                              <Input
-                                id="subject"
-                                name="subject"
-                                value={formData.subject}
-                                onChange={handleChange}
-                                placeholder="How can we help you?"
-                                className="border-gray-200"
-                                required
-                              />
-                            </div>
+                        <label htmlFor="subject" className="block text-gray-700 mb-2 font-medium">
+                          Subject
+                        </label>
+                        <Input
+                          id="subject"
+                          name="subject"
+                          value={formData.subject}
+                          onChange={handleChange}
+                          placeholder="How can we help you?"
+                          className="border-gray-200"
+                          required
+                        />
+                      </div>
                             
                             <div>
-                              <label htmlFor="message" className="block text-gray-700 mb-2 font-medium">
+                        <label htmlFor="message" className="block text-gray-700 mb-2 font-medium">
                                 Your Message
-                              </label>
-                              <Textarea
-                                id="message"
-                                name="message"
-                                value={formData.message}
-                                onChange={handleChange}
+                        </label>
+                        <Textarea
+                          id="message"
+                          name="message"
+                          value={formData.message}
+                          onChange={handleChange}
                                 placeholder="Please provide details about your inquiry..."
-                                rows={5}
-                                className="border-gray-200 resize-none"
-                                required
-                              />
-                            </div>
+                          rows={5}
+                          className="border-gray-200 resize-none"
+                          required
+                        />
+                      </div>
                           </div>
                           
-                          <Button 
-                            type="submit" 
+                      <Button 
+                        type="submit" 
                             className="w-full bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] hover:from-[#3da296] hover:to-[#4e9da3] text-white flex items-center justify-center gap-2 py-6 rounded-xl"
-                            disabled={isSubmitting}
-                          >
-                            {isSubmitting ? 'Sending...' : (
-                              <>
-                                Send Message
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? 'Sending...' : (
+                          <>
+                            Send Message
                                 <Send className="h-4 w-4 ml-1" />
-                              </>
-                            )}
-                          </Button>
+                          </>
+                        )}
+                      </Button>
                           
                           <p className="text-xs text-gray-500 mt-4 text-center">
-                            By submitting this form, you agree to our privacy policy and terms of service.
-                          </p>
-                        </form>
+                        By submitting this form, you agree to our privacy policy and terms of service.
+                      </p>
+                    </form>
                       </TabsContent>
                       
                       <TabsContent value="call" className="m-0 p-6">
@@ -824,14 +824,14 @@ const Contact = () => {
                                       <div className="flex items-center gap-2">
                                         <span className="text-[#4eb4a7]">{type.icon}</span>
                                         <span>{type.name}</span>
-                                      </div>
+                  </div>
                                     </SelectItem>
                                   ))}
                                 </SelectContent>
                               </Select>
-                            </div>
-                            
-                            <div>
+                </div>
+
+                <div>
                               <label htmlFor="message" className="block text-gray-700 mb-2 font-medium">
                                 Additional Information
                               </label>
@@ -867,8 +867,8 @@ const Contact = () => {
                       </TabsContent>
                     </Tabs>
                   </motion.div>
-                </div>
-                
+                  </div>
+
                 {/* Testimonials Section */}
                 <div className="lg:col-span-1">
                   <motion.div
@@ -886,15 +886,15 @@ const Contact = () => {
                         </p>
                       </div>
                       
-                      <div className="space-y-4">
+                    <div className="space-y-4">
                         {testimonials.map((testimonial, index) => (
                           <Card key={index} className="bg-white border border-[#4eb4a7]/10 shadow-md hover:shadow-lg transition-all duration-300">
                             <CardContent className="p-4">
                               <div className="flex items-start gap-4">
                                 <div className="flex-shrink-0 h-12 w-12 rounded-full bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] flex items-center justify-center text-white font-bold text-lg">
                                   {testimonial.avatar}
-                                </div>
-                                <div>
+                      </div>
+                      <div>
                                   <div className="flex items-center mb-1">
                                     <p className="font-semibold text-gray-800">{testimonial.name}</p>
                                     <Badge className="ml-2 bg-[#4eb4a7]/10 text-[#4eb4a7] hover:bg-[#4eb4a7]/20">

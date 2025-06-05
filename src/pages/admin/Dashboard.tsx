@@ -26,7 +26,7 @@ const AdminDashboard = () => {
       {/* Header with event info and quick stats */}
       <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-          <div>
+    <div>
             <h1 className="text-2xl font-bold text-ui-gray-900">Annual Developers Conference 2023</h1>
             <p className="text-ui-gray-500 flex items-center mt-1">
               <Calendar className="h-4 w-4 mr-2" /> 
@@ -42,8 +42,8 @@ const AdminDashboard = () => {
               <RefreshCw className="h-4 w-4 mr-2" /> Refresh Data
             </Button>
           </div>
-        </div>
-        
+      </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="bg-gradient-to-br from-ui-blue-50 to-white">
             <CardHeader className="pb-2">
@@ -55,10 +55,10 @@ const AdminDashboard = () => {
               <div className="flex justify-between items-end">
                 <div>
                   <div className="text-3xl font-bold text-ui-gray-900">783</div>
-                  <p className="text-xs flex items-center mt-1">
-                    <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
+              <p className="text-xs flex items-center mt-1">
+                  <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
                     <span className="text-green-500">+12% from last week</span>
-                  </p>
+              </p>
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-medium text-ui-gray-900">1,000</div>
@@ -88,7 +88,7 @@ const AdminDashboard = () => {
                   <div className="text-sm font-medium text-ui-gray-900">31.3%</div>
                   <div className="text-xs text-ui-gray-500">Conversion</div>
                 </div>
-              </div>
+      </div>
               <Progress className="h-2 mt-3 bg-green-100" value={31.3} />
             </CardContent>
           </Card>
@@ -98,17 +98,17 @@ const AdminDashboard = () => {
               <CardTitle className="text-sm font-medium text-ui-gray-500 flex items-center">
                 <CreditCard className="h-4 w-4 mr-2 text-orange-500" /> Ticket Revenue
               </CardTitle>
-            </CardHeader>
-            <CardContent>
+          </CardHeader>
+          <CardContent>
               <div className="flex justify-between items-end">
-                <div>
+                  <div>
                   <div className="text-3xl font-bold text-ui-gray-900">₹4,15,000</div>
                   <p className="text-xs flex items-center mt-1">
                     <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
                     <span className="text-green-500">+15% from target</span>
                   </p>
-                </div>
-                <div className="text-right">
+                  </div>
+                  <div className="text-right">
                   <div className="text-sm font-medium text-ui-gray-900">₹5,30</div>
                   <div className="text-xs text-ui-gray-500">Avg. Ticket</div>
                 </div>
@@ -129,8 +129,8 @@ const AdminDashboard = () => {
                   <p className="text-xs flex items-center mt-1">
                     <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
                     <span className="text-green-500">+5% from target</span>
-                  </p>
-                </div>
+                    </p>
+                  </div>
                 <div className="text-right">
                   <div className="text-sm font-medium text-ui-gray-900">₹1,000</div>
                   <div className="text-xs text-ui-gray-500">Avg. Signup</div>
@@ -165,7 +165,7 @@ const AdminDashboard = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="h-auto">
           <CardHeader>
             <CardTitle>Ticket Types</CardTitle>
@@ -192,12 +192,12 @@ const AdminDashboard = () => {
                       <div className={`text-sm ${type.percent === 100 ? 'text-prince-green' : 'text-ui-gray-500'}`}>
                         {type.percent === 100 ? 'Sold out' : 'Available'}
                       </div>
-                    </div>
+                  </div>
                   </div>
                   <Progress 
                     className={`h-2 ${type.percent === 100 ? 'bg-prince-green/20' : 'bg-ui-gray-100'}`} 
                     value={type.percent} 
-                  />
+                    />
                 </div>
               ))}
             </div>
@@ -208,7 +208,7 @@ const AdminDashboard = () => {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Recent registrations and membership */}
       <Tabs defaultValue="recent" className="w-full">
         <TabsList className="mb-6 bg-ui-gray-100">
@@ -332,11 +332,11 @@ const AdminDashboard = () => {
         <TabsContent value="revenue" className="animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Card>
-              <CardHeader>
+          <CardHeader>
                 <CardTitle>Revenue by Source</CardTitle>
                 <CardDescription>Breakdown of event income</CardDescription>
-              </CardHeader>
-              <CardContent>
+          </CardHeader>
+          <CardContent>
                 <div className="h-64 flex justify-center items-center">
                   <div className="text-center">
                     <div className="text-ui-gray-400 mb-2">Pie chart visualization would go here</div>
@@ -349,18 +349,18 @@ const AdminDashboard = () => {
                         <div className="w-3 h-3 bg-prince-green rounded-full mr-2"></div>
                         <span>Membership (37%)</span>
                       </div>
-                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
+                  </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
                 <CardTitle>Total Revenue</CardTitle>
                 <CardDescription>All income from the event</CardDescription>
-              </CardHeader>
-              <CardContent>
+          </CardHeader>
+          <CardContent>
                 <div className="flex flex-col items-center justify-center h-64">
                   <div className="text-4xl font-bold mb-2">₹6,60,000</div>
                   <div className="text-ui-gray-500 mb-6">Total event revenue</div>
@@ -386,10 +386,10 @@ const AdminDashboard = () => {
                   <Button variant="outline" size="sm" className="mt-6">
                     <Download className="h-4 w-4 mr-2" /> Export Report
                   </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
         </TabsContent>
       </Tabs>
     </div>

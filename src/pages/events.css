@@ -50,11 +50,32 @@
   margin: 0 !important;
   max-width: 95vw !important;
   width: 100% !important;
+  /* Safari fix for dialog positioning */
+  -webkit-transform: translate(-50%, -50%) !important;
 }
 
 /* Enhanced text color transitions */
 .text-color-transition {
   transition: color 0.7s ease, background 0.7s ease, border-color 0.7s ease;
+  -webkit-transition: color 0.7s ease, background 0.7s ease, border-color 0.7s ease;
+}
+
+/* Add a gradient background size for animations */
+.bg-size-200 {
+  background-size: 200% 200%;
+  animation: gradientMove 3s ease infinite alternate;
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Add custom styling for dialog content */
@@ -64,6 +85,8 @@
   overflow-y: auto;
   margin: 0 auto;
   padding: 1rem !important;
+  /* Safari fix for overflow */
+  -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 768px) {
@@ -82,12 +105,15 @@
 
 /* Add styling for info button */
 .info-button {
-  opacity: 0.7;
-  transition: opacity 0.3s ease;
+  opacity: 1 !important;
+  transition: all 0.3s ease !important;
+  -webkit-transition: all 0.3s ease !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 .info-button:hover {
-  opacity: 1;
+  transform: scale(1.1) !important;
+  background-color: rgba(255, 255, 255, 0.25) !important;
 }
 
 /* Carousel styling */
@@ -98,6 +124,7 @@
 
 .ticket-carousel-item {
   transition: transform 0.5s ease;
+  -webkit-transition: transform 0.5s ease;
 }
 
 /* Fix button alignment in footer */
@@ -129,4 +156,90 @@
   [role="dialog"] {
     max-height: 90vh;
   }
+}
+
+/* Safari-specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Fix for Safari flexbox issues */
+  .safari-flex-fix {
+    display: flex;
+    flex-direction: column;
+    /* Prevent content overflow */
+    width: 100%;
+  }
+  
+  /* Fix for Safari button alignment */
+  .safari-button-fix {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Fix for Safari background attachment */
+  .safari-bg-fix {
+    background-attachment: scroll !important;
+  }
+}
+
+/* Mobile optimization */
+@media (max-width: 640px) {
+  .mobile-padding-fix {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  .mobile-text-fix {
+    font-size: 0.875rem !important;
+    line-height: 1.25rem !important;
+  }
+  
+  .mobile-height-fix {
+    min-height: auto !important;
+    height: auto !important;
+  }
+}
+
+/* Fix for fixed position navbar on iOS */
+@supports (-webkit-touch-callout: none) {
+  .ios-fixed-fix {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+}
+
+/* Fix for proper vertical alignment in flex containers on Safari */
+.safari-vertical-fix {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+/* Fix for better image rendering on Safari */
+.safari-image-fix {
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Fix for consistent grid layouts across browsers */
+.cross-browser-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+/* Fix for consistent border radius across browsers */
+.cross-browser-rounded {
+  border-radius: 0.5rem;
+  -webkit-border-radius: 0.5rem;
+}
+
+/* Fix to prevent content jumps when scrollbars appear */
+html {
+  overflow-y: scroll;
+  scrollbar-width: thin;
 } 

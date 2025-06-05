@@ -5,14 +5,33 @@ import { Button } from "@/components/ui/button";
 import Logo from './Logo';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// Define breakpoints for better control
+const TABLET_BREAKPOINT = 1024; // Changed from 768 (md) to 1024 (lg) to include iPad mini
+const MOBILE_BREAKPOINT = 768;
+
+// Function to detect iPad
+const isIPad = () => {
+  const userAgent = navigator.userAgent;
+  return /iPad|Macintosh/i.test(userAgent) && 'ontouchend' in document;
+};
+
 const MainNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [hoveredService, setHoveredService] = useState<string | null>(null);
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState(false);
+  const [isIpad, setIsIpad] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
+    const handleResize = () => {
+      const isTablet = window.innerWidth < TABLET_BREAKPOINT;
+      const ipadDetected = isIPad();
+      setIsIpad(ipadDetected);
+      setIsMobileOrTablet(isTablet || ipadDetected);
+    };
+
     const handleScroll = () => {
       const isScrolled = window.scrollY > 10;
       if (isScrolled !== scrolled) {
@@ -20,14 +39,28 @@ const MainNavbar = () => {
       }
     };
 
+    // Initial check
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
     window.addEventListener('scroll', handleScroll);
+    
     return () => {
+      window.removeEventListener('resize', handleResize);
       window.removeEventListener('scroll', handleScroll);
     };
   }, [scrolled]);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const toggleDropdown = (dropdown: string) => {
+    if (activeDropdown === dropdown) {
+      setActiveDropdown(null);
+    } else {
+      setActiveDropdown(dropdown);
+    }
   };
 
   const isActive = (path: string) => {
@@ -39,13 +72,15 @@ const MainNavbar = () => {
       title: "Documentation Services",
       description: "Quick & reliable document processing",
       icon: <FileText className="w-8 h-8" />,
-      stats: "33500+ Documents Processed"
+      stats: "33500+ Documents Processed",
+      path: "/documentation-services"
     },
     loans: {
       title: "Loan Services", 
       description: "Flexible loans with competitive rates",
       icon: <CreditCard className="w-8 h-8" />,
-      stats: "40crore + Loans Disbursed"
+      stats: "40crore + Loans Disbursed",
+      path: "/loan-services"
     }
   };
 
@@ -55,13 +90,20 @@ const MainNavbar = () => {
       name: 'Services', 
       path: '/services',
       icon: <FileText className="w-4 h-4" />,
-      hasDropdown: true
+      hasDropdown: true,
+      dropdown: [
+        { name: 'Documentation Services', path: '/documentation-services', icon: <FileText className="w-4 h-4" /> },
+        { name: 'Loan Services', path: '/loan-services', icon: <CreditCard className="w-4 h-4" /> },
+      ]
     },
     { name: 'Branches', path: '/branches', icon: <Building2 className="w-4 h-4" /> },
     { name: 'Events', path: '/events', icon: <Calendar className="w-4 h-4" /> },
     { name: 'Membership', path: '/membership', icon: <UsersIcon className="w-4 h-4" /> },
     { name: 'About', path: '/about', icon: <Info className="w-4 h-4" /> },
   ];
+
+  // If it's an iPad, always use mobile layout
+  const shouldUseMobileLayout = isMobileOrTablet || isIpad;
 
   return (
     <>
@@ -84,11 +126,11 @@ const MainNavbar = () => {
                 opacity: 1
               }}
             >
-              <Logo />
-            </div>
+            <Logo />
+          </div>
 
-            {/* Desktop Navigation - Floating Pill Design */}
-          <div className="hidden md:block">
+            {/* Desktop Navigation - Only shown on large screens and NOT on iPads */}
+          <div className={`hidden ${!isIpad ? "lg:block" : ""}`}>
               <motion.div 
                 className={`flex items-center gap-2 ${
                   scrolled 
@@ -111,7 +153,7 @@ const MainNavbar = () => {
                           isActive(item.path) 
                               ? 'bg-[#4eb4a7] text-white' 
                               : 'text-gray-700 hover:bg-[#85cbc3]/20'
-                          }`}
+                        }`}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                       >
@@ -136,7 +178,7 @@ const MainNavbar = () => {
                                 {Object.entries(servicePreview).map(([key, service]) => (
                             <Link
                                     key={key}
-                                    to={key === "documentation" ? "/documentation-services" : key === "loans" ? "/loan-services" : `/services#${key}`}
+                                    to={service.path}
                                     className="group relative p-6 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 hover:from-[#4eb4a7]/10 hover:to-[#85cbc3]/10 transition-all duration-300"
                                     onMouseEnter={() => setHoveredService(key)}
                                     onMouseLeave={() => setHoveredService(null)}
@@ -216,38 +258,38 @@ const MainNavbar = () => {
                     asChild 
                     className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300"
                   >
-                    <Link to="/contact">Contact Us</Link>
+                  <Link to="/contact">Contact Us</Link>
                 </Button>
                 </motion.div>
               </motion.div>
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile and Tablet menu button - Shown on all iPads regardless of orientation */}
             <div 
-              className="md:hidden z-[999] mobile-menu-safari" 
+              className={`${!isIpad ? "lg:hidden" : ""} z-[999] mobile-menu-safari`}
               style={{ 
                 position: "relative",
               }}
             >
-              <button 
-                onClick={toggleMenu}
+            <button
+              onClick={toggleMenu}
                 className="p-2 rounded-full bg-white/80 shadow-md"
                 aria-label="Toggle menu"
-              >
+            >
                 {isMenuOpen ? 
                   <X className="h-6 w-6 text-[#4eb4a7]" /> : 
                   <Menu className="h-6 w-6 text-[#4eb4a7]" />
                 }
-              </button>
+            </button>
             </div>
           </div>
         </div>
 
-        {/* Mobile Menu - Slide from right */}
+        {/* Mobile Menu - Slide from right - Also used for iPad mini */}
         <AnimatePresence>
         {isMenuOpen && (
             <motion.div 
-              className="fixed inset-0 top-16 bg-black/70 md:hidden z-50"
+              className={`fixed inset-0 top-16 bg-black/70 ${!isIpad ? "lg:hidden" : ""} z-50`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -275,18 +317,56 @@ const MainNavbar = () => {
                       transition={{ delay: navItems.indexOf(item) * 0.1 }}
                       className="mb-2"
                     >
-                      <Link
-                        to={item.path}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                          isActive(item.path) 
-                            ? 'bg-[#4eb4a7] text-white shadow-md' 
-                            : 'text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5'
-                        }`}
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {item.icon}
-                        <span className="font-medium">{item.name}</span>
-                      </Link>
+                      {item.hasDropdown ? (
+                        <div>
+                          <button
+                            onClick={() => toggleDropdown(item.name)}
+                            className={`flex w-full items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all ${
+                              isActive(item.path) 
+                                ? 'bg-[#4eb4a7] text-white shadow-md' 
+                                : 'text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              {item.icon}
+                              <span className="font-medium">{item.name}</span>
+                            </div>
+                            <ChevronDown className={`h-4 w-4 transition-transform ${activeDropdown === item.name ? 'rotate-180' : ''}`} />
+                          </button>
+
+                          {activeDropdown === item.name && (
+                            <div className="pl-4 mt-2 space-y-2 border-l-2 border-[#4eb4a7]/30">
+                              {item.dropdown.map((dropdownItem) => (
+                                <Link
+                                  key={dropdownItem.name}
+                                  to={dropdownItem.path}
+                                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-[#4eb4a7]/5"
+                                  onClick={() => {
+                                    setActiveDropdown(null);
+                                    setIsMenuOpen(false);
+                                  }}
+                                >
+                                  {dropdownItem.icon}
+                                  <span>{dropdownItem.name}</span>
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <Link
+                          to={item.path}
+                          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                            isActive(item.path) 
+                              ? 'bg-[#4eb4a7] text-white shadow-md' 
+                              : 'text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5'
+                          }`}
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          {item.icon}
+                          <span className="font-medium">{item.name}</span>
+                        </Link>
+                      )}
                     </motion.div>
                   ))}
                   
@@ -318,9 +398,9 @@ const MainNavbar = () => {
         </AnimatePresence>
       </nav>
 
-      {/* Service Quick Access Bar - Shows on scroll */}
+      {/* Service Quick Access Bar - Shows on scroll, but not on iPads */}
       <AnimatePresence>
-        {scrolled && (
+        {scrolled && !isIpad && (
           <motion.div 
             className="fixed top-20 left-1/2 transform -translate-x-1/2 z-40 hidden lg:block"
             initial={{ y: -20, opacity: 0 }}

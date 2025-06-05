@@ -164,7 +164,7 @@ const DocumentationServices = () => {
                     asChild
                   >
                     <Link to="/contact">
-                      Schedule a Consultation
+                Schedule a Consultation
                     </Link>
                   </Button>
                   <Button 
@@ -175,7 +175,7 @@ const DocumentationServices = () => {
                     <a href="#document-types">
                       Explore Services <ArrowRight className="ml-2 h-5 w-5" />
                     </a>
-                  </Button>
+              </Button>
                 </div>
 
                 {/* Stats */}
@@ -850,7 +850,7 @@ const DocumentationServices = () => {
             <div className="flex flex-wrap justify-center gap-4">
               <Button size="lg" className="bg-white text-[#4eb4a7] hover:bg-gray-100" asChild>
                 <Link to="/contact">
-                  Schedule a Consultation
+                Schedule a Consultation
                 </Link>
               </Button>
             </div>

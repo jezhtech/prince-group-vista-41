@@ -68,7 +68,7 @@
   }
   
   /* Fix menu button on iOS, but respect responsive breakpoints */
-  @media (max-width: 767px) {
+  @media (max-width: 1023px) {
     button[aria-label="Toggle menu"] {
       -webkit-appearance: button !important;
       visibility: visible !important;
@@ -79,22 +79,145 @@
     }
     
     /* Mobile-only classes */
-    .md\:hidden {
+    .lg\:hidden {
       display: block !important;
     }
   }
   
   /* Proper desktop hiding */
-  @media (min-width: 768px) {
-    .md\:hidden {
+  @media (min-width: 1024px) {
+    .lg\:hidden {
       display: none !important;
     }
-    .md\:block {
+    .lg\:block {
       display: block !important;
     }
     
     button[aria-label="Toggle menu"] {
       display: none !important;
+    }
+  }
+
+  /* iPad specific fixes - portrait mode */
+  @media only screen 
+    and (min-device-width: 768px) 
+    and (max-device-width: 1024px)
+    and (orientation: portrait) {
+    /* Force mobile menu for iPad in portrait */
+    .lg\:block {
+      display: none !important;
+    }
+    .lg\:hidden {
+      display: block !important;
+    }
+    button[aria-label="Toggle menu"] {
+      display: block !important;
+      visibility: visible !important;
+    }
+
+    /* Ensure menu button is fully visible */
+    .mobile-menu-safari {
+      display: block !important;
+      position: relative !important;
+      z-index: 9999 !important;
+    }
+
+    /* Proper alignment for iPad */
+    .container {
+      max-width: 100% !important;
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+    }
+  }
+
+  /* iPad specific fixes - landscape mode */
+  @media only screen 
+    and (min-device-width: 768px) 
+    and (max-device-width: 1366px)
+    and (orientation: landscape) {
+    /* Force mobile menu for iPad landscape - all models */
+    html {
+      /* Added to increase specificity */
+      font-size: 16px !important;
+    }
+    
+    /* Override any screen-width based display properties */
+    .hidden {
+      display: none !important;
+    }
+    
+    body .lg\:block {
+      display: none !important;
+    }
+    body .lg\:hidden {
+      display: block !important;
+    }
+    body .hidden.lg\:block {
+      display: none !important;
+    }
+    
+    button[aria-label="Toggle menu"] {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    /* Ensure menu button is fully visible */
+    .mobile-menu-safari {
+      display: block !important;
+      position: relative !important;
+      z-index: 9999 !important;
+      opacity: 1 !important;
+    }
+
+    /* Proper alignment for iPad landscape */
+    .container {
+      max-width: 100% !important;
+      padding-left: 24px !important;
+      padding-right: 24px !important;
+    }
+    
+    /* Force all iPads to use mobile nav in landscape */
+    nav .hidden.lg\:block,
+    nav div[class*="hidden lg:block"] {
+      display: none !important;
+    }
+    
+    nav .lg\:hidden,
+    nav div[class*="lg:hidden"] {
+      display: block !important;
+    }
+  }
+  
+  /* All-iPads override (covers all iPad sizes including Pro) */
+  @media only screen 
+    and (min-device-width: 768px) 
+    and (max-device-width: 1366px) {
+    
+    @supports (-webkit-touch-callout: none) {
+      /* This targets only iPads */
+      
+      /* Always use mobile nav on iPads regardless of size */
+      .lg\:block {
+        display: none !important;
+      }
+      .lg\:hidden {
+        display: block !important;
+      }
+      
+      /* Ensure toggle menu is visible */
+      button[aria-label="Toggle menu"] {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+      }
+      
+      /* Make sure mobile menu is styled properly */
+      .mobile-menu-safari {
+        display: block !important;
+        position: relative !important;
+        z-index: 9999 !important;
+      }
     }
   }
 } 

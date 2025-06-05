@@ -16,7 +16,7 @@ const Branches = () => {
   const [hoveredBranch, setHoveredBranch] = useState<string | null>(null);
   const [selectedBranch, setSelectedBranch] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
+  
   const branchData = [
     {
       id: "thingal",
@@ -530,7 +530,7 @@ const Branches = () => {
                             <div className="flex-1">
                               <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-[#4eb4a7] transition-colors duration-300">{branch.name}</h3>
                               <p className="text-gray-600 text-sm mb-4">{branch.address}</p>
-                              
+                                
                               <div className="flex flex-col space-y-3">
                                 {branch.phone !== "Not Available" && (
                                   <a href={`tel:${branch.phone}`} className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#4eb4a7] transition-colors">
@@ -610,7 +610,7 @@ const Branches = () => {
                       Contact Support
                     </Link>
                   </Button>
-                </div>
+            </div>
               </motion.div>
             </div>
           </div>

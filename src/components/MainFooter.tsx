@@ -156,10 +156,10 @@ const MainFooter = () => {
                       />
                     </div>
                   ))}
-                </div>
+            </div>
                 <div className="ml-2 text-white/90 text-sm">
                   <span className="font-bold text-white">30000+</span> Happy Customers
-                </div>
+            </div>
               </motion.div>
               
               <motion.div 
@@ -309,8 +309,8 @@ const MainFooter = () => {
                 </a>
               </li>
               </motion.ul>
-            </div>
           </div>
+        </div>
 
           {/* Footer Bottom */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-t border-white/20 pt-8">
