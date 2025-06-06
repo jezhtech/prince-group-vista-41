@@ -90,11 +90,24 @@ const ipadFixStyles = `
   .ipad-9th-gen .dialog-content {
     max-height: 85vh !important;
     overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
     padding: 16px !important;
     width: 90vw !important;
     margin: 0 auto !important;
     display: flex !important;
     flex-direction: column !important;
+  }
+
+  /* Ensure scrollbars are visible on iOS */
+  .ipad-9th-gen .dialog-content::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+
+  .ipad-9th-gen .dialog-content::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 1px rgba(255, 255, 255, .3);
   }
 
   .ipad-9th-gen .dialog-content > div {
@@ -138,6 +151,14 @@ const ipadFixStyles = `
   .ipad-9th-gen .dialog-content [data-radix-select-trigger] {
     height: 40px !important;
     margin-bottom: 8px !important;
+  }
+
+  /* Explicitly enable scrolling for dialog content */
+  .ipad-9th-gen .ipad-dialog-content {
+    max-height: 60vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-right: 8px !important;
   }
 
   /* Fix for attraction navigation buttons in hero section */
@@ -211,6 +232,11 @@ const ipadFixStyles = `
     .ipad-9th-gen .dialog-content .grid > div {
       width: 48% !important;
       flex: 0 0 48% !important;
+    }
+
+    /* Adjust scrollable area for landscape mode */
+    .ipad-9th-gen .ipad-dialog-content {
+      max-height: 50vh !important;
     }
   }
   
@@ -986,7 +1012,8 @@ const Events = () => {
                     }}
                     aria-label="Previous attraction"
                   >
-                    <ArrowRight className="h-5 w-5 rotate-180" />
+                    {/* Explicit left-facing arrow */}
+                    <ArrowRight className="h-5 w-5 rotate-180" style={{ transform: 'rotate(180deg)' }} />
                   </button>
                   
                   <button
@@ -998,7 +1025,8 @@ const Events = () => {
                     }}
                     aria-label="Next attraction"
                   >
-                    <ArrowRight className="h-5 w-5" />
+                    {/* Explicit right-facing arrow */}
+                    <ArrowRight className="h-5 w-5" style={{ transform: 'rotate(0deg)' }} />
                   </button>
                   
                   {/* Decorative Elements */}
@@ -1351,9 +1379,9 @@ const Events = () => {
           </DialogHeader>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4 safari-flex-fix ipad-dialog-content">
-            <div>
+            <div className="ipad-scrollable-section">
               <h3 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Ticket Class</h3>
-              <div className="space-y-3 md:space-y-4 max-h-[250px] md:max-h-[400px] overflow-y-auto pr-2 custom-scrollbar safari-flex-fix">
+              <div className="space-y-3 md:space-y-4 max-h-[250px] md:max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 {ticketClasses.map((ticket) => (
                   <div 
                     key={ticket.id} 
@@ -1398,7 +1426,7 @@ const Events = () => {
               </div>
             </div>
             
-            <div>
+            <div className="ipad-scrollable-section">
               <h3 className="text-lg font-semibold mb-4 text-white/90">Ticket Details</h3>
                 <div className="space-y-6">
                 <div>
@@ -1409,7 +1437,7 @@ const Events = () => {
                       size="icon"
                       onClick={() => decreaseQuantity(setTicketQuantity, ticketQuantity)}
                       disabled={ticketQuantity <= 1}
-                      className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                      className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
@@ -1421,7 +1449,7 @@ const Events = () => {
                       size="icon"
                       onClick={() => increaseQuantity(setTicketQuantity, ticketQuantity, 8)}
                       disabled={ticketQuantity >= 8}
-                      className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                      className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
@@ -1525,6 +1553,21 @@ const Events = () => {
             overflow: visible !important;
             display: flex !important;
             flex-direction: column !important;
+            max-height: 60vh !important;
+            -webkit-overflow-scrolling: touch !important;
+          }
+          
+          .ipad-9th-gen .ipad-scrollable-section {
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            margin-bottom: 16px !important;
+            padding-right: 4px !important;
+          }
+          
+          /* Enable native scrolling behavior for iOS */
+          .ipad-9th-gen .overflow-y-auto {
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
           }
           
           .ipad-9th-gen .ipad-dialog-footer {
@@ -1547,6 +1590,19 @@ const Events = () => {
             min-width: 44px !important;
             width: auto !important;
           }
+          
+          /* Make scrollbars visible on iOS */
+          .ipad-9th-gen ::-webkit-scrollbar {
+            width: 5px !important;
+            height: 5px !important;
+            background-color: rgba(0, 0, 0, 0.3) !important;
+            border-radius: 10px !important;
+          }
+          
+          .ipad-9th-gen ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.4) !important;
+            border-radius: 10px !important;
+          }
         }
       `}</style>
       
@@ -1563,7 +1619,7 @@ const Events = () => {
           </DialogHeader>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4 ipad-dialog-content">
-            <div>
+            <div className="ipad-scrollable-section">
               <h3 className="text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Package</h3>
               <div className="space-y-3 md:space-y-4">
                 {helicopterPackages.map((pkg) => (
@@ -1611,7 +1667,7 @@ const Events = () => {
               </div>
             </div>
             
-            <div>
+            <div className="ipad-scrollable-section">
               <h3 className="text-lg font-semibold mb-3 md:mb-4 text-white/90 mt-4 md:mt-0">Booking Details</h3>
               <div className="space-y-4 md:space-y-6">
                 <div>
@@ -1659,7 +1715,7 @@ const Events = () => {
                       size="icon"
                       onClick={() => decreaseQuantity(setHelicopterTickets, helicopterTickets)}
                       disabled={helicopterTickets <= 1}
-                      className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                      className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
                     >
                       <Minus className="h-4 w-4" />
                     </Button>
@@ -1671,16 +1727,12 @@ const Events = () => {
                       size="icon"
                       onClick={() => increaseQuantity(setHelicopterTickets, helicopterTickets, 4)}
                       disabled={helicopterTickets >= 4}
-                      className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                      className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
                     >
                       <Plus className="h-4 w-4" />
                     </Button>
                   </div>
                   <p className="text-sm text-white/50 mt-1">Maximum 4 tickets per booking</p>
-                </div>
-                
-                <div className="mt-6">
-                  {/* Image removed as requested */}
                 </div>
                 
                 <div>
@@ -1693,7 +1745,7 @@ const Events = () => {
                           ? helicopterPackages.find(p => p.id === selectedHelicopterPackage)?.name 
                           : "Select a package"}
                       </span>
-                      </div>
+                    </div>
                     <div className="flex justify-between">
                       <span className="text-white/70">Tickets</span>
                       <span className="font-medium text-white">{helicopterTickets}</span>
@@ -2354,58 +2406,60 @@ const Events = () => {
                 </DialogHeader>
                 
                 <div className="py-4 ipad-dialog-content">
-                  <div className="relative h-60 rounded-lg overflow-hidden mb-6">
-                    <img 
-                      src={attraction.id === "themepark" ? 
-                        "https://images.unsplash.com/photo-1560106426-c90e52d2027f?q=80&w=2574&auto=format&fit=crop" : 
-                        attraction.image} 
-                      alt={attraction.name} 
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                    <div className="absolute bottom-4 left-4">
-                      <Badge className={`${attraction.buttonColor} text-white`}>
-                        {attraction.date}
-                      </Badge>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-lg font-semibold mb-3 text-white/90">About this Experience</h3>
-                      <p className="text-white/70">{attraction.description}</p>
-                    </div>
-                    
-                    <div>
-                      <h3 className="text-lg font-semibold mb-3 text-white/90">Features</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        {attraction.details.map((detail, idx) => (
-                          <div key={idx} className="flex items-start gap-2">
-                            <CheckCircle className={`h-4 w-4 ${attraction.textColor} mt-1`} />
-                            <span className="text-white/70">{detail}</span>
-                          </div>
-                        ))}
+                  <div className="ipad-scrollable-section">
+                    <div className="relative h-60 rounded-lg overflow-hidden mb-6">
+                      <img 
+                        src={attraction.id === "themepark" ? 
+                          "https://images.unsplash.com/photo-1560106426-c90e52d2027f?q=80&w=2574&auto=format&fit=crop" : 
+                          attraction.image} 
+                        alt={attraction.name} 
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                      <div className="absolute bottom-4 left-4">
+                        <Badge className={`${attraction.buttonColor} text-white`}>
+                          {attraction.date}
+                        </Badge>
                       </div>
                     </div>
                     
-                    {attraction.ticketTypes && (
+                    <div className="space-y-6">
                       <div>
-                        <h3 className="text-lg font-semibold mb-3 text-white/90">Ticket Options</h3>
-                        <div className="space-y-3">
-                          {attraction.ticketTypes.map((ticket, idx) => (
-                            <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <h4 className="font-medium text-white">{ticket.name}</h4>
-                                  <p className="text-sm text-white/60 mt-1">{ticket.description}</p>
-                                </div>
-                                <div className="text-lg font-bold text-white">{formatPrice(ticket.price)}</div>
-                              </div>
+                        <h3 className="text-lg font-semibold mb-3 text-white/90">About this Experience</h3>
+                        <p className="text-white/70">{attraction.description}</p>
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-lg font-semibold mb-3 text-white/90">Features</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                          {attraction.details.map((detail, idx) => (
+                            <div key={idx} className="flex items-start gap-2">
+                              <CheckCircle className={`h-4 w-4 ${attraction.textColor} mt-1`} />
+                              <span className="text-white/70">{detail}</span>
                             </div>
                           ))}
                         </div>
                       </div>
-                    )}
+                      
+                      {attraction.ticketTypes && (
+                        <div>
+                          <h3 className="text-lg font-semibold mb-3 text-white/90">Ticket Options</h3>
+                          <div className="space-y-3">
+                            {attraction.ticketTypes.map((ticket, idx) => (
+                              <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
+                                <div className="flex justify-between items-start">
+                                  <div>
+                                    <h4 className="font-medium text-white">{ticket.name}</h4>
+                                    <p className="text-sm text-white/60 mt-1">{ticket.description}</p>
+                                  </div>
+                                  <div className="text-lg font-bold text-white">{formatPrice(ticket.price)}</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
                 
