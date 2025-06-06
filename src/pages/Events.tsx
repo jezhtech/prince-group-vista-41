@@ -621,8 +621,44 @@ const Events = () => {
     
     if (isIPad9thGen()) {
       document.documentElement.classList.add('ipad-9th-gen');
-    } else {
-      document.documentElement.classList.remove('ipad-9th-gen');
+      
+      // Add a specific function to handle dialog positioning on iOS
+      const fixDialogPositioning = () => {
+        const dialogs = document.querySelectorAll('[role="dialog"]');
+        dialogs.forEach(dialog => {
+          // Ensure dialog scrolls from top
+          if (dialog instanceof HTMLElement) {
+            dialog.scrollTop = 0;
+            
+            // Ensure dialog has correct background
+            const content = dialog.querySelector('.dialog-content');
+            if (content instanceof HTMLElement) {
+              content.style.backgroundColor = '#0c1e3c';
+            }
+          }
+        });
+      };
+      
+      // Apply dialog fixes when dialogs open
+      const dialogObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.addedNodes.length > 0) {
+            fixDialogPositioning();
+          }
+        });
+      });
+      
+      // Observe document body for dialog additions
+      dialogObserver.observe(document.body, { childList: true, subtree: true });
+      
+      return () => {
+        document.documentElement.classList.remove('ipad-9th-gen');
+        const existingStyle = document.getElementById('ipad-9th-gen-fixes');
+        if (existingStyle) {
+          existingStyle.remove();
+        }
+        dialogObserver.disconnect();
+      };
     }
     
     return () => {
@@ -1543,22 +1579,26 @@ const Events = () => {
           .ipad-9th-gen .ipad-dialog-fix {
             padding: 16px !important;
             overflow: auto !important;
+            background-image: linear-gradient(to bottom, #0c1e3c, #0e253f) !important;
           }
           
           .ipad-9th-gen .ipad-dialog-header {
             margin-bottom: 16px !important;
+            background-image: linear-gradient(to bottom, #0c1e3c, #0c1e3c) !important;
+            padding-bottom: 8px !important;
           }
           
           .ipad-9th-gen .ipad-dialog-content {
             overflow: visible !important;
             display: flex !important;
             flex-direction: column !important;
-            max-height: 60vh !important;
+            max-height: none !important;
             -webkit-overflow-scrolling: touch !important;
+            padding-bottom: 16px !important;
           }
           
           .ipad-9th-gen .ipad-scrollable-section {
-            overflow-y: auto !important;
+            overflow: visible !important;
             -webkit-overflow-scrolling: touch !important;
             margin-bottom: 16px !important;
             padding-right: 4px !important;
@@ -1572,6 +1612,9 @@ const Events = () => {
           
           .ipad-9th-gen .ipad-dialog-footer {
             margin-top: 16px !important;
+            padding-top: 12px !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+            background-image: linear-gradient(to bottom, #0e253f, #0e253f) !important;
           }
           
           .ipad-9th-gen .ipad-button-fix {
@@ -1580,28 +1623,18 @@ const Events = () => {
             margin-bottom: 8px !important;
           }
           
-          /* Fix Select elements in iPad */
-          .ipad-9th-gen [data-radix-select-trigger] {
-            min-height: 44px !important;
+          /* Fix for dialog overflow */
+          .ipad-9th-gen [role="dialog"] {
+            overflow-y: auto !important;
+            padding-top: 10vh !important;
+            align-items: flex-start !important;
           }
           
-          /* Ensure quantity selector buttons work properly */
-          .ipad-9th-gen .flex > button.ipad-button-fix {
-            min-width: 44px !important;
-            width: auto !important;
-          }
-          
-          /* Make scrollbars visible on iOS */
-          .ipad-9th-gen ::-webkit-scrollbar {
-            width: 5px !important;
-            height: 5px !important;
-            background-color: rgba(0, 0, 0, 0.3) !important;
-            border-radius: 10px !important;
-          }
-          
-          .ipad-9th-gen ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.4) !important;
-            border-radius: 10px !important;
+          /* Fix for landscape mode */
+          @media (orientation: landscape) {
+            .ipad-9th-gen [role="dialog"] {
+              padding-top: 5vh !important;
+            }
           }
         }
       `}</style>
@@ -2407,6 +2440,7 @@ const Events = () => {
                 
                 <div className="py-4 ipad-dialog-content">
                   <div className="ipad-scrollable-section">
+                    {/* Hero image section */}
                     <div className="relative h-60 rounded-lg overflow-hidden mb-6">
                       <img 
                         src={attraction.id === "themepark" ? 
@@ -2423,12 +2457,14 @@ const Events = () => {
                       </div>
                     </div>
                     
+                    {/* About section */}
                     <div className="space-y-6">
                       <div>
                         <h3 className="text-lg font-semibold mb-3 text-white/90">About this Experience</h3>
                         <p className="text-white/70">{attraction.description}</p>
                       </div>
                       
+                      {/* Features section */}
                       <div>
                         <h3 className="text-lg font-semibold mb-3 text-white/90">Features</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -2441,6 +2477,7 @@ const Events = () => {
                         </div>
                       </div>
                       
+                      {/* Ticket options section */}
                       {attraction.ticketTypes && (
                         <div>
                           <h3 className="text-lg font-semibold mb-3 text-white/90">Ticket Options</h3>
