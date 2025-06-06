@@ -84,6 +84,60 @@ const isIPad9thGen = () => {
   return false;
 };
 
+// Custom CSS to fix iPad 9th generation issues
+const ipadFixStyles = `
+  .ipad-9th-gen .dialog-content {
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+    padding: 16px !important;
+    width: 90vw !important;
+    margin: 0 auto !important;
+  }
+
+  .ipad-9th-gen .dialog-content > div {
+    padding: 16px !important;
+  }
+
+  /* Fix for attraction navigation buttons in hero section */
+  .ipad-9th-gen .attraction-nav-button {
+    transform: translateY(-50%) !important;
+    top: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .ipad-9th-gen .attraction-nav-button.left {
+    left: 8px !important;
+  }
+
+  .ipad-9th-gen .attraction-nav-button.right {
+    right: 8px !important;
+  }
+
+  /* Safari specific fixes for dialog content */
+  .ipad-9th-gen .safari-flex-fix {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Fix grids within dialog content */
+  .ipad-9th-gen .dialog-content .grid {
+    display: block !important;
+  }
+
+  .ipad-9th-gen .dialog-content .grid > div {
+    margin-bottom: 20px !important;
+  }
+
+  /* Fix for landscape mode */
+  @media (orientation: landscape) {
+    .ipad-9th-gen .dialog-content {
+      max-height: 70vh !important;
+      padding: 12px !important;
+    }
+  }
+`;
+
 const Events = () => {
   // Ref for scroll animations
   const containerRef = useRef<HTMLDivElement>(null);
@@ -291,17 +345,6 @@ const Events = () => {
     }
   ];
 
-  // No automatic scrolling - user-initiated only
-  // useEffect(() => {
-  //   const timer = setInterval(() => {
-  //     setCurrentAttractionIndex((prevIndex) => 
-  //       prevIndex === attractions.length - 1 ? 0 : prevIndex + 1
-  //     );
-  //   }, 3000);
-    
-  //   return () => clearInterval(timer);
-  // }, [attractions.length]);
-
   // Auto-scrolling with ability for user to manually navigate
   useEffect(() => {
     const timer = setInterval(() => {
@@ -460,8 +503,14 @@ const Events = () => {
     }).format(price);
   };
 
-  // Add iPad 9th generation detection
+  // Add iPad 9th generation detection and inject CSS fixes
   useEffect(() => {
+    // Inject custom styles for iPad 9th gen
+    const styleEl = document.createElement('style');
+    styleEl.id = 'ipad-9th-gen-fixes';
+    styleEl.innerHTML = ipadFixStyles;
+    document.head.appendChild(styleEl);
+    
     if (isIPad9thGen()) {
       document.documentElement.classList.add('ipad-9th-gen');
     } else {
@@ -470,6 +519,10 @@ const Events = () => {
     
     return () => {
       document.documentElement.classList.remove('ipad-9th-gen');
+      const existingStyle = document.getElementById('ipad-9th-gen-fixes');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
     };
   }, []);
 
@@ -841,9 +894,9 @@ const Events = () => {
                     ))}
                   </div>
 
-                  {/* Side Navigation Arrows */}
+                  {/* Modified Side Navigation Arrows with classes for iPad fixes */}
                   <button
-                    className="absolute top-1/2 left-2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white border border-white/10 hover:bg-black/70 z-10"
+                    className="attraction-nav-button left absolute top-1/2 left-2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white border border-white/10 hover:bg-black/70 z-10"
                     onClick={() => {
                       setCurrentAttractionIndex(prev => 
                         prev === 0 ? attractions.filter(a => a.featured).length - 1 : prev - 1
@@ -854,7 +907,7 @@ const Events = () => {
                   </button>
                   
                   <button
-                    className="absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white border border-white/10 hover:bg-black/70 z-10"
+                    className="attraction-nav-button right absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white border border-white/10 hover:bg-black/70 z-10"
                     onClick={() => {
                       setCurrentAttractionIndex(prev => 
                         prev === attractions.filter(a => a.featured).length - 1 ? 0 : prev + 1
@@ -869,10 +922,8 @@ const Events = () => {
                   <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-gradient-to-br from-[#4eb4a7]/20 to-[#85cbc3]/20 rounded-full blur-3xl -z-10"></div>
                           </div>
               </motion.div>
-                        </div>
-            
-            {/* Scroll Down Indicator removed */}
-                      </div>
+            </div>
+          </div>
         </div>
       </section>
       
