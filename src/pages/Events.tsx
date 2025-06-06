@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./events.css"; // Import custom styles for the events page
 import { 
   Calendar as CalendarIcon, 
@@ -58,8 +58,31 @@ import {
   BellRing,
   Info,
   Mail,
-  Menu
+  Menu,
+  X
 } from "lucide-react";
+
+// Function to detect iPad 9th generation
+const isIPad9thGen = () => {
+  const userAgent = navigator.userAgent;
+  // iPad 9th gen detection - screen size and iOS version check
+  if ((/iPad/.test(userAgent) || /Macintosh/.test(userAgent) && 'ontouchend' in document)) {
+    // The iPad 9th generation has a resolution of 2160 x 1620 at 264 PPI
+    // We can check its dimensions to identify it
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+    const pixelRatio = window.devicePixelRatio || 1;
+    
+    // iPad 9th gen dimensions (accounting for orientation)
+    const matches = (
+      (screenWidth === 810 && screenHeight === 1080) || 
+      (screenWidth === 1080 && screenHeight === 810)
+    ) && pixelRatio === 2;
+    
+    return matches;
+  }
+  return false;
+};
 
 const Events = () => {
   // Ref for scroll animations
@@ -436,6 +459,19 @@ const Events = () => {
       maximumFractionDigits: 0
     }).format(price);
   };
+
+  // Add iPad 9th generation detection
+  useEffect(() => {
+    if (isIPad9thGen()) {
+      document.documentElement.classList.add('ipad-9th-gen');
+    } else {
+      document.documentElement.classList.remove('ipad-9th-gen');
+    }
+    
+    return () => {
+      document.documentElement.classList.remove('ipad-9th-gen');
+    };
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-black" ref={containerRef}>
@@ -925,7 +961,7 @@ const Events = () => {
             </div>
             
             {/* Desktop Attractions Grid */}
-            <div className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div id="attractions" className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {attractions.map((attraction, index) => (
                 <motion.div
                   key={attraction.id}
