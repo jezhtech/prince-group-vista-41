@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import MainNavbar from "@/components/MainNavbar";
 import MainFooter from "@/components/MainFooter";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
@@ -246,6 +246,96 @@ const ipadFixStyles = `
   }
 `;
 
+// Add this new iPad-specific dialog component
+const iPadDialog = ({ 
+  isOpen, 
+  onClose, 
+  title, 
+  icon, 
+  accentColor, 
+  children, 
+  primaryAction,
+  primaryLabel,
+  primaryIcon,
+  isActionDisabled = false
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  icon: React.ReactNode;
+  accentColor: string;
+  children: React.ReactNode;
+  primaryAction: () => void;
+  primaryLabel: string;
+  primaryIcon?: React.ReactNode;
+  isActionDisabled?: boolean;
+}) => {
+  if (!isOpen) return null;
+  
+  return (
+    <div className="ipad-dialog-overlay">
+      <div className="ipad-dialog-container">
+        <div className="ipad-dialog-handle"></div>
+        
+        <div className="ipad-dialog-header">
+          <div className="flex items-center gap-2">
+            <div className={`h-8 w-8 rounded-full flex items-center justify-center ${accentColor}`}>
+              {icon}
+            </div>
+            <h2 className="text-xl font-bold text-white">{title}</h2>
+          </div>
+          
+          <button 
+            className="h-8 w-8 rounded-full bg-black/30 flex items-center justify-center" 
+            onClick={onClose}
+          >
+            <X className="h-4 w-4 text-white" />
+          </button>
+        </div>
+        
+        <div className="ipad-dialog-content">
+          {children}
+        </div>
+        
+        <div className="ipad-dialog-footer">
+          <button
+            className="ipad-dialog-secondary-button"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          
+          <button
+            className={`ipad-dialog-primary-button ${accentColor}`}
+            onClick={primaryAction}
+            disabled={isActionDisabled}
+          >
+            {primaryIcon}
+            <span>{primaryLabel}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Function to conditionally render either the standard Dialog or iPad-specific dialog
+const useAdaptiveDialog = () => {
+  const [isIpad9thGen, setIsIpad9thGen] = useState(false);
+  
+  useEffect(() => {
+    setIsIpad9thGen(isIPad9thGen());
+  }, []);
+  
+  return {
+    isIpad9thGen,
+    AdaptiveDialog: isIpad9thGen ? iPadDialog : Dialog,
+    AdaptiveDialogContent: isIpad9thGen ? Fragment : DialogContent,
+    AdaptiveDialogHeader: isIpad9thGen ? Fragment : DialogHeader,
+    AdaptiveDialogFooter: isIpad9thGen ? Fragment : DialogFooter
+  };
+};
+
 const Events = () => {
   // Ref for scroll animations
   const containerRef = useRef<HTMLDivElement>(null);
@@ -277,6 +367,12 @@ const Events = () => {
   const [childCount, setChildCount] = useState(0);
   const [activeAttraction, setActiveAttraction] = useState<string | null>(null);
   const [currentAttractionIndex, setCurrentAttractionIndex] = useState(0);
+  const [isIpad9thGeneration, setIsIpad9thGeneration] = useState(false);
+  
+  // Check if device is iPad 9th generation
+  useEffect(() => {
+    setIsIpad9thGeneration(isIPad9thGen());
+  }, []);
   
   // Ticket categories and pricing
   const ticketClasses = [
@@ -669,6 +765,177 @@ const Events = () => {
       }
     };
   }, []);
+
+  // Concert Ticket Booking Dialog
+  <Dialog open={concertTicketDialogOpen} onOpenChange={setConcertTicketDialogOpen}>
+    <DialogContent className={`max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-pink-600/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
+      <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
+        <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
+          <MusicIcon className="h-4 w-4 sm:h-5 sm:w-5 text-pink-500" /> Book Concert Tickets
+        </DialogTitle>
+        <DialogDescription className="text-sm text-white/70">
+          Secure your tickets for Vijay Antony's live concert on December 21, 2025.
+        </DialogDescription>
+      </DialogHeader>
+      
+      <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4 safari-flex-fix ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
+        <div className={isIpad9thGeneration ? "ipad-9th-scrollable-section" : "ipad-scrollable-section"}>
+          <h3 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Ticket Class</h3>
+          <div className={`space-y-3 md:space-y-4 ${isIpad9thGeneration ? "ipad-9th-ticket-list" : "max-h-[250px] md:max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"}`}>
+            {ticketClasses.map((ticket) => (
+              <div 
+                key={ticket.id} 
+                className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all cross-browser-rounded ${
+                  ticketCategory === ticket.id 
+                    ? isIpad9thGeneration ? 'ipad-9th-selected-card' : 'border-pink-500 bg-pink-500/10' 
+                    : isIpad9thGeneration ? 'ipad-9th-card' : 'border-white/10 hover:border-pink-500/50 bg-white/5'
+                }`}
+                onClick={() => setTicketCategory(ticket.id)}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h4 className={`font-medium text-white ${isIpad9thGeneration ? "text-base" : "text-sm sm:text-base"}`}>{ticket.name}</h4>
+                    <p className={`${isIpad9thGeneration ? "text-sm mt-1" : "text-xs sm:text-sm"} text-white/60`}>{ticket.description}</p>
+                  </div>
+                  <div className={`font-bold text-white ${isIpad9thGeneration ? "text-lg" : "text-base sm:text-lg"}`}>{formatPrice(ticket.price)}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className={`mt-4 md:mt-6 bg-pink-900/20 p-3 sm:p-4 rounded-lg border border-pink-500/20 cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-benefits-section" : ""}`}>
+            <h4 className="text-xs sm:text-sm font-medium text-pink-300 mb-2">Ticket Benefits:</h4>
+            <ul className="space-y-1.5 sm:space-y-2">
+              <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-pink-400 mt-0.5`} />
+                Entry to all concert areas based on ticket class
+              </li>
+              <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-pink-400 mt-0.5`} />
+                Access to food and beverage stalls
+              </li>
+              <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-pink-400 mt-0.5`} />
+                Official event merchandise discount (10%)
+              </li>
+              <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-pink-400 mt-0.5`} />
+                Exclusive entry to after-party (Elite & VVIP only)
+              </li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className={isIpad9thGeneration ? "ipad-9th-scrollable-section" : "ipad-scrollable-section"}>
+          <h3 className="text-lg font-semibold mb-4 text-white/90">Ticket Details</h3>
+          <div className="space-y-6">
+            <div>
+              <Label htmlFor="quantity" className="text-white/90">Number of Tickets</Label>
+              <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => decreaseQuantity(setTicketQuantity, ticketQuantity)}
+                  disabled={ticketQuantity <= 1}
+                  className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
+                >
+                  <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
+                </Button>
+                <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
+                  {ticketQuantity}
+                </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => increaseQuantity(setTicketQuantity, ticketQuantity, 8)}
+                  disabled={ticketQuantity >= 8}
+                  className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
+                >
+                  <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
+                </Button>
+              </div>
+              {isIpad9thGeneration && <p className="text-white/50 text-sm mt-1">Maximum 8 tickets per booking</p>}
+            </div>
+            
+            <div>
+              <Label htmlFor="concert-date" className="text-white/90">Concert Date</Label>
+              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 ${isIpad9thGeneration ? "rounded-xl bg-white/10" : ""}`}>
+                <div className="flex items-center gap-3">
+                  <CalendarDays className={`${isIpad9thGeneration ? "h-6 w-6 text-pink-400" : "h-5 w-5 text-pink-500"}`} />
+                  <div>
+                    <div className={`font-medium text-white ${isIpad9thGeneration ? "text-base" : ""}`}>December 21, 2025</div>
+                    <div className="text-sm text-white/60">7:00 PM - 11:00 PM</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <Label className="text-white/90">Concert Details</Label>
+              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3" : ""}`}>
+                <div className={`flex items-start gap-2 ${isIpad9thGeneration ? "gap-3" : ""}`}>
+                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5 text-pink-400" : "h-4 w-4 text-pink-500"} mt-0.5`} />
+                  <span className={`${isIpad9thGeneration ? "text-white/80" : "text-white/70 text-sm"}`}>Main Performer - Singer & Actor: Vijay Antony</span>
+                </div>
+                <div className={`flex items-start gap-2 ${isIpad9thGeneration ? "gap-3" : ""}`}>
+                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5 text-pink-400" : "h-4 w-4 text-pink-500"} mt-0.5`} />
+                  <span className={`${isIpad9thGeneration ? "text-white/80" : "text-white/70 text-sm"}`}>Special Performances by Guest Artists</span>
+                </div>
+                <div className={`flex items-start gap-2 ${isIpad9thGeneration ? "gap-3" : ""}`}>
+                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5 text-pink-400" : "h-4 w-4 text-pink-500"} mt-0.5`} />
+                  <span className={`${isIpad9thGeneration ? "text-white/80" : "text-white/70 text-sm"}`}>World-class Sound and Lighting System</span>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <Label className="text-white/90">Summary</Label>
+              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3 bg-white/10" : ""}`}>
+                <div className="flex justify-between">
+                  <span className="text-white/70">Ticket Type</span>
+                  <span className="font-medium text-white">
+                    {ticketCategory ? ticketClasses.find(t => t.id === ticketCategory)?.name : "Select a ticket"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-white/70">Quantity</span>
+                  <span className="font-medium text-white">{ticketQuantity}</span>
+                </div>
+                <div className={`pt-2 border-t border-white/20 flex justify-between ${isIpad9thGeneration ? "pt-3 border-white/10 mt-1" : ""}`}>
+                  <span className="font-medium text-white">Total Amount</span>
+                  <span className={`font-bold text-pink-400 ${isIpad9thGeneration ? "text-xl" : "text-lg"}`}>
+                    {totalPrice > 0 ? formatPrice(totalPrice) : "---"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
+        <Button
+          variant="outline"
+          onClick={() => setConcertTicketDialogOpen(false)}
+          className={`border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
+        >
+          Cancel
+        </Button>
+        <Button
+          className={`bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
+          disabled={!ticketCategory}
+          onClick={() => {
+            // Handle booking logic
+            setConcertTicketDialogOpen(false);
+            // Show success message or redirect to payment
+          }}
+        >
+          <Ticket className="mr-1.5 h-3.5 w-3.5" />
+          Proceed to Payment
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
 
   return (
     <div className="min-h-screen flex flex-col bg-black" ref={containerRef}>
@@ -1276,433 +1543,79 @@ const Events = () => {
                       >
                         Book
                       </Button>
-                            </div>
-                          </div>
-                        </div>
-
-                <div className="bg-white/5 backdrop-blur-md rounded-lg p-4 border border-white/10">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-                      <Plane className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">Helicopter Ride</h3>
-                      <p className="text-white/60 text-sm">Limited spots available</p>
-                    </div>
-                    <div className="ml-auto">
-                      <Button 
-                        onClick={() => setHelicopterTicketDialogOpen(true)}
-                        className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
-                      >
-                        Book
-                        </Button>
-                      </div>
-                    </div>
-                </div>
-                
-                <div className="bg-white/5 backdrop-blur-md rounded-lg p-4 border border-white/10">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400">
-                      <ShoppingBag className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">Shopping Arena Pass</h3>
-                      <p className="text-white/60 text-sm">Access to 300+ shopping stalls</p>
-                    </div>
-                    <div className="ml-auto">
-                      <Button 
-                        onClick={() => setShoppingTicketDialogOpen(true)}
-                        className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
-                      >
-                        Book
-                      </Button>
                     </div>
                   </div>
                 </div>
-              </div>
-              
-
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="lg:order-1"
-            >
-              {/* Ticket Visual */}
-              <div className="relative">
-                <motion.div
-                  className="bg-gradient-to-br from-[#4eb4a7]/20 to-[#85cbc3]/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 shadow-2xl"
-                  whileHover={{ y: -5 }}
-                  transition={{ type: "spring", stiffness: 200 }}
-                >
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <Badge className="bg-[#4eb4a7]/20 text-[#4eb4a7] mb-2">{ticketClasses[0].name} TICKET</Badge>
-                      <h3 className="text-2xl font-bold text-white">Rhythm of Carnival</h3>
-                      <p className="text-white/60">December 21-26, 2025</p>
-                    </div>
-                    <div className="h-14 w-14">
-                      <img src="/teal-cg-logo.png" alt="Prince Group Logo" className="w-full h-full object-contain" />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3 mb-4">
-                    <div className="flex items-center gap-3">
-                      <Clock className="h-5 w-5 text-[#4eb4a7]" />
-                      <span className="text-white/70">Gates Open: 10:00 AM Daily</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <MapPin className="h-5 w-5 text-[#4eb4a7]" />
-                      <span className="text-white/70">Prince Group Event Grounds, Kanyakumari</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <MusicIcon className="h-5 w-5 text-[#4eb4a7]" />
-                      <span className="text-white/70">Concert: December 23, 7:00 PM</span>
-                    </div>
-                  </div>
-                  
-                  {/* Ticket Classes */}
-                  <div className="mb-4">
-                    <h4 className="text-white font-medium mb-2">Ticket Classes:</h4>
-                    <div className="space-y-2 max-h-[150px] overflow-y-auto pr-2 custom-scrollbar">
-                      {ticketClasses.map((ticket) => (
-                        <div key={ticket.id} className="flex justify-between items-center p-2 rounded-lg bg-white/5 border border-white/10">
-                          <div>
-                            <p className="text-white font-medium text-sm">{ticket.name}</p>
-                            <p className="text-white/60 text-xs">{ticket.description.slice(0, 30)}{ticket.description.length > 30 ? '...' : ''}</p>
-                          </div>
-                          <p className="text-[#4eb4a7] font-bold">{formatPrice(ticket.price)}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="pt-4 border-t border-white/10 flex justify-between items-center">
-                    <div>
-                      <p className="text-white/60 text-sm">Starting From</p>
-                      <p className="text-xl font-bold text-white">{formatPrice(ticketClasses[ticketClasses.length - 1].price)}</p>
-                    </div>
-                    <Button 
-                      className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] hover:from-[#3da296] hover:to-[#4e9da3] text-white"
-                      onClick={() => setConcertTicketDialogOpen(true)}
-                    >
-                      <Ticket className="mr-2 h-4 w-4" />
-                      Book Now
-                    </Button>
-                  </div>
-                </motion.div>
-
-
               </div>
             </motion.div>
           </div>
         </div>
       </section>
-      
-      {/* Concert Ticket Booking Dialog */}
-      <Dialog open={concertTicketDialogOpen} onOpenChange={setConcertTicketDialogOpen}>
-        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-pink-600/20 text-white dialog-content ipad-dialog-fix">
-          <DialogHeader className="ipad-dialog-header">
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
-              <MusicIcon className="h-4 w-4 sm:h-5 sm:w-5 text-pink-500" /> Book Concert Tickets
-            </DialogTitle>
-            <DialogDescription className="text-sm text-white/70">
-              Secure your tickets for Vijay Antony's live concert on December 21, 2025.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4 safari-flex-fix ipad-dialog-content">
-            <div className="ipad-scrollable-section">
-              <h3 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Ticket Class</h3>
-              <div className="space-y-3 md:space-y-4 max-h-[250px] md:max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                {ticketClasses.map((ticket) => (
-                  <div 
-                    key={ticket.id} 
-                    className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all cross-browser-rounded ${
-                      ticketCategory === ticket.id 
-                        ? 'border-pink-500 bg-pink-500/10' 
-                        : 'border-white/10 hover:border-pink-500/50 bg-white/5'
-                    }`}
-                    onClick={() => setTicketCategory(ticket.id)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-medium text-white text-sm sm:text-base">{ticket.name}</h4>
-                        <p className="text-xs sm:text-sm text-white/60">{ticket.description}</p>
-                      </div>
-                      <div className="text-base sm:text-lg font-bold text-white">{formatPrice(ticket.price)}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
 
-              <div className="mt-4 md:mt-6 bg-pink-900/20 p-3 sm:p-4 rounded-lg border border-pink-500/20 cross-browser-rounded">
-                <h4 className="text-xs sm:text-sm font-medium text-pink-300 mb-2">Ticket Benefits:</h4>
-                <ul className="space-y-1.5 sm:space-y-2">
-                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                    <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-pink-400 mt-0.5" />
-                    Entry to all concert areas based on ticket class
-                  </li>
-                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                    <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-pink-400 mt-0.5" />
-                    Access to food and beverage stalls
-                  </li>
-                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                    <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-pink-400 mt-0.5" />
-                    Official event merchandise discount (10%)
-                  </li>
-                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                    <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-pink-400 mt-0.5" />
-                    Exclusive entry to after-party (Elite & VVIP only)
-                  </li>
-                </ul>
-              </div>
-            </div>
-            
-            <div className="ipad-scrollable-section">
-              <h3 className="text-lg font-semibold mb-4 text-white/90">Ticket Details</h3>
-                <div className="space-y-6">
-                <div>
-                  <Label htmlFor="quantity" className="text-white/90">Number of Tickets</Label>
-                  <div className="flex mt-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => decreaseQuantity(setTicketQuantity, ticketQuantity)}
-                      disabled={ticketQuantity <= 1}
-                      className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </Button>
-                    <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
-                      {ticketQuantity}
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => increaseQuantity(setTicketQuantity, ticketQuantity, 8)}
-                      disabled={ticketQuantity >= 8}
-                      className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="concert-date" className="text-white/90">Concert Date</Label>
-                  <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5">
-                    <div className="flex items-center gap-3">
-                      <CalendarDays className="h-5 w-5 text-pink-500" />
-                      <div>
-                        <div className="font-medium text-white">December 21, 2025</div>
-                        <div className="text-sm text-white/60">7:00 PM - 11:00 PM</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <Label className="text-white/90">Concert Details</Label>
-                  <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="h-4 w-4 text-pink-500 mt-0.5" />
-                      <span className="text-white/70 text-sm">Main Performer - Singer & Actor: Vijay Antony</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="h-4 w-4 text-pink-500 mt-0.5" />
-                      <span className="text-white/70 text-sm">Special Performances by Guest Artists</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <CheckCircle className="h-4 w-4 text-pink-500 mt-0.5" />
-                      <span className="text-white/70 text-sm">World-class Sound and Lighting System</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div>
-                  <Label className="text-white/90">Summary</Label>
-                  <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-white/70">Ticket Type</span>
-                      <span className="font-medium text-white">
-                        {ticketCategory ? ticketClasses.find(t => t.id === ticketCategory)?.name : "Select a ticket"}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-white/70">Quantity</span>
-                      <span className="font-medium text-white">{ticketQuantity}</span>
-                    </div>
-                    <div className="pt-2 border-t border-white/20 flex justify-between">
-                      <span className="font-medium text-white">Total Amount</span>
-                      <span className="font-bold text-lg text-pink-400">
-                        {totalPrice > 0 ? formatPrice(totalPrice) : "---"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <DialogFooter className="border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ipad-dialog-footer">
-            <Button
-              variant="outline"
-              onClick={() => setConcertTicketDialogOpen(false)}
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ipad-button-fix"
-            >
-              Cancel
-            </Button>
-            <Button
-              className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ipad-button-fix"
-              disabled={!ticketCategory}
-              onClick={() => {
-                // Handle booking logic
-                setConcertTicketDialogOpen(false);
-                // Show success message or redirect to payment
-              }}
-            >
-              <Ticket className="mr-1.5 h-3.5 w-3.5" />
-              Proceed to Payment
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Update CSS for iPad specific fixes */}
-      <style>{`
-        /* Extra iPad 9th gen fixes for dialog content */
-        @supports (-webkit-touch-callout: none) {
-          .ipad-9th-gen .ipad-dialog-fix {
-            padding: 16px !important;
-            overflow: auto !important;
-            background-image: linear-gradient(to bottom, #0c1e3c, #0e253f) !important;
-          }
-          
-          .ipad-9th-gen .ipad-dialog-header {
-            margin-bottom: 16px !important;
-            background-image: linear-gradient(to bottom, #0c1e3c, #0c1e3c) !important;
-            padding-bottom: 8px !important;
-          }
-          
-          .ipad-9th-gen .ipad-dialog-content {
-            overflow: visible !important;
-            display: flex !important;
-            flex-direction: column !important;
-            max-height: none !important;
-            -webkit-overflow-scrolling: touch !important;
-            padding-bottom: 16px !important;
-          }
-          
-          .ipad-9th-gen .ipad-scrollable-section {
-            overflow: visible !important;
-            -webkit-overflow-scrolling: touch !important;
-            margin-bottom: 16px !important;
-            padding-right: 4px !important;
-          }
-          
-          /* Enable native scrolling behavior for iOS */
-          .ipad-9th-gen .overflow-y-auto {
-            overflow-y: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-          }
-          
-          .ipad-9th-gen .ipad-dialog-footer {
-            margin-top: 16px !important;
-            padding-top: 12px !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-            background-image: linear-gradient(to bottom, #0e253f, #0e253f) !important;
-          }
-          
-          .ipad-9th-gen .ipad-button-fix {
-            min-height: 44px !important;
-            padding: 10px 16px !important;
-            margin-bottom: 8px !important;
-          }
-          
-          /* Fix for dialog overflow */
-          .ipad-9th-gen [role="dialog"] {
-            overflow-y: auto !important;
-            padding-top: 10vh !important;
-            align-items: flex-start !important;
-          }
-          
-          /* Fix for landscape mode */
-          @media (orientation: landscape) {
-            .ipad-9th-gen [role="dialog"] {
-              padding-top: 5vh !important;
-            }
-          }
-        }
-      `}</style>
-      
       {/* Helicopter Ride Booking Dialog */}
       <Dialog open={helicopterTicketDialogOpen} onOpenChange={setHelicopterTicketDialogOpen}>
-        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-indigo-600/20 text-white dialog-content ipad-dialog-fix">
-          <DialogHeader className="ipad-dialog-header">
-            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
-              <Plane className="h-5 w-5 text-indigo-400" /> Book Helicopter Ride
+        <DialogContent className={`max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-indigo-600/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
+          <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
+            <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
+              <Plane className="h-4 w-4 sm:h-5 sm:w-5 text-indigo-500" /> Book Helicopter Ride
             </DialogTitle>
-            <DialogDescription className="text-white/70">
+            <DialogDescription className="text-sm text-white/70">
               Experience breathtaking aerial views of Kanyakumari from above (Dec 21-26, 2025).
             </DialogDescription>
           </DialogHeader>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4 ipad-dialog-content">
-            <div className="ipad-scrollable-section">
-              <h3 className="text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Package</h3>
-              <div className="space-y-3 md:space-y-4">
+          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4 ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
+            <div className={isIpad9thGeneration ? "ipad-9th-scrollable-section" : "ipad-scrollable-section"}>
+              <h3 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Package</h3>
+              <div className={`space-y-3 md:space-y-4 ${isIpad9thGeneration ? "ipad-9th-ticket-list" : ""}`}>
                 {helicopterPackages.map((pkg) => (
                   <div 
                     key={pkg.id} 
-                    className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                    className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all cross-browser-rounded ${
                       selectedHelicopterPackage === pkg.id 
-                        ? 'border-indigo-500 bg-indigo-500/10' 
-                        : 'border-white/10 hover:border-indigo-500/50 bg-white/5'
+                        ? isIpad9thGeneration ? 'ipad-9th-selected-card' : 'border-indigo-500 bg-indigo-500/10' 
+                        : isIpad9thGeneration ? 'ipad-9th-card' : 'border-white/10 hover:border-indigo-500/50 bg-white/5'
                     }`}
                     onClick={() => setSelectedHelicopterPackage(pkg.id)}
                   >
                     <div className="flex justify-between items-start">
                       <div>
-                        <h4 className="font-medium text-white">{pkg.name}</h4>
-                        <div className="text-sm text-indigo-400 font-medium mt-1">{pkg.duration}</div>
-                        <p className="text-sm text-white/60 mt-1">{pkg.description}</p>
+                        <h4 className={`font-medium text-white ${isIpad9thGeneration ? "text-base" : "text-sm sm:text-base"}`}>{pkg.name}</h4>
+                        <div className={`${isIpad9thGeneration ? "text-sm" : "text-xs sm:text-sm"} text-indigo-400 font-medium mt-1`}>{pkg.duration}</div>
+                        <p className={`${isIpad9thGeneration ? "text-sm mt-1" : "text-xs sm:text-sm"} text-white/60`}>{pkg.description}</p>
                       </div>
-                      <div className="text-lg font-bold text-white">{formatPrice(pkg.price)}</div>
+                      <div className={`font-bold text-white ${isIpad9thGeneration ? "text-lg" : "text-base sm:text-lg"}`}>{formatPrice(pkg.price)}</div>
                     </div>
                   </div>
                 ))}
               </div>
               
-              <div className="mt-4 md:mt-6 bg-indigo-900/30 p-4 rounded-lg border border-indigo-500/20">
-                <h4 className="text-sm font-medium text-indigo-300 mb-2">Package Includes:</h4>
-                <ul className="space-y-2">
-                  <li className="flex items-start gap-2 text-sm text-white/70">
-                    <CheckCircle className="h-4 w-4 text-indigo-400 mt-0.5" />
+              <div className={`mt-4 md:mt-6 bg-indigo-900/20 p-3 sm:p-4 rounded-lg border border-indigo-500/20 cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-benefits-section" : ""}`}>
+                <h4 className="text-xs sm:text-sm font-medium text-indigo-300 mb-2">Package Includes:</h4>
+                <ul className="space-y-1.5 sm:space-y-2">
+                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                    <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-indigo-400 mt-0.5`} />
                     Professional pilots with safety briefing
                   </li>
-                  <li className="flex items-start gap-2 text-sm text-white/70">
-                    <CheckCircle className="h-4 w-4 text-indigo-400 mt-0.5" />
+                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                    <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-indigo-400 mt-0.5`} />
                     Commemorative certificate
                   </li>
-                  <li className="flex items-start gap-2 text-sm text-white/70">
-                    <CheckCircle className="h-4 w-4 text-indigo-400 mt-0.5" />
+                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                    <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-indigo-400 mt-0.5`} />
                     Professional photos available for purchase
                   </li>
-                  <li className="flex items-start gap-2 text-sm text-white/70">
-                    <CheckCircle className="h-4 w-4 text-indigo-400 mt-0.5" />
+                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                    <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-indigo-400 mt-0.5`} />
                     Lucky draw entry for 1-day luxury Alappuzha boat house stay
                   </li>
                 </ul>
               </div>
             </div>
             
-            <div className="ipad-scrollable-section">
-              <h3 className="text-lg font-semibold mb-3 md:mb-4 text-white/90 mt-4 md:mt-0">Booking Details</h3>
-              <div className="space-y-4 md:space-y-6">
+            <div className={isIpad9thGeneration ? "ipad-9th-scrollable-section" : "ipad-scrollable-section"}>
+              <h3 className="text-lg font-semibold mb-4 text-white/90 mt-4 md:mt-0">Booking Details</h3>
+              <div className="space-y-6">
                 <div>
                   <Label htmlFor="heli-date" className="text-white/90">Select Date</Label>
                   <Select>
@@ -1742,17 +1655,17 @@ const Events = () => {
                 
                 <div>
                   <Label htmlFor="heli-tickets" className="text-white/90">Number of Tickets</Label>
-                  <div className="flex mt-2">
+                  <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
                     <Button
                       variant="outline"
                       size="icon"
                       onClick={() => decreaseQuantity(setHelicopterTickets, helicopterTickets)}
                       disabled={helicopterTickets <= 1}
-                      className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
+                      className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
                     >
-                      <Minus className="h-4 w-4" />
+                      <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
                     </Button>
-                    <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
+                    <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
                       {helicopterTickets}
                     </div>
                     <Button
@@ -1760,9 +1673,9 @@ const Events = () => {
                       size="icon"
                       onClick={() => increaseQuantity(setHelicopterTickets, helicopterTickets, 4)}
                       disabled={helicopterTickets >= 4}
-                      className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
+                      className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
                     >
-                      <Plus className="h-4 w-4" />
+                      <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
                     </Button>
                   </div>
                   <p className="text-sm text-white/50 mt-1">Maximum 4 tickets per booking</p>
@@ -1770,7 +1683,7 @@ const Events = () => {
                 
                 <div>
                   <Label className="text-white/90">Summary</Label>
-                  <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
+                  <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3 bg-white/10" : ""}`}>
                     <div className="flex justify-between">
                       <span className="text-white/70">Package</span>
                       <span className="font-medium text-white">
@@ -1783,9 +1696,9 @@ const Events = () => {
                       <span className="text-white/70">Tickets</span>
                       <span className="font-medium text-white">{helicopterTickets}</span>
                     </div>
-                    <div className="pt-2 border-t border-white/20 flex justify-between">
+                    <div className={`pt-2 border-t border-white/20 flex justify-between ${isIpad9thGeneration ? "pt-3 border-white/10 mt-1" : ""}`}>
                       <span className="font-medium text-white">Total Amount</span>
-                      <span className="font-bold text-lg text-indigo-400">
+                      <span className={`font-bold text-indigo-400 ${isIpad9thGeneration ? "text-xl" : "text-lg"}`}>
                         {selectedHelicopterPackage 
                           ? formatPrice((helicopterPackages.find(p => p.id === selectedHelicopterPackage)?.price || 0) * helicopterTickets) 
                           : "---"}
@@ -1797,16 +1710,16 @@ const Events = () => {
             </div>
           </div>
           
-          <DialogFooter className="border-t border-white/10 pt-4 ipad-dialog-footer">
+          <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
             <Button
               variant="outline"
               onClick={() => setHelicopterTicketDialogOpen(false)}
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
+              className={`border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
             >
               Cancel
             </Button>
             <Button
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white ipad-button-fix"
+              className={`bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
               disabled={!selectedHelicopterPackage}
               onClick={() => {
                 // Handle booking logic
@@ -1814,7 +1727,7 @@ const Events = () => {
                 // Show success message or redirect to payment
               }}
             >
-              <Plane className="mr-2 h-4 w-4" />
+              <Plane className="mr-1.5 h-3.5 w-3.5" />
               Secure Your Ride
             </Button>
           </DialogFooter>
@@ -1823,50 +1736,50 @@ const Events = () => {
       
       {/* Shopping Arena Pass Dialog */}
       <Dialog open={shoppingTicketDialogOpen} onOpenChange={setShoppingTicketDialogOpen}>
-        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-amber-500/20 text-white dialog-content ipad-dialog-fix">
-          <DialogHeader className="ipad-dialog-header">
-            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
-              <ShoppingBag className="h-5 w-5 text-amber-500" /> Shopping Arena Pass
+        <DialogContent className={`max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-amber-500/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
+          <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
+            <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
+              <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" /> Shopping Arena Pass
             </DialogTitle>
-            <DialogDescription className="text-white/70">
+            <DialogDescription className="text-sm text-white/70">
               Purchase passes for the 5-day shopping festival with 500+ stalls and attractions (Dec 22-26, 2025).
             </DialogDescription>
           </DialogHeader>
           
-          <div className="py-2 md:py-4 space-y-4 md:space-y-6 ipad-dialog-content">
-            <div className="bg-amber-500/5 p-3 md:p-4 rounded-lg border border-amber-500/20">
+          <div className={`py-2 md:py-4 space-y-4 md:space-y-6 ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
+            <div className={`bg-amber-500/5 p-3 md:p-4 rounded-lg border border-amber-500/20 ${isIpad9thGeneration ? "rounded-xl" : ""}`}>
               <h4 className="text-amber-400 font-semibold mb-2">Shopping Arena Highlights:</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 <div className="flex items-start gap-2">
-                  <ShoppingBag className="h-4 w-4 text-amber-500 mt-0.5" />
+                  <ShoppingBag className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
                   <span className="text-white/70 text-sm">300+ retail stalls with exclusive discounts</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Utensils className="h-4 w-4 text-amber-500 mt-0.5" />
+                  <Utensils className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
                   <span className="text-white/70 text-sm">200+ food & culinary shops</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <PartyPopper className="h-4 w-4 text-amber-500 mt-0.5" />
+                  <PartyPopper className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
                   <span className="text-white/70 text-sm">Theme park with exciting rides</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Sparkles className="h-4 w-4 text-amber-500 mt-0.5" />
+                  <Sparkles className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
                   <span className="text-white/70 text-sm">Water activities and entertainment</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Gift className="h-4 w-4 text-amber-500 mt-0.5" />
+                  <Gift className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
                   <span className="text-white/70 text-sm">Toys and daily essentials shops</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Trophy className="h-4 w-4 text-amber-500 mt-0.5" />
+                  <Trophy className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
                   <span className="text-white/70 text-sm">Hourly lucky draws and contests</span>
                 </div>
               </div>
             </div>
             
-                        <div>
+            <div>
               <Label className="text-white/90">Select Date</Label>
-              <div className="mt-2 bg-white/5 rounded-lg border border-white/20 p-4">
+              <div className={`mt-2 bg-white/5 rounded-lg border border-white/20 p-4 ${isIpad9thGeneration ? "rounded-xl" : ""}`}>
                 <div className="flex flex-wrap gap-2 justify-center">
                   {[22, 23, 24, 25, 26].map((day) => (
                     <Button
@@ -1874,7 +1787,7 @@ const Events = () => {
                       variant="outline"
                       className={`h-12 w-24 border-amber-500/30 hover:border-amber-500 hover:bg-amber-500/10 ${
                         day === 22 ? 'bg-amber-500/20 border-amber-500' : 'bg-white/5'
-                      }`}
+                      } ${isIpad9thGeneration ? "ipad-9th-button-fix" : ""}`}
                       onClick={() => {}}
                     >
                       <div className="flex flex-col items-center">
@@ -1886,67 +1799,67 @@ const Events = () => {
                 </div>
               </div>
               <p className="text-sm text-white/50 mt-1">Select your preferred date (December 22-26, 2025)</p>
-                          </div>
+            </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="adults" className="text-white/90">Number of Adults</Label>
-                <div className="flex mt-2">
+                <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={() => decreaseQuantity(setAdultCount, adultCount)}
                     disabled={adultCount <= 1}
-                    className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                    className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
                   >
-                    <Minus className="h-4 w-4" />
+                    <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
                   </Button>
-                  <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
+                  <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
                     {adultCount}
-                            </div>
+                  </div>
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={() => increaseQuantity(setAdultCount, adultCount, 20)}
-                    className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                    className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
                   </Button>
-                            </div>
+                </div>
                 <p className="text-sm text-white/50 mt-1">₹299 per adult</p>
-                            </div>
+              </div>
               
               <div>
                 <Label htmlFor="children" className="text-white/90">Number of Children (5-12 years)</Label>
-                <div className="flex mt-2">
+                <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={() => decreaseQuantity(setChildCount, childCount, 0)}
                     disabled={childCount <= 0}
-                    className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                    className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
                   >
-                    <Minus className="h-4 w-4" />
+                    <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
                   </Button>
-                  <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
+                  <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
                     {childCount}
                   </div>
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={() => increaseQuantity(setChildCount, childCount, 20)}
-                    className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                    className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
                   </Button>
                 </div>
                 <p className="text-sm text-white/50 mt-1">₹149 per child (Children under 5 are free)</p>
-                          </div>
-                        </div>
-                        
-                          <div>
+              </div>
+            </div>
+            
+            <div>
               <Label className="text-white/90">Summary</Label>
-              <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
+              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3 bg-white/10" : ""}`}>
                 <div className="flex justify-between">
                   <span className="text-white/70">Adults ({adultCount})</span>
                   <span className="font-medium text-white">{formatPrice(299 * adultCount)}</span>
@@ -1957,33 +1870,33 @@ const Events = () => {
                     <span className="font-medium text-white">{formatPrice(149 * childCount)}</span>
                   </div>
                 )}
-                <div className="pt-2 border-t border-white/20 flex justify-between">
+                <div className={`pt-2 border-t border-white/20 flex justify-between ${isIpad9thGeneration ? "pt-3 border-white/10 mt-1" : ""}`}>
                   <span className="font-medium text-white">Total Amount</span>
-                  <span className="font-bold text-lg text-amber-400">
+                  <span className={`font-bold text-amber-400 ${isIpad9thGeneration ? "text-xl" : "text-lg"}`}>
                     {formatPrice(299 * adultCount + 149 * childCount)}
                   </span>
-                            </div>
+                </div>
               </div>
             </div>
           </div>
           
-          <DialogFooter className="border-t border-white/10 pt-4 ipad-dialog-footer">
+          <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
             <Button
               variant="outline"
               onClick={() => setShoppingTicketDialogOpen(false)}
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
+              className={`border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
             >
               Cancel
             </Button>
             <Button
-              className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white ipad-button-fix"
+              className={`bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
               onClick={() => {
                 // Handle booking logic
                 setShoppingTicketDialogOpen(false);
                 // Show success message or redirect to payment
               }}
             >
-              <ShoppingCart className="mr-2 h-4 w-4" />
+              <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
               Book Now
             </Button>
           </DialogFooter>
@@ -1992,34 +1905,34 @@ const Events = () => {
       
       {/* Food Combo Booking Dialog */}
       <Dialog open={foodComboDialogOpen} onOpenChange={setFoodComboDialogOpen}>
-        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-emerald-500/20 text-white dialog-content ipad-dialog-fix">
-          <DialogHeader className="ipad-dialog-header">
-            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
-              <Utensils className="h-5 w-5 text-emerald-500" /> Food Combo Booking
+        <DialogContent className={`max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-emerald-500/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
+          <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
+            <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
+              <Utensils className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-500" /> Food Combo Booking
             </DialogTitle>
-            <DialogDescription className="text-white/70">
+            <DialogDescription className="text-sm text-white/70">
               Pre-book your food combos for the festival day (December 21, 2025).
             </DialogDescription>
           </DialogHeader>
           
-          <div className="py-4 space-y-6 ipad-dialog-content">
-            <div className="bg-emerald-500/5 p-4 rounded-lg border border-emerald-500/20">
+          <div className={`py-4 space-y-6 ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
+            <div className={`bg-emerald-500/5 p-4 rounded-lg border border-emerald-500/20 ${isIpad9thGeneration ? "rounded-xl" : ""}`}>
               <h4 className="text-emerald-400 font-semibold mb-2">Why Pre-book Your Food?</h4>
               <div className="space-y-2">
                 <div className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5" />
+                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-emerald-500 mt-0.5`} />
                   <span className="text-white/70 text-sm">Skip the long lines at food stalls</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5" />
+                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-emerald-500 mt-0.5`} />
                   <span className="text-white/70 text-sm">Save 15% compared to on-site purchases</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5" />
+                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-emerald-500 mt-0.5`} />
                   <span className="text-white/70 text-sm">Guaranteed availability of your favorite dishes</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-500 mt-0.5" />
+                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-emerald-500 mt-0.5`} />
                   <span className="text-white/70 text-sm">Collect at dedicated counters with no waiting time</span>
                 </div>
               </div>
@@ -2027,59 +1940,60 @@ const Events = () => {
             
             <div>
               <Label className="text-white/90">Select Food Combo</Label>
-              <div className="space-y-3 mt-2">
+              <div className={`space-y-3 mt-2 ${isIpad9thGeneration ? "ipad-9th-ticket-list" : ""}`}>
                 {foodCombos.map(combo => (
                   <div
                     key={combo.id}
-                    className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                    className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all cross-browser-rounded ${
                       selectedFoodCombo === combo.id 
-                        ? 'border-emerald-500 bg-emerald-500/10' 
-                        : 'border-white/10 hover:border-emerald-500/50 bg-white/5'
+                        ? isIpad9thGeneration ? 'ipad-9th-selected-card' : 'border-emerald-500 bg-emerald-500/10' 
+                        : isIpad9thGeneration ? 'ipad-9th-card' : 'border-white/10 hover:border-emerald-500/50 bg-white/5'
                     }`}
                     onClick={() => setSelectedFoodCombo(combo.id)}
                   >
                     <div className="flex justify-between items-start">
                       <div>
-                        <h4 className="font-medium text-white">{combo.name}</h4>
-                        <p className="text-sm text-white/60 mt-1">{combo.description}</p>
-                            </div>
-                      <div className="text-lg font-bold text-white">{formatPrice(combo.price)}</div>
-                          </div>
-                        </div>
+                        <h4 className={`font-medium text-white ${isIpad9thGeneration ? "text-base" : "text-sm sm:text-base"}`}>{combo.name}</h4>
+                        <p className={`${isIpad9thGeneration ? "text-sm mt-1" : "text-xs sm:text-sm"} text-white/60`}>{combo.description}</p>
+                      </div>
+                      <div className={`font-bold text-white ${isIpad9thGeneration ? "text-lg" : "text-base sm:text-lg"}`}>{formatPrice(combo.price)}</div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
             
             <div>
               <Label htmlFor="quantity" className="text-white/90">Quantity</Label>
-              <div className="flex mt-2">
+              <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={() => decreaseQuantity(setFoodComboQuantity, foodComboQuantity)}
                   disabled={foodComboQuantity <= 1}
-                  className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                  className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
                 >
-                  <Minus className="h-4 w-4" />
+                  <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
                 </Button>
-                <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
+                <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
                   {foodComboQuantity}
                 </div>
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => increaseQuantity(setFoodComboQuantity, foodComboQuantity)}
+                  onClick={() => increaseQuantity(setFoodComboQuantity, foodComboQuantity, 10)}
                   disabled={foodComboQuantity >= 10}
-                  className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                  className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
                 </Button>
               </div>
+              <p className="text-sm text-white/50 mt-1">Maximum 10 combos per booking</p>
             </div>
             
             <div>
               <Label className="text-white/90">Summary</Label>
-              <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
+              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3 bg-white/10" : ""}`}>
                 <div className="flex justify-between">
                   <span className="text-white/70">Combo</span>
                   <span className="font-medium text-white">
@@ -2090,9 +2004,9 @@ const Events = () => {
                   <span className="text-white/70">Quantity</span>
                   <span className="font-medium text-white">{foodComboQuantity}</span>
                 </div>
-                <div className="pt-2 border-t border-white/20 flex justify-between">
+                <div className={`pt-2 border-t border-white/20 flex justify-between ${isIpad9thGeneration ? "pt-3 border-white/10 mt-1" : ""}`}>
                   <span className="font-medium text-white">Total Amount</span>
-                  <span className="font-bold text-lg text-emerald-400">
+                  <span className={`font-bold text-emerald-400 ${isIpad9thGeneration ? "text-xl" : "text-lg"}`}>
                     {selectedFoodCombo 
                       ? formatPrice((foodCombos.find(c => c.id === selectedFoodCombo)?.price || 0) * foodComboQuantity) 
                       : "---"}
@@ -2102,16 +2016,16 @@ const Events = () => {
             </div>
           </div>
           
-          <DialogFooter className="border-t border-white/10 pt-4 ipad-dialog-footer">
+          <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
             <Button
               variant="outline"
               onClick={() => setFoodComboDialogOpen(false)}
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
+              className={`border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
             >
               Cancel
             </Button>
             <Button
-              className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white ipad-button-fix"
+              className={`bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
               disabled={!selectedFoodCombo}
               onClick={() => {
                 // Handle booking logic
@@ -2119,7 +2033,7 @@ const Events = () => {
                 // Show success message or redirect to payment
               }}
             >
-              <Utensils className="mr-2 h-4 w-4" />
+              <Utensils className="mr-1.5 h-3.5 w-3.5" />
               Book Now
             </Button>
           </DialogFooter>
@@ -2128,37 +2042,37 @@ const Events = () => {
       
       {/* Cake Pre-Booking Dialog */}
       <Dialog open={cakeBookingDialogOpen} onOpenChange={setCakeBookingDialogOpen}>
-        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-rose-500/20 text-white dialog-content ipad-dialog-fix">
-          <DialogHeader className="ipad-dialog-header">
-            <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
-              <Gift className="h-5 w-5 text-rose-500" /> Cake Pre-Booking
+        <DialogContent className={`max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-rose-500/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
+          <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
+            <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
+              <Gift className="h-4 w-4 sm:h-5 sm:w-5 text-rose-500" /> Cake Pre-Booking
             </DialogTitle>
-            <DialogDescription className="text-white/70">
+            <DialogDescription className="text-sm text-white/70">
               Pre-order celebration cakes for your special moments at the festival (Dec 21-26, 2025).
             </DialogDescription>
           </DialogHeader>
           
-          <div className="py-4 space-y-6 ipad-dialog-content">
+          <div className={`py-4 space-y-6 ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <Label className="text-white/90">Select Cake</Label>
-                <div className="space-y-3 mt-2">
+                <div className={`space-y-3 mt-2 ${isIpad9thGeneration ? "ipad-9th-ticket-list" : ""}`}>
                   {cakeOptions.map(cake => (
                     <div
                       key={cake.id}
-                      className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                      className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all cross-browser-rounded ${
                         selectedCake === cake.id 
-                          ? 'border-rose-500 bg-rose-500/10' 
-                          : 'border-white/10 hover:border-rose-500/50 bg-white/5'
+                          ? isIpad9thGeneration ? 'ipad-9th-selected-card' : 'border-rose-500 bg-rose-500/10' 
+                          : isIpad9thGeneration ? 'ipad-9th-card' : 'border-white/10 hover:border-rose-500/50 bg-white/5'
                       }`}
                       onClick={() => setSelectedCake(cake.id)}
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <h4 className="font-medium text-white">{cake.name}</h4>
-                          <p className="text-sm text-white/60 mt-1">{cake.description}</p>
+                          <h4 className={`font-medium text-white ${isIpad9thGeneration ? "text-base" : "text-sm sm:text-base"}`}>{cake.name}</h4>
+                          <p className={`${isIpad9thGeneration ? "text-sm mt-1" : "text-xs sm:text-sm"} text-white/60`}>{cake.description}</p>
                         </div>
-                        <div className="text-lg font-bold text-white">{formatPrice(cake.price)}</div>
+                        <div className={`font-bold text-white ${isIpad9thGeneration ? "text-lg" : "text-base sm:text-lg"}`}>{formatPrice(cake.price)}</div>
                       </div>
                     </div>
                   ))}
@@ -2167,33 +2081,33 @@ const Events = () => {
               
               <div>
                 <Label htmlFor="quantity" className="text-white/90">Quantity</Label>
-                <div className="flex mt-2">
+                <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={() => decreaseQuantity(setCakeQuantity, cakeQuantity)}
                     disabled={cakeQuantity <= 1}
-                    className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                    className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
                   >
-                    <Minus className="h-4 w-4" />
+                    <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
                   </Button>
-                  <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
+                  <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
                     {cakeQuantity}
-                </div>
+                  </div>
                   <Button
                     variant="outline"
                     size="icon"
-                    onClick={() => increaseQuantity(setCakeQuantity, cakeQuantity)}
+                    onClick={() => increaseQuantity(setCakeQuantity, cakeQuantity, 5)}
                     disabled={cakeQuantity >= 5}
-                    className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                    className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
                   >
-                    <Plus className="h-4 w-4" />
+                    <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
                   </Button>
                 </div>
                 <p className="text-sm text-white/50 mt-1">Maximum 5 cakes per booking</p>
-            </div>
+              </div>
 
-                <div>
+              <div>
                 <Label htmlFor="cake-date" className="text-white/90">Delivery Date</Label>
                 <Select>
                   <SelectTrigger className="bg-white/5 border-white/20 text-white">
@@ -2225,19 +2139,19 @@ const Events = () => {
               </div>
             </div>
             
-            <div className="bg-rose-500/5 p-4 rounded-lg border border-rose-500/20">
+            <div className={`bg-rose-500/5 p-4 rounded-lg border border-rose-500/20 ${isIpad9thGeneration ? "rounded-xl" : ""}`}>
               <h4 className="text-rose-400 font-semibold mb-2">Important Information:</h4>
               <div className="space-y-2">
                 <div className="flex items-start gap-2">
-                  <Info className="h-4 w-4 text-rose-400 mt-0.5" />
+                  <Info className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-rose-400 mt-0.5`} />
                   <span className="text-white/70 text-sm">Pre-order at least 24 hours in advance</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Info className="h-4 w-4 text-rose-400 mt-0.5" />
+                  <Info className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-rose-400 mt-0.5`} />
                   <span className="text-white/70 text-sm">Collect your cake from the Festival Bakery Zone</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Info className="h-4 w-4 text-rose-400 mt-0.5" />
+                  <Info className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-rose-400 mt-0.5`} />
                   <span className="text-white/70 text-sm">Special dietary requirements: Call +91-98765-43210</span>
                 </div>
               </div>
@@ -2245,7 +2159,7 @@ const Events = () => {
             
             <div>
               <Label className="text-white/90">Summary</Label>
-              <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
+              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3 bg-white/10" : ""}`}>
                 <div className="flex justify-between">
                   <span className="text-white/70">Cake</span>
                   <span className="font-medium text-white">
@@ -2256,9 +2170,9 @@ const Events = () => {
                   <span className="text-white/70">Quantity</span>
                   <span className="font-medium text-white">{cakeQuantity}</span>
                 </div>
-                <div className="pt-2 border-t border-white/20 flex justify-between">
+                <div className={`pt-2 border-t border-white/20 flex justify-between ${isIpad9thGeneration ? "pt-3 border-white/10 mt-1" : ""}`}>
                   <span className="font-medium text-white">Total Amount</span>
-                  <span className="font-bold text-lg text-rose-400">
+                  <span className={`font-bold text-rose-400 ${isIpad9thGeneration ? "text-xl" : "text-lg"}`}>
                     {selectedCake 
                       ? formatPrice((cakeOptions.find(c => c.id === selectedCake)?.price || 0) * cakeQuantity) 
                       : "---"}
@@ -2268,16 +2182,16 @@ const Events = () => {
             </div>
           </div>
           
-          <DialogFooter className="border-t border-white/10 pt-4 ipad-dialog-footer">
+          <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
             <Button
               variant="outline"
               onClick={() => setCakeBookingDialogOpen(false)}
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
+              className={`border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
             >
               Cancel
             </Button>
             <Button
-              className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white ipad-button-fix"
+              className={`bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
               disabled={!selectedCake}
               onClick={() => {
                 // Handle booking logic
@@ -2285,166 +2199,37 @@ const Events = () => {
                 // Show success message or redirect to payment
               }}
             >
-              <Gift className="mr-2 h-4 w-4" />
+              <Gift className="mr-1.5 h-3.5 w-3.5" />
               Book Now
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
       
-      {/* Custom Themed Footer */}
-      <footer className="bg-[#0c1e3c] text-white border-t border-white/10">
-        <div className="container mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-6">
-                <img src="/teal-cg-logo.png" alt="Prince Group" className="h-10 w-auto" />
-              </div>
-              <p className="text-white/70 mb-4">
-                Experience Kanyakumari's biggest festival from December 21-26, 2025 featuring concerts, helicopter rides, shopping, and more.
-              </p>
-              <div className="flex gap-4">
-                <a href="#" className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#4eb4a7]/20 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#4eb4a7" viewBox="0 0 24 24">
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
-                  </svg>
-                </a>
-                <a href="#" className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#4eb4a7]/20 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#4eb4a7" viewBox="0 0 24 24">
-                    <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
-                  </svg>
-                </a>
-                <a href="#" className="h-10 w-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#4eb4a7]/20 transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#4eb4a7" viewBox="0 0 24 24">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                  </svg>
-                </a>
-                      </div>
-                      </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Event Info</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="text-white/70 hover:text-[#4eb4a7] transition-colors flex items-center gap-2">
-                    <CalendarDays className="h-4 w-4" /> December 21-26, 2025
-                  </a>
-                    </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-[#4eb4a7] transition-colors flex items-center gap-2">
-                    <MapPin className="h-4 w-4" /> Kanyakumari, Tamil Nadu
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-[#4eb4a7] transition-colors flex items-center gap-2">
-                    <Clock className="h-4 w-4" /> 10:00 AM - 11:00 PM Daily
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-[#4eb4a7] transition-colors flex items-center gap-2">
-                    <MusicIcon className="h-4 w-4" /> Main Performer: Vijay Antony
-                  </a>
-                </li>
-              </ul>
-                      </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#" className="text-white/70 hover:text-[#4eb4a7] transition-colors">
-                    Book Concert Tickets
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-[#4eb4a7] transition-colors">
-                    Book Helicopter Ride
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-[#4eb4a7] transition-colors">
-                    Shopping Arena Pass
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-[#4eb4a7] transition-colors">
-                    Food Combo Booking
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-[#4eb4a7] transition-colors">
-                    Cake Pre-Booking
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-white/70 hover:text-[#4eb4a7] transition-colors">
-                    Event FAQs
-                  </a>
-                    </li>
-                  </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-2">
-                  <Phone className="h-4 w-4 text-[#4eb4a7] mt-1" />
-                  <div>
-                    <p className="text-white">Event Helpline</p>
-                    <p className="text-white/70">+91-98765-43210</p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Mail className="h-4 w-4 text-[#4eb4a7] mt-1" />
-                  <div>
-                    <p className="text-white">Email Us</p>
-                    <p className="text-white/70">event@princegroup.com</p>
-                  </div>
-                </li>
-                <li>
-                  <Button 
-                    className="w-full bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] hover:from-[#3da296] hover:to-[#4e9da3] text-white mt-2"
-                  >
-                    <Phone className="mr-2 h-4 w-4" />
-                    Contact Support
-                  </Button>
-                </li>
-              </ul>
-                </div>
-                </div>
-          
-          <div className="border-t border-white/10 mt-12 pt-8 text-center">
-            <p className="text-white/50">
-              © 2025 Prince Group. All rights reserved. | Designed and developed by <a href="https://jezx.in" className="text-[#4eb4a7] hover:underline">JezX</a> | <a href="https://jezhtechnologies.com" className="text-[#4eb4a7] hover:underline">Jezh Technologies</a>
-            </p>
-              </div>
-            </div>
-      </footer>
-      
-      {/* Modified Attraction Details Dialog with improved class for iPad */}
+      {/* Attraction Details Dialog */}
       <Dialog open={!!activeAttraction} onOpenChange={(open) => !open && setActiveAttraction(null)}>
-        <DialogContent className="max-w-3xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-white/20 text-white dialog-content ipad-dialog-fix">
+        <DialogContent className={`max-w-3xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-white/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
           {activeAttraction && (() => {
             const attraction = attractions.find(a => a.id === activeAttraction);
             if (!attraction) return null;
             return (
               <>
-                <DialogHeader className="ipad-dialog-header">
-                  <DialogTitle className={`text-2xl font-bold flex items-center gap-2 ${attraction.textColor}`}>
+                <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
+                  <DialogTitle className={`text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2 ${attraction.textColor}`}>
                     {attraction.icon} {attraction.name}
                   </DialogTitle>
-                  <DialogDescription className="text-white/70">
+                  <DialogDescription className="text-sm text-white/70">
                     {attraction.description}
                   </DialogDescription>
                 </DialogHeader>
                 
-                <div className="py-4 ipad-dialog-content">
-                  <div className="ipad-scrollable-section">
+                <div className={`py-4 ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
+                  <div className={isIpad9thGeneration ? "ipad-9th-scrollable-section" : "ipad-scrollable-section"}>
                     {/* Hero image section */}
                     <div className="relative h-60 rounded-lg overflow-hidden mb-6">
                       <img 
                         src={attraction.id === "themepark" ? 
-                          "https://images.unsplash.com/photo-1560106426-c90e52d2027f?q=80&w=2574&auto=format&fit=crop" : 
+                          "https://images.unsplash.com/photo-1560106426-c90d46dedbb8?q=80&w=2574&auto=format&fit=crop" : 
                           attraction.image} 
                         alt={attraction.name} 
                         className="w-full h-full object-cover"
@@ -2500,16 +2285,16 @@ const Events = () => {
                   </div>
                 </div>
                 
-                <DialogFooter className="border-t border-white/10 pt-4 ipad-dialog-footer">
+                <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
                   <Button 
-                    className={`${attraction.buttonColor} text-white ipad-button-fix`}
+                    className={`${attraction.buttonColor} text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
                     onClick={() => {
                       setActiveAttraction(null);
                       attraction.bookingAction();
                     }}
                   >
                     {attraction.icon}
-                    <span className="ml-2">Book Now</span>
+                    <span className="ml-1.5">Book Now</span>
                   </Button>
                 </DialogFooter>
               </>
@@ -2517,9 +2302,9 @@ const Events = () => {
           })()}
         </DialogContent>
       </Dialog>
+      
     </div>
   );
 };
 
 export default Events;
-
