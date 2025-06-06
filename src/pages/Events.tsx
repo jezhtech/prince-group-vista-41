@@ -86,32 +86,99 @@ const isIPad9thGen = () => {
 
 // Custom CSS to fix iPad 9th generation issues
 const ipadFixStyles = `
+  /* Dialog fixes */
   .ipad-9th-gen .dialog-content {
-    max-height: 80vh !important;
+    max-height: 85vh !important;
     overflow-y: auto !important;
     padding: 16px !important;
     width: 90vw !important;
     margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   .ipad-9th-gen .dialog-content > div {
     padding: 16px !important;
   }
 
+  /* Ensure the dialog header is visible */
+  .ipad-9th-gen .dialog-content [data-radix-dialog-header] {
+    margin-bottom: 12px !important;
+  }
+  
+  /* Fix the grid layout within dialog content */
+  .ipad-9th-gen .dialog-content .grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  /* Fix dialog footer styling */
+  .ipad-9th-gen .dialog-content [data-radix-dialog-footer] {
+    margin-top: 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  
+  /* Fix buttons in dialogs */
+  .ipad-9th-gen .dialog-content button {
+    height: auto !important;
+    padding: 8px 16px !important;
+    width: 100% !important;
+    margin-bottom: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  /* Fix inputs, selects and form controls */
+  .ipad-9th-gen .dialog-content input,
+  .ipad-9th-gen .dialog-content select,
+  .ipad-9th-gen .dialog-content [data-radix-select-trigger] {
+    height: 40px !important;
+    margin-bottom: 8px !important;
+  }
+
   /* Fix for attraction navigation buttons in hero section */
   .ipad-9th-gen .attraction-nav-button {
+    position: absolute !important;
     transform: translateY(-50%) !important;
     top: 50% !important;
-    width: 36px !important;
-    height: 36px !important;
+    width: 40px !important;
+    height: 40px !important;
+    z-index: 50 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
   }
 
   .ipad-9th-gen .attraction-nav-button.left {
-    left: 8px !important;
+    left: 10px !important;
   }
 
   .ipad-9th-gen .attraction-nav-button.right {
-    right: 8px !important;
+    right: 10px !important;
+  }
+
+  /* Fix button content alignment */
+  .ipad-9th-gen .attraction-nav-button svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  /* Fix quantity selector in dialogs */
+  .ipad-9th-gen .dialog-content .flex > button {
+    width: auto !important;
+    height: 40px !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Fix ticket selection items */
+  .ipad-9th-gen .dialog-content [class*="cursor-pointer"] {
+    margin-bottom: 12px !important;
+    padding: 12px !important;
   }
 
   /* Safari specific fixes for dialog content */
@@ -120,21 +187,36 @@ const ipadFixStyles = `
     flex-direction: column !important;
   }
 
-  /* Fix grids within dialog content */
-  .ipad-9th-gen .dialog-content .grid {
-    display: block !important;
+  /* Fix scrolling behavior in dialog content */
+  .ipad-9th-gen .dialog-content .max-h-[250px],
+  .ipad-9th-gen .dialog-content .max-h-[400px],
+  .ipad-9th-gen .dialog-content .overflow-y-auto {
+    max-height: none !important;
+    overflow-y: visible !important;
+    padding-right: 0 !important;
   }
-
-  .ipad-9th-gen .dialog-content .grid > div {
-    margin-bottom: 20px !important;
-  }
-
+  
   /* Fix for landscape mode */
   @media (orientation: landscape) {
     .ipad-9th-gen .dialog-content {
-      max-height: 70vh !important;
+      max-height: 80vh !important;
       padding: 12px !important;
     }
+    
+    .ipad-9th-gen .dialog-content .grid {
+      flex-direction: row !important;
+      flex-wrap: wrap !important;
+    }
+    
+    .ipad-9th-gen .dialog-content .grid > div {
+      width: 48% !important;
+      flex: 0 0 48% !important;
+    }
+  }
+  
+  /* Fix hero section specific for iPad 9th gen */
+  .ipad-9th-gen .min-h-screen {
+    min-height: 90vh !important;
   }
 `;
 
@@ -894,27 +976,29 @@ const Events = () => {
                     ))}
                   </div>
 
-                  {/* Modified Side Navigation Arrows with classes for iPad fixes */}
+                  {/* Modified Side Navigation Arrows with improved visibility for iPad 9th gen */}
                   <button
-                    className="attraction-nav-button left absolute top-1/2 left-2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white border border-white/10 hover:bg-black/70 z-10"
+                    className="attraction-nav-button left absolute top-1/2 left-2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white border border-white/20 hover:bg-black/80 z-20"
                     onClick={() => {
                       setCurrentAttractionIndex(prev => 
                         prev === 0 ? attractions.filter(a => a.featured).length - 1 : prev - 1
                       );
                     }}
+                    aria-label="Previous attraction"
                   >
-                    <ArrowRight className="h-4 w-4 rotate-180" />
+                    <ArrowRight className="h-5 w-5 rotate-180" />
                   </button>
                   
                   <button
-                    className="attraction-nav-button right absolute top-1/2 right-2 -translate-y-1/2 h-8 w-8 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center text-white border border-white/10 hover:bg-black/70 z-10"
+                    className="attraction-nav-button right absolute top-1/2 right-2 -translate-y-1/2 h-10 w-10 rounded-full bg-black/60 backdrop-blur-sm flex items-center justify-center text-white border border-white/20 hover:bg-black/80 z-20"
                     onClick={() => {
                       setCurrentAttractionIndex(prev => 
                         prev === attractions.filter(a => a.featured).length - 1 ? 0 : prev + 1
                       );
                     }}
+                    aria-label="Next attraction"
                   >
-                    <ArrowRight className="h-4 w-4" />
+                    <ArrowRight className="h-5 w-5" />
                   </button>
                   
                   {/* Decorative Elements */}
@@ -1256,8 +1340,8 @@ const Events = () => {
       
       {/* Concert Ticket Booking Dialog */}
       <Dialog open={concertTicketDialogOpen} onOpenChange={setConcertTicketDialogOpen}>
-        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-pink-600/20 text-white dialog-content">
-          <DialogHeader>
+        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-pink-600/20 text-white dialog-content ipad-dialog-fix">
+          <DialogHeader className="ipad-dialog-header">
             <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
               <MusicIcon className="h-4 w-4 sm:h-5 sm:w-5 text-pink-500" /> Book Concert Tickets
             </DialogTitle>
@@ -1266,7 +1350,7 @@ const Events = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4 safari-flex-fix">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4 safari-flex-fix ipad-dialog-content">
             <div>
               <h3 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Ticket Class</h3>
               <div className="space-y-3 md:space-y-4 max-h-[250px] md:max-h-[400px] overflow-y-auto pr-2 custom-scrollbar safari-flex-fix">
@@ -1400,16 +1484,16 @@ const Events = () => {
             </div>
           </div>
           
-          <DialogFooter className="border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4">
+          <DialogFooter className="border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ipad-dialog-footer">
             <Button
               variant="outline"
               onClick={() => setConcertTicketDialogOpen(false)}
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15"
+              className="border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ipad-button-fix"
             >
               Cancel
             </Button>
             <Button
-              className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded"
+              className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ipad-button-fix"
               disabled={!ticketCategory}
               onClick={() => {
                 // Handle booking logic
@@ -1424,10 +1508,52 @@ const Events = () => {
         </DialogContent>
       </Dialog>
       
+      {/* Update CSS for iPad specific fixes */}
+      <style>{`
+        /* Extra iPad 9th gen fixes for dialog content */
+        @supports (-webkit-touch-callout: none) {
+          .ipad-9th-gen .ipad-dialog-fix {
+            padding: 16px !important;
+            overflow: auto !important;
+          }
+          
+          .ipad-9th-gen .ipad-dialog-header {
+            margin-bottom: 16px !important;
+          }
+          
+          .ipad-9th-gen .ipad-dialog-content {
+            overflow: visible !important;
+            display: flex !important;
+            flex-direction: column !important;
+          }
+          
+          .ipad-9th-gen .ipad-dialog-footer {
+            margin-top: 16px !important;
+          }
+          
+          .ipad-9th-gen .ipad-button-fix {
+            min-height: 44px !important;
+            padding: 10px 16px !important;
+            margin-bottom: 8px !important;
+          }
+          
+          /* Fix Select elements in iPad */
+          .ipad-9th-gen [data-radix-select-trigger] {
+            min-height: 44px !important;
+          }
+          
+          /* Ensure quantity selector buttons work properly */
+          .ipad-9th-gen .flex > button.ipad-button-fix {
+            min-width: 44px !important;
+            width: auto !important;
+          }
+        }
+      `}</style>
+      
       {/* Helicopter Ride Booking Dialog */}
       <Dialog open={helicopterTicketDialogOpen} onOpenChange={setHelicopterTicketDialogOpen}>
-        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-indigo-600/20 text-white dialog-content">
-          <DialogHeader>
+        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-indigo-600/20 text-white dialog-content ipad-dialog-fix">
+          <DialogHeader className="ipad-dialog-header">
             <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
               <Plane className="h-5 w-5 text-indigo-400" /> Book Helicopter Ride
             </DialogTitle>
@@ -1436,7 +1562,7 @@ const Events = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4 ipad-dialog-content">
             <div>
               <h3 className="text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Package</h3>
               <div className="space-y-3 md:space-y-4">
@@ -1586,16 +1712,16 @@ const Events = () => {
             </div>
           </div>
           
-          <DialogFooter className="border-t border-white/10 pt-4">
+          <DialogFooter className="border-t border-white/10 pt-4 ipad-dialog-footer">
             <Button
               variant="outline"
               onClick={() => setHelicopterTicketDialogOpen(false)}
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
             >
               Cancel
             </Button>
             <Button
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white ipad-button-fix"
               disabled={!selectedHelicopterPackage}
               onClick={() => {
                 // Handle booking logic
@@ -1612,8 +1738,8 @@ const Events = () => {
       
       {/* Shopping Arena Pass Dialog */}
       <Dialog open={shoppingTicketDialogOpen} onOpenChange={setShoppingTicketDialogOpen}>
-        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-amber-500/20 text-white dialog-content">
-          <DialogHeader>
+        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-amber-500/20 text-white dialog-content ipad-dialog-fix">
+          <DialogHeader className="ipad-dialog-header">
             <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
               <ShoppingBag className="h-5 w-5 text-amber-500" /> Shopping Arena Pass
             </DialogTitle>
@@ -1622,7 +1748,7 @@ const Events = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="py-2 md:py-4 space-y-4 md:space-y-6">
+          <div className="py-2 md:py-4 space-y-4 md:space-y-6 ipad-dialog-content">
             <div className="bg-amber-500/5 p-3 md:p-4 rounded-lg border border-amber-500/20">
               <h4 className="text-amber-400 font-semibold mb-2">Shopping Arena Highlights:</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -1756,16 +1882,16 @@ const Events = () => {
             </div>
           </div>
           
-          <DialogFooter className="border-t border-white/10 pt-4">
+          <DialogFooter className="border-t border-white/10 pt-4 ipad-dialog-footer">
             <Button
               variant="outline"
               onClick={() => setShoppingTicketDialogOpen(false)}
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
             >
               Cancel
             </Button>
             <Button
-              className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
+              className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white ipad-button-fix"
               onClick={() => {
                 // Handle booking logic
                 setShoppingTicketDialogOpen(false);
@@ -1781,8 +1907,8 @@ const Events = () => {
       
       {/* Food Combo Booking Dialog */}
       <Dialog open={foodComboDialogOpen} onOpenChange={setFoodComboDialogOpen}>
-        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-emerald-500/20 text-white dialog-content">
-          <DialogHeader>
+        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-emerald-500/20 text-white dialog-content ipad-dialog-fix">
+          <DialogHeader className="ipad-dialog-header">
             <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
               <Utensils className="h-5 w-5 text-emerald-500" /> Food Combo Booking
             </DialogTitle>
@@ -1791,7 +1917,7 @@ const Events = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="py-4 space-y-6">
+          <div className="py-4 space-y-6 ipad-dialog-content">
             <div className="bg-emerald-500/5 p-4 rounded-lg border border-emerald-500/20">
               <h4 className="text-emerald-400 font-semibold mb-2">Why Pre-book Your Food?</h4>
               <div className="space-y-2">
@@ -1891,16 +2017,16 @@ const Events = () => {
             </div>
           </div>
           
-          <DialogFooter className="border-t border-white/10 pt-4">
+          <DialogFooter className="border-t border-white/10 pt-4 ipad-dialog-footer">
             <Button
               variant="outline"
               onClick={() => setFoodComboDialogOpen(false)}
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
             >
               Cancel
             </Button>
             <Button
-              className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white"
+              className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white ipad-button-fix"
               disabled={!selectedFoodCombo}
               onClick={() => {
                 // Handle booking logic
@@ -1917,8 +2043,8 @@ const Events = () => {
       
       {/* Cake Pre-Booking Dialog */}
       <Dialog open={cakeBookingDialogOpen} onOpenChange={setCakeBookingDialogOpen}>
-        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-rose-500/20 text-white dialog-content">
-          <DialogHeader>
+        <DialogContent className="max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-rose-500/20 text-white dialog-content ipad-dialog-fix">
+          <DialogHeader className="ipad-dialog-header">
             <DialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
               <Gift className="h-5 w-5 text-rose-500" /> Cake Pre-Booking
             </DialogTitle>
@@ -1927,7 +2053,7 @@ const Events = () => {
             </DialogDescription>
           </DialogHeader>
           
-          <div className="py-4 space-y-6">
+          <div className="py-4 space-y-6 ipad-dialog-content">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <Label className="text-white/90">Select Cake</Label>
@@ -2057,16 +2183,16 @@ const Events = () => {
             </div>
           </div>
           
-          <DialogFooter className="border-t border-white/10 pt-4">
+          <DialogFooter className="border-t border-white/10 pt-4 ipad-dialog-footer">
             <Button
               variant="outline"
               onClick={() => setCakeBookingDialogOpen(false)}
-              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+              className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ipad-button-fix"
             >
               Cancel
             </Button>
             <Button
-              className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
+              className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white ipad-button-fix"
               disabled={!selectedCake}
               onClick={() => {
                 // Handle booking logic
@@ -2210,15 +2336,15 @@ const Events = () => {
             </div>
       </footer>
       
-      {/* Attraction Details Dialog */}
+      {/* Modified Attraction Details Dialog with improved class for iPad */}
       <Dialog open={!!activeAttraction} onOpenChange={(open) => !open && setActiveAttraction(null)}>
-        <DialogContent className="max-w-3xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-white/20 text-white dialog-content">
+        <DialogContent className="max-w-3xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-white/20 text-white dialog-content ipad-dialog-fix">
           {activeAttraction && (() => {
             const attraction = attractions.find(a => a.id === activeAttraction);
             if (!attraction) return null;
             return (
               <>
-                <DialogHeader>
+                <DialogHeader className="ipad-dialog-header">
                   <DialogTitle className={`text-2xl font-bold flex items-center gap-2 ${attraction.textColor}`}>
                     {attraction.icon} {attraction.name}
                   </DialogTitle>
@@ -2227,7 +2353,7 @@ const Events = () => {
                   </DialogDescription>
                 </DialogHeader>
                 
-                <div className="py-4">
+                <div className="py-4 ipad-dialog-content">
                   <div className="relative h-60 rounded-lg overflow-hidden mb-6">
                     <img 
                       src={attraction.id === "themepark" ? 
@@ -2241,7 +2367,7 @@ const Events = () => {
                       <Badge className={`${attraction.buttonColor} text-white`}>
                         {attraction.date}
                       </Badge>
-          </div>
+                    </div>
                   </div>
                   
                   <div className="space-y-6">
@@ -2283,9 +2409,9 @@ const Events = () => {
                   </div>
                 </div>
                 
-                <DialogFooter className="border-t border-white/10 pt-4">
+                <DialogFooter className="border-t border-white/10 pt-4 ipad-dialog-footer">
                   <Button 
-                    className={`${attraction.buttonColor} text-white`}
+                    className={`${attraction.buttonColor} text-white ipad-button-fix`}
                     onClick={() => {
                       setActiveAttraction(null);
                       attraction.bookingAction();
