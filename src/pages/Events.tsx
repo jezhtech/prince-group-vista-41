@@ -7,6 +7,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
@@ -61,6 +63,93 @@ import {
   Menu,
   X
 } from "lucide-react";
+
+// Add a new CSS section for collapsible booking forms
+const bookingFormStyles = `
+  .booking-form-section {
+    margin-top: 1rem;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    background-color: rgba(12, 30, 60, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .booking-form-header {
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .booking-form-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+
+  .booking-form-content.open {
+    max-height: 2000px;
+    overflow: visible;
+    padding: 1rem;
+  }
+
+  .booking-form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .booking-form-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .booking-form-section.concert {
+    border-color: rgba(236, 72, 153, 0.3);
+  }
+
+  .booking-form-section.helicopter {
+    border-color: rgba(99, 102, 241, 0.3);
+  }
+
+  .booking-form-section.shopping {
+    border-color: rgba(245, 158, 11, 0.3);
+  }
+
+  .booking-form-section.food {
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+
+  .booking-form-section.cake {
+    border-color: rgba(244, 63, 94, 0.3);
+  }
+  
+  .booking-form-section.concert .booking-form-header {
+    background: linear-gradient(90deg, rgba(236, 72, 153, 0.1), rgba(219, 39, 119, 0.1));
+  }
+  
+  .booking-form-section.helicopter .booking-form-header {
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.1), rgba(79, 70, 229, 0.1));
+  }
+  
+  .booking-form-section.shopping .booking-form-header {
+    background: linear-gradient(90deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
+  }
+  
+  .booking-form-section.food .booking-form-header {
+    background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+  }
+  
+  .booking-form-section.cake .booking-form-header {
+    background: linear-gradient(90deg, rgba(244, 63, 94, 0.1), rgba(225, 29, 72, 0.1));
+  }
+`;
 
 // Function to detect iPad 9th generation
 const isIPad9thGen = () => {
@@ -244,6 +333,26 @@ const ipadFixStyles = `
   .ipad-9th-gen .min-h-screen {
     min-height: 90vh !important;
   }
+  
+  /* Booking Form Fixes for iPad 9th Gen */
+  .ipad-9th-gen .booking-form-section {
+    border-radius: 16px !important;
+    border-width: 2px !important;
+    margin-top: 16px !important;
+    margin-bottom: 16px !important;
+  }
+  
+  .ipad-9th-gen .booking-form-header {
+    padding: 16px !important;
+  }
+  
+  .ipad-9th-gen .booking-form-content.open {
+    padding: 16px !important;
+  }
+  
+  .ipad-9th-gen .booking-form-grid {
+    gap: 16px !important;
+  }
 `;
 
 // Add this new iPad-specific dialog component
@@ -336,9 +445,85 @@ const useAdaptiveDialog = () => {
   };
 };
 
+// Create a reusable BookingForm component
+interface BookingFormProps {
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+  isOpen: boolean;
+  onToggle: () => void;
+  accentColor: string;
+  textColor: string;
+  children: React.ReactNode;
+  onProceed?: () => void;
+  proceedButtonText?: string;
+  disableProceed?: boolean;
+}
+
+const BookingForm: React.FC<BookingFormProps> = ({
+  id,
+  title,
+  icon,
+  isOpen,
+  onToggle,
+  accentColor,
+  textColor,
+  children,
+  onProceed,
+  proceedButtonText = "Book Now",
+  disableProceed = false,
+}) => {
+  const formRef = useRef<HTMLDivElement>(null);
+  
+  return (
+    <div ref={formRef} id={`booking-form-${id}`} className={`booking-form-section ${id}`}>
+      <div className="booking-form-header">
+        <div className="flex items-center gap-2">
+          <div className={`h-10 w-10 rounded-full flex items-center justify-center ${accentColor}`}>
+            {icon}
+          </div>
+          <h3 className={`text-lg sm:text-xl font-bold ${textColor}`}>{title}</h3>
+        </div>
+        <Button 
+          variant="ghost"
+          size="icon"
+          onClick={onToggle}
+          className="text-white hover:bg-white/10"
+        >
+          {isOpen ? <X className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+        </Button>
+      </div>
+      <div className={`booking-form-content ${isOpen ? 'open' : ''}`}>
+        <div className="booking-form-grid">
+          {children}
+        </div>
+        <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
+          <Button
+            variant="outline"
+            onClick={onToggle}
+            className="border-white/20 text-white hover:bg-white/10 hover:text-white cross-browser-rounded opacity-100 bg-white/15"
+          >
+            Cancel
+          </Button>
+          {onProceed && (
+            <Button
+              className={`${accentColor} text-white cross-browser-rounded`}
+              disabled={disableProceed}
+              onClick={onProceed}
+            >
+              {proceedButtonText}
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Events = () => {
   // Ref for scroll animations
   const containerRef = useRef<HTMLDivElement>(null);
+  const heroSectionRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"]
@@ -358,11 +543,7 @@ const Events = () => {
   const [ticketQuantity, setTicketQuantity] = useState(1);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [concertTicketDialogOpen, setConcertTicketDialogOpen] = useState(false);
-  const [shoppingTicketDialogOpen, setShoppingTicketDialogOpen] = useState(false);
-  const [helicopterTicketDialogOpen, setHelicopterTicketDialogOpen] = useState(false);
-  const [foodComboDialogOpen, setFoodComboDialogOpen] = useState(false);
-  const [cakeBookingDialogOpen, setCakeBookingDialogOpen] = useState(false);
+  const [openBookingSection, setOpenBookingSection] = useState<string | null>(null);
   const [adultCount, setAdultCount] = useState(1);
   const [childCount, setChildCount] = useState(0);
   const [activeAttraction, setActiveAttraction] = useState<string | null>(null);
@@ -415,6 +596,37 @@ const Events = () => {
   const [cakeQuantity, setCakeQuantity] = useState(1);
   const [cakeMessage, setCakeMessage] = useState("");
   
+  // Function to scroll to a specific element by ID
+  const scrollToSection = (elementId: string) => {
+    setTimeout(() => {
+      const element = document.getElementById(elementId);
+      if (element) {
+        // Use a small offset to account for fixed header
+        const headerOffset = 80;
+        const elementPosition = element.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        
+        window.scrollTo({
+          top: offsetPosition,
+          behavior: "smooth"
+        });
+      }
+    }, 300); // Longer timeout to ensure the element is fully rendered
+  };
+  
+  // Function to handle opening booking sections with scrolling
+  const handleOpenBookingSection = (section: string) => {
+    // If we're closing the current section, scroll back to hero
+    if (openBookingSection === section) {
+      setOpenBookingSection(null);
+      scrollToSection("hero-section");
+    } else {
+      // Open the new section and scroll to it
+      setOpenBookingSection(section);
+      scrollToSection(`booking-form-${section}`);
+    }
+  };
+  
   // Festival attractions with detailed info
   const attractions = [
     {
@@ -437,7 +649,7 @@ const Events = () => {
         "Refreshments available"
       ],
       ticketTypes: ticketClasses,
-      bookingAction: () => setConcertTicketDialogOpen(true)
+      bookingAction: () => handleOpenBookingSection("concert")
     },
     {
       id: "helicopter",
@@ -459,7 +671,7 @@ const Events = () => {
         "Limited spots available - book early!"
       ],
       ticketTypes: helicopterPackages,
-      bookingAction: () => setHelicopterTicketDialogOpen(true)
+      bookingAction: () => handleOpenBookingSection("helicopter")
     },
     {
       id: "shopping",
@@ -480,7 +692,7 @@ const Events = () => {
         "Products from across India",
         "Live demonstrations and workshops"
       ],
-      bookingAction: () => setShoppingTicketDialogOpen(true)
+      bookingAction: () => handleOpenBookingSection("shopping")
     },
     {
       id: "food",
@@ -502,7 +714,7 @@ const Events = () => {
         "Vegetarian and non-vegetarian options"
       ],
       ticketTypes: foodCombos,
-      bookingAction: () => setFoodComboDialogOpen(true)
+      bookingAction: () => handleOpenBookingSection("food")
     },
     {
       id: "cake",
@@ -524,7 +736,7 @@ const Events = () => {
         "Perfect for celebrations"
       ],
       ticketTypes: cakeOptions,
-      bookingAction: () => setCakeBookingDialogOpen(true)
+      bookingAction: () => handleOpenBookingSection("cake")
     },
     {
       id: "themepark",
@@ -545,9 +757,11 @@ const Events = () => {
         "Win exciting prizes",
         "Included in shopping arena pass"
       ],
-      bookingAction: () => setShoppingTicketDialogOpen(true)
+      bookingAction: () => handleOpenBookingSection("shopping")
     }
   ];
+
+
 
   // Auto-scrolling with ability for user to manually navigate
   useEffect(() => {
@@ -766,183 +980,15 @@ const Events = () => {
     };
   }, []);
 
-  // Concert Ticket Booking Dialog
-  <Dialog open={concertTicketDialogOpen} onOpenChange={setConcertTicketDialogOpen}>
-    <DialogContent className={`max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-pink-600/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
-      <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
-        <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
-          <MusicIcon className="h-4 w-4 sm:h-5 sm:w-5 text-pink-500" /> Book Concert Tickets
-        </DialogTitle>
-        <DialogDescription className="text-sm text-white/70">
-          Secure your tickets for Vijay Antony's live concert on December 21, 2025.
-        </DialogDescription>
-      </DialogHeader>
-      
-      <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4 safari-flex-fix ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
-        <div className={isIpad9thGeneration ? "ipad-9th-scrollable-section" : "ipad-scrollable-section"}>
-          <h3 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Ticket Class</h3>
-          <div className={`space-y-3 md:space-y-4 ${isIpad9thGeneration ? "ipad-9th-ticket-list" : "max-h-[250px] md:max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"}`}>
-            {ticketClasses.map((ticket) => (
-              <div 
-                key={ticket.id} 
-                className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all cross-browser-rounded ${
-                  ticketCategory === ticket.id 
-                    ? isIpad9thGeneration ? 'ipad-9th-selected-card' : 'border-pink-500 bg-pink-500/10' 
-                    : isIpad9thGeneration ? 'ipad-9th-card' : 'border-white/10 hover:border-pink-500/50 bg-white/5'
-                }`}
-                onClick={() => setTicketCategory(ticket.id)}
-              >
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h4 className={`font-medium text-white ${isIpad9thGeneration ? "text-base" : "text-sm sm:text-base"}`}>{ticket.name}</h4>
-                    <p className={`${isIpad9thGeneration ? "text-sm mt-1" : "text-xs sm:text-sm"} text-white/60`}>{ticket.description}</p>
-                  </div>
-                  <div className={`font-bold text-white ${isIpad9thGeneration ? "text-lg" : "text-base sm:text-lg"}`}>{formatPrice(ticket.price)}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className={`mt-4 md:mt-6 bg-pink-900/20 p-3 sm:p-4 rounded-lg border border-pink-500/20 cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-benefits-section" : ""}`}>
-            <h4 className="text-xs sm:text-sm font-medium text-pink-300 mb-2">Ticket Benefits:</h4>
-            <ul className="space-y-1.5 sm:space-y-2">
-              <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-pink-400 mt-0.5`} />
-                Entry to all concert areas based on ticket class
-              </li>
-              <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-pink-400 mt-0.5`} />
-                Access to food and beverage stalls
-              </li>
-              <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-pink-400 mt-0.5`} />
-                Official event merchandise discount (10%)
-              </li>
-              <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-pink-400 mt-0.5`} />
-                Exclusive entry to after-party (Elite & VVIP only)
-              </li>
-            </ul>
-          </div>
-        </div>
-        
-        <div className={isIpad9thGeneration ? "ipad-9th-scrollable-section" : "ipad-scrollable-section"}>
-          <h3 className="text-lg font-semibold mb-4 text-white/90">Ticket Details</h3>
-          <div className="space-y-6">
-            <div>
-              <Label htmlFor="quantity" className="text-white/90">Number of Tickets</Label>
-              <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => decreaseQuantity(setTicketQuantity, ticketQuantity)}
-                  disabled={ticketQuantity <= 1}
-                  className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                >
-                  <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                </Button>
-                <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
-                  {ticketQuantity}
-                </div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => increaseQuantity(setTicketQuantity, ticketQuantity, 8)}
-                  disabled={ticketQuantity >= 8}
-                  className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                >
-                  <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                </Button>
-              </div>
-              {isIpad9thGeneration && <p className="text-white/50 text-sm mt-1">Maximum 8 tickets per booking</p>}
-            </div>
-            
-            <div>
-              <Label htmlFor="concert-date" className="text-white/90">Concert Date</Label>
-              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 ${isIpad9thGeneration ? "rounded-xl bg-white/10" : ""}`}>
-                <div className="flex items-center gap-3">
-                  <CalendarDays className={`${isIpad9thGeneration ? "h-6 w-6 text-pink-400" : "h-5 w-5 text-pink-500"}`} />
-                  <div>
-                    <div className={`font-medium text-white ${isIpad9thGeneration ? "text-base" : ""}`}>December 21, 2025</div>
-                    <div className="text-sm text-white/60">7:00 PM - 11:00 PM</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <Label className="text-white/90">Concert Details</Label>
-              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3" : ""}`}>
-                <div className={`flex items-start gap-2 ${isIpad9thGeneration ? "gap-3" : ""}`}>
-                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5 text-pink-400" : "h-4 w-4 text-pink-500"} mt-0.5`} />
-                  <span className={`${isIpad9thGeneration ? "text-white/80" : "text-white/70 text-sm"}`}>Main Performer - Singer & Actor: Vijay Antony</span>
-                </div>
-                <div className={`flex items-start gap-2 ${isIpad9thGeneration ? "gap-3" : ""}`}>
-                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5 text-pink-400" : "h-4 w-4 text-pink-500"} mt-0.5`} />
-                  <span className={`${isIpad9thGeneration ? "text-white/80" : "text-white/70 text-sm"}`}>Special Performances by Guest Artists</span>
-                </div>
-                <div className={`flex items-start gap-2 ${isIpad9thGeneration ? "gap-3" : ""}`}>
-                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5 text-pink-400" : "h-4 w-4 text-pink-500"} mt-0.5`} />
-                  <span className={`${isIpad9thGeneration ? "text-white/80" : "text-white/70 text-sm"}`}>World-class Sound and Lighting System</span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <Label className="text-white/90">Summary</Label>
-              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3 bg-white/10" : ""}`}>
-                <div className="flex justify-between">
-                  <span className="text-white/70">Ticket Type</span>
-                  <span className="font-medium text-white">
-                    {ticketCategory ? ticketClasses.find(t => t.id === ticketCategory)?.name : "Select a ticket"}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/70">Quantity</span>
-                  <span className="font-medium text-white">{ticketQuantity}</span>
-                </div>
-                <div className={`pt-2 border-t border-white/20 flex justify-between ${isIpad9thGeneration ? "pt-3 border-white/10 mt-1" : ""}`}>
-                  <span className="font-medium text-white">Total Amount</span>
-                  <span className={`font-bold text-pink-400 ${isIpad9thGeneration ? "text-xl" : "text-lg"}`}>
-                    {totalPrice > 0 ? formatPrice(totalPrice) : "---"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
-        <Button
-          variant="outline"
-          onClick={() => setConcertTicketDialogOpen(false)}
-          className={`border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-        >
-          Cancel
-        </Button>
-        <Button
-          className={`bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-          disabled={!ticketCategory}
-          onClick={() => {
-            // Handle booking logic
-            setConcertTicketDialogOpen(false);
-            // Show success message or redirect to payment
-          }}
-        >
-          <Ticket className="mr-1.5 h-3.5 w-3.5" />
-          Proceed to Payment
-        </Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
-
   return (
     <div className="min-h-screen flex flex-col bg-black" ref={containerRef}>
       <Helmet>
         <title>Rhythm Of Carnival 2025 | Prince Group's Mega Event</title>
         <meta name="description" content="Experience the Rhythm Of Carnival by Prince Group. A 6-day spectacular event from December 21-26, 2025 featuring music, helicopter rides, shopping, and attractions." />
       </Helmet>
+      
+      {/* Add the booking form styles */}
+      <style type="text/css">{bookingFormStyles}</style>
       
       {/* Custom Event Navbar - Themed for the event */}
       <nav className="fixed top-0 left-0 right-0 z-[999] bg-transparent backdrop-blur-sm py-3 ios-fixed-fix">
@@ -1025,7 +1071,7 @@ const Events = () => {
       {/* Hero Section with Attraction Slideshow */}
       <section className="relative w-full overflow-hidden content-padding-top ipad-landscape-fix mt-0">
         {/* Height calculation: 100vh */}
-        <div className="min-h-screen safari-flex-fix pt-8 md:pt-12 lg:pt-16">
+        <div className="min-h-screen safari-flex-fix pt-4 md:pt-8 lg:pt-10" ref={heroSectionRef} id="hero-section">
           {/* Animated Background */}
           <div className="absolute inset-0 z-0">
             {/* 3D Starfield Background */}
@@ -1129,21 +1175,21 @@ const Events = () => {
                 <div className="space-y-2 sm:space-y-3">
                   <h3 className="text-white/80 text-[10px] sm:text-xs uppercase tracking-wider">Book Tickets</h3>
                   <div className="grid grid-cols-1 gap-1.5 sm:gap-2 mb-2">
-                    <Button
-                      size="sm"
-                      className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white h-10 sm:h-11 py-0 w-full safari-button-fix cross-browser-rounded"
-                      onClick={() => setConcertTicketDialogOpen(true)}
-                    >
-                      <MusicIcon className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
-                      <span className="text-[10px] sm:text-xs md:text-sm">Concert</span>
-                    </Button>
+                                          <Button
+                        size="sm"
+                        className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white h-10 sm:h-11 py-0 w-full safari-button-fix cross-browser-rounded"
+                        onClick={() => handleOpenBookingSection("concert")}
+                      >
+                        <MusicIcon className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
+                        <span className="text-[10px] sm:text-xs md:text-sm">Concert</span>
+                      </Button>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-1.5 sm:gap-2 md:grid-cols-2 lg:grid-cols-2">
                     <Button
                       size="sm"
                       className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white h-8 sm:h-9 py-0 safari-button-fix cross-browser-rounded"
-                      onClick={() => setHelicopterTicketDialogOpen(true)}
+                      onClick={() => handleOpenBookingSection("helicopter")}
                     >
                       <Plane className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
                       <span className="text-[10px] sm:text-xs md:text-sm">Helicopter</span>
@@ -1152,7 +1198,7 @@ const Events = () => {
                     <Button
                       size="sm"
                       className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white h-8 sm:h-9 py-0 safari-button-fix cross-browser-rounded"
-                      onClick={() => setShoppingTicketDialogOpen(true)}
+                      onClick={() => handleOpenBookingSection("shopping")}
                     >
                       <ShoppingBag className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
                       <span className="text-[10px] sm:text-xs md:text-sm">Shopping</span>
@@ -1161,7 +1207,7 @@ const Events = () => {
                     <Button
                       size="sm"
                       className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white h-8 sm:h-9 py-0 safari-button-fix cross-browser-rounded"
-                      onClick={() => setFoodComboDialogOpen(true)}
+                      onClick={() => handleOpenBookingSection("food")}
                     >
                       <Utensils className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
                       <span className="text-[10px] sm:text-xs md:text-sm">Food Combo</span>
@@ -1170,7 +1216,7 @@ const Events = () => {
                     <Button
                       size="sm"
                       className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white h-8 sm:h-9 py-0 safari-button-fix cross-browser-rounded"
-                      onClick={() => setCakeBookingDialogOpen(true)}
+                      onClick={() => handleOpenBookingSection("cake")}
                     >
                       <Gift className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
                       <span className="text-[10px] sm:text-xs md:text-sm">Cake Booking</span>
@@ -1342,967 +1388,1361 @@ const Events = () => {
         </div>
       </section>
       
-      {/* Event Overview Section */}
-      <section id="event-overview" className="py-12 sm:py-16 md:py-20 bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] safari-bg-fix">
+      {/* Collapsible Booking Forms Section */}
+      <section className="relative w-full bg-[#0c1e3c]/80 backdrop-blur-md py-6">
         <div className="container mx-auto px-3 sm:px-4">
-          <div className="text-center mb-10 sm:mb-12 md:mb-16">
-            <Badge className="bg-[#4eb4a7]/10 text-[#4eb4a7] mb-3 sm:mb-4 py-0.5 px-2 text-xs sm:text-sm cross-browser-rounded">
-              EVENT DETAILS
-            </Badge>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-6">The Ultimate Festival Experience</h2>
-            <p className="text-sm sm:text-base md:text-lg text-white/70 max-w-3xl mx-auto px-2">
-              Prince Group's Rhythm of Carnival brings you 6 days of non-stop entertainment, shopping, and unique experiences at Kanyakumari's biggest festival of 2025!
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 px-2">
-            {/* Event Info Cards */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="bg-white/5 backdrop-blur-md rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 cross-browser-rounded"
-            >
-              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center text-[#4eb4a7] mb-3 sm:mb-4 cross-browser-rounded">
-                <CalendarDays className="w-5 sm:w-6 h-5 sm:h-6" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">Event Date</h3>
-              <p className="text-sm sm:text-base text-white/70">{attractions[currentAttractionIndex].date}</p>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="bg-white/5 backdrop-blur-md rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 cross-browser-rounded"
-            >
-              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center text-[#4eb4a7] mb-3 sm:mb-4 cross-browser-rounded">
-                <MapPin className="w-5 sm:w-6 h-5 sm:h-6" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">Location</h3>
-              <p className="text-sm sm:text-base text-white/70">Kanyakumari, Tamil Nadu</p>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-white/5 backdrop-blur-md rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 cross-browser-rounded"
-            >
-              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center text-[#4eb4a7] mb-3 sm:mb-4 cross-browser-rounded">
-                <Users className="w-5 sm:w-6 h-5 sm:h-6" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2">Attendees</h3>
-              <p className="text-sm sm:text-base text-white/70">Expected 10,00,000+</p>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-white/5 backdrop-blur-md rounded-lg sm:rounded-xl p-4 sm:p-6 border border-white/10 cross-browser-rounded"
-            >
-              <div className="w-10 sm:w-12 h-10 sm:h-12 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center text-[#4eb4a7] mb-3 sm:mb-4 cross-browser-rounded">
-                <MusicIcon className="w-5 sm:w-6 h-5 sm:h-6" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-semibold text-white mb-2 whitespace-nowrap">Registered</h3>
-              <p className="text-sm sm:text-base text-white/70">30,000+ Tickets</p>
-            </motion.div>
-          </div>
-          
-          {/* Key Attractions */}
-          <div className="mt-24">
-            <div className="text-center mb-16">
-              <Badge className="bg-[#4eb4a7]/10 text-[#4eb4a7] mb-4">
-                ATTRACTIONS
-              </Badge>
-              <h2 className="text-4xl font-bold text-white mb-6">Key Festival Attractions</h2>
-              <p className="text-lg text-white/70 max-w-3xl mx-auto">
-                Discover all the exciting experiences waiting for you at Rhythm of Carnival.
-              </p>
-            </div>
-            
-            {/* Desktop Attractions Grid */}
-            <div id="attractions" className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {attractions.map((attraction, index) => (
-                <motion.div
-                  key={attraction.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -10 }}
-                  className="bg-white/5 backdrop-blur-md rounded-xl overflow-hidden border border-white/10 group"
-                >
-                  <div className={`h-48 bg-gradient-to-r ${attraction.color} relative`}>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <motion.div 
-                        className="h-16 w-16 rounded-full bg-white/20 flex items-center justify-center"
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                      >
-                        {attraction.icon}
-                      </motion.div>
+          <AnimatePresence>
+            {openBookingSection === "concert" && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="mb-8"
+              >
+                <div className="booking-form-section concert">
+                  <div className="booking-form-header">
+                    <div className="flex items-center gap-2">
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-r from-pink-600 to-red-600 flex items-center justify-center">
+                        <MusicIcon className="h-5 w-5 text-white" />
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-bold text-pink-500">Book Concert Tickets</h3>
                     </div>
-                    {attraction.featured && (
-                      <Badge className="absolute top-4 right-4 bg-white/20 text-white">
-                        Featured
-                      </Badge>
-                    )}
+                    <Button 
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setOpenBookingSection(null)}
+                      className="text-white hover:bg-white/10"
+                    >
+                      <X className="h-5 w-5" />
+                    </Button>
                   </div>
                   
-                      <div className="p-6">
-                    <h3 className={`text-2xl font-bold ${attraction.textColor} mb-3`}>
-                      {attraction.name}
-                    </h3>
-                    <p className="text-white/70 mb-6">
-                      {attraction.description}
-                    </p>
-
-                        <div className="space-y-3 mb-6">
-                      {attraction.details.slice(0, 2).map((detail, idx) => (
-                        <div key={idx} className="flex items-start gap-2">
-                          <CheckCircle className={`h-4 w-4 ${attraction.textColor} mt-1`} />
-                          <span className="text-white/60 text-sm">{detail}</span>
-                          </div>
-                      ))}
-                          </div>
-                    
-                    <div className="flex gap-2">
-                      <Button 
-                        className={`${attraction.buttonColor} text-white flex-1`}
-                        onClick={attraction.bookingAction}
-                      >
-                        {attraction.icon}
-                        <span className="ml-2">Book Tickets</span>
-                      </Button>
-                      
-                      <Button
-                        variant="outline"
-                        className="border-white/20 text-white hover:bg-white/10 hover:text-white bg-white/15 hover:bg-white/25 hover:scale-105"
-                        onClick={() => setActiveAttraction(attraction.id)}
-                      >
-                        <Info className="h-5 w-5" />
-                      </Button>
-                          </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Ticket Booking Section with Parallax Effect */}
-      <section className="relative py-24 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?q=80&w=2574&auto=format&fit=crop')] bg-cover bg-fixed bg-center opacity-20"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0e253f]/95 to-black/95"></div>
-        
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="lg:order-2"
-            >
-              <Badge className="bg-[#4eb4a7]/10 text-[#4eb4a7] mb-6">
-                TICKETS NOW AVAILABLE
-              </Badge>
-              
-              <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-white">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4eb4a7] to-[#85cbc3]">
-                  Secure Your
-                                </span>
-                <span className="block text-white mt-2">Festival Experience</span>
-              </h2>
-              
-              <p className="text-lg text-white/70 mb-8 leading-relaxed">
-                Book your tickets now for this one-of-a-kind event. Choose from various ticket categories for concert access or explore our premium experiences like helicopter rides.
-              </p>
-              
-              <div className="space-y-6 mb-8">
-                <div className="bg-white/5 backdrop-blur-md rounded-lg p-4 border border-white/10">
-                  <div className="flex items-center gap-4">
-                    <div className="h-10 w-10 rounded-full bg-pink-500/20 flex items-center justify-center text-pink-400">
-                      <MusicIcon className="h-5 w-5" />
+                  <div className="booking-form-content open">
+                    <div className="booking-form-grid">
+                      <div>
+                        <h4 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Ticket Class</h4>
+                        <div className="space-y-3 md:space-y-4">
+                          {ticketClasses.map((ticket) => (
+                            <div 
+                              key={ticket.id} 
+                              className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all ${
+                                ticketCategory === ticket.id 
+                                  ? 'border-pink-500 bg-pink-500/10'
+                                  : 'border-white/10 hover:border-pink-500/50 bg-white/5'
+                              }`}
+                              onClick={() => {
+                                setTicketCategory(ticket.id);
+                                setTotalPrice(ticket.price * ticketQuantity);
+                              }}
+                            >
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h4 className="font-medium text-white text-sm sm:text-base">{ticket.name}</h4>
+                                  <p className="text-xs sm:text-sm text-white/60">{ticket.description}</p>
+                                </div>
+                                <div className="font-bold text-white text-base sm:text-lg">{formatPrice(ticket.price)}</div>
                               </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-white">Concert Tickets</h3>
-                      <p className="text-white/60 text-sm">Various seating options available</p>
-                              </div>
-                    <div className="ml-auto">
-                      <Button 
-                        onClick={() => setConcertTicketDialogOpen(true)}
-                        className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
-                      >
-                        Book
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Helicopter Ride Booking Dialog */}
-      <Dialog open={helicopterTicketDialogOpen} onOpenChange={setHelicopterTicketDialogOpen}>
-        <DialogContent className={`max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-indigo-600/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
-          <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
-              <Plane className="h-4 w-4 sm:h-5 sm:w-5 text-indigo-500" /> Book Helicopter Ride
-            </DialogTitle>
-            <DialogDescription className="text-sm text-white/70">
-              Experience breathtaking aerial views of Kanyakumari from above (Dec 21-26, 2025).
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8 py-2 md:py-4 ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
-            <div className={isIpad9thGeneration ? "ipad-9th-scrollable-section" : "ipad-scrollable-section"}>
-              <h3 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Package</h3>
-              <div className={`space-y-3 md:space-y-4 ${isIpad9thGeneration ? "ipad-9th-ticket-list" : ""}`}>
-                {helicopterPackages.map((pkg) => (
-                  <div 
-                    key={pkg.id} 
-                    className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all cross-browser-rounded ${
-                      selectedHelicopterPackage === pkg.id 
-                        ? isIpad9thGeneration ? 'ipad-9th-selected-card' : 'border-indigo-500 bg-indigo-500/10' 
-                        : isIpad9thGeneration ? 'ipad-9th-card' : 'border-white/10 hover:border-indigo-500/50 bg-white/5'
-                    }`}
-                    onClick={() => setSelectedHelicopterPackage(pkg.id)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className={`font-medium text-white ${isIpad9thGeneration ? "text-base" : "text-sm sm:text-base"}`}>{pkg.name}</h4>
-                        <div className={`${isIpad9thGeneration ? "text-sm" : "text-xs sm:text-sm"} text-indigo-400 font-medium mt-1`}>{pkg.duration}</div>
-                        <p className={`${isIpad9thGeneration ? "text-sm mt-1" : "text-xs sm:text-sm"} text-white/60`}>{pkg.description}</p>
-                      </div>
-                      <div className={`font-bold text-white ${isIpad9thGeneration ? "text-lg" : "text-base sm:text-lg"}`}>{formatPrice(pkg.price)}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              
-              <div className={`mt-4 md:mt-6 bg-indigo-900/20 p-3 sm:p-4 rounded-lg border border-indigo-500/20 cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-benefits-section" : ""}`}>
-                <h4 className="text-xs sm:text-sm font-medium text-indigo-300 mb-2">Package Includes:</h4>
-                <ul className="space-y-1.5 sm:space-y-2">
-                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                    <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-indigo-400 mt-0.5`} />
-                    Professional pilots with safety briefing
-                  </li>
-                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                    <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-indigo-400 mt-0.5`} />
-                    Commemorative certificate
-                  </li>
-                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                    <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-indigo-400 mt-0.5`} />
-                    Professional photos available for purchase
-                  </li>
-                  <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
-                    <CheckCircle className={`${isIpad9thGeneration ? "h-4 w-4" : "h-3.5 w-3.5 sm:h-4 sm:w-4"} text-indigo-400 mt-0.5`} />
-                    Lucky draw entry for 1-day luxury Alappuzha boat house stay
-                  </li>
-                </ul>
-              </div>
-            </div>
-            
-            <div className={isIpad9thGeneration ? "ipad-9th-scrollable-section" : "ipad-scrollable-section"}>
-              <h3 className="text-lg font-semibold mb-4 text-white/90 mt-4 md:mt-0">Booking Details</h3>
-              <div className="space-y-6">
-                <div>
-                  <Label htmlFor="heli-date" className="text-white/90">Select Date</Label>
-                  <Select>
-                    <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                      <SelectValue placeholder="Select date" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#0c1e3c] border-indigo-500/20 text-white">
-                      <SelectItem value="dec21" className="focus:bg-indigo-500/20 focus:text-white">December 21, 2025</SelectItem>
-                      <SelectItem value="dec22" className="focus:bg-indigo-500/20 focus:text-white">December 22, 2025</SelectItem>
-                      <SelectItem value="dec23" className="focus:bg-indigo-500/20 focus:text-white">December 23, 2025</SelectItem>
-                      <SelectItem value="dec24" className="focus:bg-indigo-500/20 focus:text-white">December 24, 2025</SelectItem>
-                      <SelectItem value="dec25" className="focus:bg-indigo-500/20 focus:text-white">December 25, 2025</SelectItem>
-                      <SelectItem value="dec26" className="focus:bg-indigo-500/20 focus:text-white">December 26, 2025</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="heli-time" className="text-white/90">Select Time Slot</Label>
-                  <Select>
-                    <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                      <SelectValue placeholder="Select time" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#0c1e3c] border-indigo-500/20 text-white">
-                      <SelectItem value="9am" className="focus:bg-indigo-500/20 focus:text-white">9:00 AM</SelectItem>
-                      <SelectItem value="10am" className="focus:bg-indigo-500/20 focus:text-white">10:00 AM</SelectItem>
-                      <SelectItem value="11am" className="focus:bg-indigo-500/20 focus:text-white">11:00 AM</SelectItem>
-                      <SelectItem value="12pm" className="focus:bg-indigo-500/20 focus:text-white">12:00 PM</SelectItem>
-                      <SelectItem value="1pm" className="focus:bg-indigo-500/20 focus:text-white">1:00 PM</SelectItem>
-                      <SelectItem value="2pm" className="focus:bg-indigo-500/20 focus:text-white">2:00 PM</SelectItem>
-                      <SelectItem value="3pm" className="focus:bg-indigo-500/20 focus:text-white">3:00 PM</SelectItem>
-                      <SelectItem value="4pm" className="focus:bg-indigo-500/20 focus:text-white">4:00 PM</SelectItem>
-                      <SelectItem value="5pm" className="focus:bg-indigo-500/20 focus:text-white">5:00 PM</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div>
-                  <Label htmlFor="heli-tickets" className="text-white/90">Number of Tickets</Label>
-                  <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => decreaseQuantity(setHelicopterTickets, helicopterTickets)}
-                      disabled={helicopterTickets <= 1}
-                      className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                    >
-                      <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                    </Button>
-                    <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
-                      {helicopterTickets}
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => increaseQuantity(setHelicopterTickets, helicopterTickets, 4)}
-                      disabled={helicopterTickets >= 4}
-                      className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                    >
-                      <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                    </Button>
-                  </div>
-                  <p className="text-sm text-white/50 mt-1">Maximum 4 tickets per booking</p>
-                </div>
-                
-                <div>
-                  <Label className="text-white/90">Summary</Label>
-                  <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3 bg-white/10" : ""}`}>
-                    <div className="flex justify-between">
-                      <span className="text-white/70">Package</span>
-                      <span className="font-medium text-white">
-                        {selectedHelicopterPackage 
-                          ? helicopterPackages.find(p => p.id === selectedHelicopterPackage)?.name 
-                          : "Select a package"}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-white/70">Tickets</span>
-                      <span className="font-medium text-white">{helicopterTickets}</span>
-                    </div>
-                    <div className={`pt-2 border-t border-white/20 flex justify-between ${isIpad9thGeneration ? "pt-3 border-white/10 mt-1" : ""}`}>
-                      <span className="font-medium text-white">Total Amount</span>
-                      <span className={`font-bold text-indigo-400 ${isIpad9thGeneration ? "text-xl" : "text-lg"}`}>
-                        {selectedHelicopterPackage 
-                          ? formatPrice((helicopterPackages.find(p => p.id === selectedHelicopterPackage)?.price || 0) * helicopterTickets) 
-                          : "---"}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
-            <Button
-              variant="outline"
-              onClick={() => setHelicopterTicketDialogOpen(false)}
-              className={`border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-            >
-              Cancel
-            </Button>
-            <Button
-              className={`bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-              disabled={!selectedHelicopterPackage}
-              onClick={() => {
-                // Handle booking logic
-                setHelicopterTicketDialogOpen(false);
-                // Show success message or redirect to payment
-              }}
-            >
-              <Plane className="mr-1.5 h-3.5 w-3.5" />
-              Secure Your Ride
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Shopping Arena Pass Dialog */}
-      <Dialog open={shoppingTicketDialogOpen} onOpenChange={setShoppingTicketDialogOpen}>
-        <DialogContent className={`max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-amber-500/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
-          <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
-              <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" /> Shopping Arena Pass
-            </DialogTitle>
-            <DialogDescription className="text-sm text-white/70">
-              Purchase passes for the 5-day shopping festival with 500+ stalls and attractions (Dec 22-26, 2025).
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className={`py-2 md:py-4 space-y-4 md:space-y-6 ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
-            <div className={`bg-amber-500/5 p-3 md:p-4 rounded-lg border border-amber-500/20 ${isIpad9thGeneration ? "rounded-xl" : ""}`}>
-              <h4 className="text-amber-400 font-semibold mb-2">Shopping Arena Highlights:</h4>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div className="flex items-start gap-2">
-                  <ShoppingBag className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
-                  <span className="text-white/70 text-sm">300+ retail stalls with exclusive discounts</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Utensils className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
-                  <span className="text-white/70 text-sm">200+ food & culinary shops</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <PartyPopper className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
-                  <span className="text-white/70 text-sm">Theme park with exciting rides</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Sparkles className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
-                  <span className="text-white/70 text-sm">Water activities and entertainment</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Gift className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
-                  <span className="text-white/70 text-sm">Toys and daily essentials shops</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Trophy className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-amber-500 mt-0.5`} />
-                  <span className="text-white/70 text-sm">Hourly lucky draws and contests</span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <Label className="text-white/90">Select Date</Label>
-              <div className={`mt-2 bg-white/5 rounded-lg border border-white/20 p-4 ${isIpad9thGeneration ? "rounded-xl" : ""}`}>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {[22, 23, 24, 25, 26].map((day) => (
-                    <Button
-                      key={day}
-                      variant="outline"
-                      className={`h-12 w-24 border-amber-500/30 hover:border-amber-500 hover:bg-amber-500/10 ${
-                        day === 22 ? 'bg-amber-500/20 border-amber-500' : 'bg-white/5'
-                      } ${isIpad9thGeneration ? "ipad-9th-button-fix" : ""}`}
-                      onClick={() => {}}
-                    >
-                      <div className="flex flex-col items-center">
-                        <span className="font-medium text-white">Dec {day}</span>
-                        <span className="text-xs text-white/60">2025</span>
-                      </div>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-              <p className="text-sm text-white/50 mt-1">Select your preferred date (December 22-26, 2025)</p>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="adults" className="text-white/90">Number of Adults</Label>
-                <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => decreaseQuantity(setAdultCount, adultCount)}
-                    disabled={adultCount <= 1}
-                    className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                  >
-                    <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                  </Button>
-                  <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
-                    {adultCount}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => increaseQuantity(setAdultCount, adultCount, 20)}
-                    className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                  >
-                    <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                  </Button>
-                </div>
-                <p className="text-sm text-white/50 mt-1">₹299 per adult</p>
-              </div>
-              
-              <div>
-                <Label htmlFor="children" className="text-white/90">Number of Children (5-12 years)</Label>
-                <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => decreaseQuantity(setChildCount, childCount, 0)}
-                    disabled={childCount <= 0}
-                    className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                  >
-                    <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                  </Button>
-                  <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
-                    {childCount}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => increaseQuantity(setChildCount, childCount, 20)}
-                    className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                  >
-                    <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                  </Button>
-                </div>
-                <p className="text-sm text-white/50 mt-1">₹149 per child (Children under 5 are free)</p>
-              </div>
-            </div>
-            
-            <div>
-              <Label className="text-white/90">Summary</Label>
-              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3 bg-white/10" : ""}`}>
-                <div className="flex justify-between">
-                  <span className="text-white/70">Adults ({adultCount})</span>
-                  <span className="font-medium text-white">{formatPrice(299 * adultCount)}</span>
-                </div>
-                {childCount > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-white/70">Children ({childCount})</span>
-                    <span className="font-medium text-white">{formatPrice(149 * childCount)}</span>
-                  </div>
-                )}
-                <div className={`pt-2 border-t border-white/20 flex justify-between ${isIpad9thGeneration ? "pt-3 border-white/10 mt-1" : ""}`}>
-                  <span className="font-medium text-white">Total Amount</span>
-                  <span className={`font-bold text-amber-400 ${isIpad9thGeneration ? "text-xl" : "text-lg"}`}>
-                    {formatPrice(299 * adultCount + 149 * childCount)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
-            <Button
-              variant="outline"
-              onClick={() => setShoppingTicketDialogOpen(false)}
-              className={`border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-            >
-              Cancel
-            </Button>
-            <Button
-              className={`bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-              onClick={() => {
-                // Handle booking logic
-                setShoppingTicketDialogOpen(false);
-                // Show success message or redirect to payment
-              }}
-            >
-              <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
-              Book Now
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Food Combo Booking Dialog */}
-      <Dialog open={foodComboDialogOpen} onOpenChange={setFoodComboDialogOpen}>
-        <DialogContent className={`max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-emerald-500/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
-          <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
-              <Utensils className="h-4 w-4 sm:h-5 sm:w-5 text-emerald-500" /> Food Combo Booking
-            </DialogTitle>
-            <DialogDescription className="text-sm text-white/70">
-              Pre-book your food combos for the festival day (December 21, 2025).
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className={`py-4 space-y-6 ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
-            <div className={`bg-emerald-500/5 p-4 rounded-lg border border-emerald-500/20 ${isIpad9thGeneration ? "rounded-xl" : ""}`}>
-              <h4 className="text-emerald-400 font-semibold mb-2">Why Pre-book Your Food?</h4>
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-emerald-500 mt-0.5`} />
-                  <span className="text-white/70 text-sm">Skip the long lines at food stalls</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-emerald-500 mt-0.5`} />
-                  <span className="text-white/70 text-sm">Save 15% compared to on-site purchases</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-emerald-500 mt-0.5`} />
-                  <span className="text-white/70 text-sm">Guaranteed availability of your favorite dishes</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-emerald-500 mt-0.5`} />
-                  <span className="text-white/70 text-sm">Collect at dedicated counters with no waiting time</span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <Label className="text-white/90">Select Food Combo</Label>
-              <div className={`space-y-3 mt-2 ${isIpad9thGeneration ? "ipad-9th-ticket-list" : ""}`}>
-                {foodCombos.map(combo => (
-                  <div
-                    key={combo.id}
-                    className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all cross-browser-rounded ${
-                      selectedFoodCombo === combo.id 
-                        ? isIpad9thGeneration ? 'ipad-9th-selected-card' : 'border-emerald-500 bg-emerald-500/10' 
-                        : isIpad9thGeneration ? 'ipad-9th-card' : 'border-white/10 hover:border-emerald-500/50 bg-white/5'
-                    }`}
-                    onClick={() => setSelectedFoodCombo(combo.id)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className={`font-medium text-white ${isIpad9thGeneration ? "text-base" : "text-sm sm:text-base"}`}>{combo.name}</h4>
-                        <p className={`${isIpad9thGeneration ? "text-sm mt-1" : "text-xs sm:text-sm"} text-white/60`}>{combo.description}</p>
-                      </div>
-                      <div className={`font-bold text-white ${isIpad9thGeneration ? "text-lg" : "text-base sm:text-lg"}`}>{formatPrice(combo.price)}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-            <div>
-              <Label htmlFor="quantity" className="text-white/90">Quantity</Label>
-              <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => decreaseQuantity(setFoodComboQuantity, foodComboQuantity)}
-                  disabled={foodComboQuantity <= 1}
-                  className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                >
-                  <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                </Button>
-                <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
-                  {foodComboQuantity}
-                </div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => increaseQuantity(setFoodComboQuantity, foodComboQuantity, 10)}
-                  disabled={foodComboQuantity >= 10}
-                  className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                >
-                  <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                </Button>
-              </div>
-              <p className="text-sm text-white/50 mt-1">Maximum 10 combos per booking</p>
-            </div>
-            
-            <div>
-              <Label className="text-white/90">Summary</Label>
-              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3 bg-white/10" : ""}`}>
-                <div className="flex justify-between">
-                  <span className="text-white/70">Combo</span>
-                  <span className="font-medium text-white">
-                    {selectedFoodCombo ? foodCombos.find(c => c.id === selectedFoodCombo)?.name : "Select a combo"}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/70">Quantity</span>
-                  <span className="font-medium text-white">{foodComboQuantity}</span>
-                </div>
-                <div className={`pt-2 border-t border-white/20 flex justify-between ${isIpad9thGeneration ? "pt-3 border-white/10 mt-1" : ""}`}>
-                  <span className="font-medium text-white">Total Amount</span>
-                  <span className={`font-bold text-emerald-400 ${isIpad9thGeneration ? "text-xl" : "text-lg"}`}>
-                    {selectedFoodCombo 
-                      ? formatPrice((foodCombos.find(c => c.id === selectedFoodCombo)?.price || 0) * foodComboQuantity) 
-                      : "---"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
-            <Button
-              variant="outline"
-              onClick={() => setFoodComboDialogOpen(false)}
-              className={`border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-            >
-              Cancel
-            </Button>
-            <Button
-              className={`bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-              disabled={!selectedFoodCombo}
-              onClick={() => {
-                // Handle booking logic
-                setFoodComboDialogOpen(false);
-                // Show success message or redirect to payment
-              }}
-            >
-              <Utensils className="mr-1.5 h-3.5 w-3.5" />
-              Book Now
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Cake Pre-Booking Dialog */}
-      <Dialog open={cakeBookingDialogOpen} onOpenChange={setCakeBookingDialogOpen}>
-        <DialogContent className={`max-w-4xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-rose-500/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
-          <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
-            <DialogTitle className="text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2">
-              <Gift className="h-4 w-4 sm:h-5 sm:w-5 text-rose-500" /> Cake Pre-Booking
-            </DialogTitle>
-            <DialogDescription className="text-sm text-white/70">
-              Pre-order celebration cakes for your special moments at the festival (Dec 21-26, 2025).
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className={`py-4 space-y-6 ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="sm:col-span-2">
-                <Label className="text-white/90">Select Cake</Label>
-                <div className={`space-y-3 mt-2 ${isIpad9thGeneration ? "ipad-9th-ticket-list" : ""}`}>
-                  {cakeOptions.map(cake => (
-                    <div
-                      key={cake.id}
-                      className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all cross-browser-rounded ${
-                        selectedCake === cake.id 
-                          ? isIpad9thGeneration ? 'ipad-9th-selected-card' : 'border-rose-500 bg-rose-500/10' 
-                          : isIpad9thGeneration ? 'ipad-9th-card' : 'border-white/10 hover:border-rose-500/50 bg-white/5'
-                      }`}
-                      onClick={() => setSelectedCake(cake.id)}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h4 className={`font-medium text-white ${isIpad9thGeneration ? "text-base" : "text-sm sm:text-base"}`}>{cake.name}</h4>
-                          <p className={`${isIpad9thGeneration ? "text-sm mt-1" : "text-xs sm:text-sm"} text-white/60`}>{cake.description}</p>
-                        </div>
-                        <div className={`font-bold text-white ${isIpad9thGeneration ? "text-lg" : "text-base sm:text-lg"}`}>{formatPrice(cake.price)}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="quantity" className="text-white/90">Quantity</Label>
-                <div className={`flex mt-2 ${isIpad9thGeneration ? "ipad-9th-quantity-selector" : ""}`}>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => decreaseQuantity(setCakeQuantity, cakeQuantity)}
-                    disabled={cakeQuantity <= 1}
-                    className={`rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                  >
-                    <Minus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                  </Button>
-                  <div className={`flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white ${isIpad9thGeneration ? "text-xl font-semibold" : ""}`}>
-                    {cakeQuantity}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => increaseQuantity(setCakeQuantity, cakeQuantity, 5)}
-                    disabled={cakeQuantity >= 5}
-                    className={`rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                  >
-                    <Plus className={isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} />
-                  </Button>
-                </div>
-                <p className="text-sm text-white/50 mt-1">Maximum 5 cakes per booking</p>
-              </div>
-
-              <div>
-                <Label htmlFor="cake-date" className="text-white/90">Delivery Date</Label>
-                <Select>
-                  <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                    <SelectValue placeholder="Select date" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-[#0c1e3c] border-rose-500/20 text-white">
-                    <SelectItem value="dec21" className="focus:bg-rose-500/20 focus:text-white">December 21, 2025</SelectItem>
-                    <SelectItem value="dec22" className="focus:bg-rose-500/20 focus:text-white">December 22, 2025</SelectItem>
-                    <SelectItem value="dec23" className="focus:bg-rose-500/20 focus:text-white">December 23, 2025</SelectItem>
-                    <SelectItem value="dec24" className="focus:bg-rose-500/20 focus:text-white">December 24, 2025</SelectItem>
-                    <SelectItem value="dec25" className="focus:bg-rose-500/20 focus:text-white">December 25, 2025</SelectItem>
-                    <SelectItem value="dec26" className="focus:bg-rose-500/20 focus:text-white">December 26, 2025</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="sm:col-span-2">
-                <Label className="text-white/90">Message on Cake</Label>
-                <div className="mt-2">
-                  <textarea
-                    value={cakeMessage}
-                    onChange={(e) => setCakeMessage(e.target.value)}
-                    placeholder="Enter your special message for the cake (up to 30 characters)"
-                    maxLength={30}
-                    className="w-full p-2 border border-white/20 rounded-lg bg-white/5 text-white placeholder:text-white/30"
-                  />
-                </div>
-                <p className="text-sm text-white/50 mt-1">Optional: Leave blank for no message</p>
-              </div>
-            </div>
-            
-            <div className={`bg-rose-500/5 p-4 rounded-lg border border-rose-500/20 ${isIpad9thGeneration ? "rounded-xl" : ""}`}>
-              <h4 className="text-rose-400 font-semibold mb-2">Important Information:</h4>
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <Info className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-rose-400 mt-0.5`} />
-                  <span className="text-white/70 text-sm">Pre-order at least 24 hours in advance</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Info className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-rose-400 mt-0.5`} />
-                  <span className="text-white/70 text-sm">Collect your cake from the Festival Bakery Zone</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Info className={`${isIpad9thGeneration ? "h-5 w-5" : "h-4 w-4"} text-rose-400 mt-0.5`} />
-                  <span className="text-white/70 text-sm">Special dietary requirements: Call +91-98765-43210</span>
-                </div>
-              </div>
-            </div>
-            
-            <div>
-              <Label className="text-white/90">Summary</Label>
-              <div className={`mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2 ${isIpad9thGeneration ? "rounded-xl space-y-3 bg-white/10" : ""}`}>
-                <div className="flex justify-between">
-                  <span className="text-white/70">Cake</span>
-                  <span className="font-medium text-white">
-                    {selectedCake ? cakeOptions.find(c => c.id === selectedCake)?.name : "Select a cake"}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-white/70">Quantity</span>
-                  <span className="font-medium text-white">{cakeQuantity}</span>
-                </div>
-                <div className={`pt-2 border-t border-white/20 flex justify-between ${isIpad9thGeneration ? "pt-3 border-white/10 mt-1" : ""}`}>
-                  <span className="font-medium text-white">Total Amount</span>
-                  <span className={`font-bold text-rose-400 ${isIpad9thGeneration ? "text-xl" : "text-lg"}`}>
-                    {selectedCake 
-                      ? formatPrice((cakeOptions.find(c => c.id === selectedCake)?.price || 0) * cakeQuantity) 
-                      : "---"}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
-            <Button
-              variant="outline"
-              onClick={() => setCakeBookingDialogOpen(false)}
-              className={`border-white/20 text-white hover:bg-white/10 hover:text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded opacity-100 bg-white/15 ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-            >
-              Cancel
-            </Button>
-            <Button
-              className={`bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-              disabled={!selectedCake}
-              onClick={() => {
-                // Handle booking logic
-                setCakeBookingDialogOpen(false);
-                // Show success message or redirect to payment
-              }}
-            >
-              <Gift className="mr-1.5 h-3.5 w-3.5" />
-              Book Now
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Attraction Details Dialog */}
-      <Dialog open={!!activeAttraction} onOpenChange={(open) => !open && setActiveAttraction(null)}>
-        <DialogContent className={`max-w-3xl bg-gradient-to-b from-[#0c1e3c] to-[#0e253f] border border-white/20 text-white ${isIpad9thGeneration ? "ipad-9th-custom-dialog" : "dialog-content ipad-dialog-fix"}`}>
-          {activeAttraction && (() => {
-            const attraction = attractions.find(a => a.id === activeAttraction);
-            if (!attraction) return null;
-            return (
-              <>
-                <DialogHeader className={isIpad9thGeneration ? "ipad-9th-dialog-header" : "ipad-dialog-header"}>
-                  <DialogTitle className={`text-xl sm:text-2xl font-bold text-white flex items-center gap-1.5 sm:gap-2 ${attraction.textColor}`}>
-                    {attraction.icon} {attraction.name}
-                  </DialogTitle>
-                  <DialogDescription className="text-sm text-white/70">
-                    {attraction.description}
-                  </DialogDescription>
-                </DialogHeader>
-                
-                <div className={`py-4 ${isIpad9thGeneration ? "ipad-9th-dialog-content" : "ipad-dialog-content"}`}>
-                  <div className={isIpad9thGeneration ? "ipad-9th-scrollable-section" : "ipad-scrollable-section"}>
-                    {/* Hero image section */}
-                    <div className="relative h-60 rounded-lg overflow-hidden mb-6">
-                      <img 
-                        src={attraction.id === "themepark" ? 
-                          "https://images.unsplash.com/photo-1560106426-c90d46dedbb8?q=80&w=2574&auto=format&fit=crop" : 
-                          attraction.image} 
-                        alt={attraction.name} 
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
-                      <div className="absolute bottom-4 left-4">
-                        <Badge className={`${attraction.buttonColor} text-white`}>
-                          {attraction.date}
-                        </Badge>
-                      </div>
-                    </div>
-                    
-                    {/* About section */}
-                    <div className="space-y-6">
-                      <div>
-                        <h3 className="text-lg font-semibold mb-3 text-white/90">About this Experience</h3>
-                        <p className="text-white/70">{attraction.description}</p>
-                      </div>
-                      
-                      {/* Features section */}
-                      <div>
-                        <h3 className="text-lg font-semibold mb-3 text-white/90">Features</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                          {attraction.details.map((detail, idx) => (
-                            <div key={idx} className="flex items-start gap-2">
-                              <CheckCircle className={`h-4 w-4 ${attraction.textColor} mt-1`} />
-                              <span className="text-white/70">{detail}</span>
                             </div>
                           ))}
                         </div>
+
+                        <div className="mt-4 md:mt-6 bg-pink-900/20 p-3 sm:p-4 rounded-lg border border-pink-500/20">
+                          <h4 className="text-xs sm:text-sm font-medium text-pink-300 mb-2">Ticket Benefits:</h4>
+                          <ul className="space-y-1.5 sm:space-y-2">
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-pink-400 mt-0.5" />
+                              Entry to all concert areas based on ticket class
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-pink-400 mt-0.5" />
+                              Access to food and beverage stalls
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-pink-400 mt-0.5" />
+                              Official event merchandise discount (10%)
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-pink-400 mt-0.5" />
+                              Exclusive entry to after-party (Elite & VVIP only)
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                       
-                      {/* Ticket options section */}
-                      {attraction.ticketTypes && (
-                        <div>
-                          <h3 className="text-lg font-semibold mb-3 text-white/90">Ticket Options</h3>
-                          <div className="space-y-3">
-                            {attraction.ticketTypes.map((ticket, idx) => (
-                              <div key={idx} className="bg-white/5 border border-white/10 rounded-lg p-4">
-                                <div className="flex justify-between items-start">
-                                  <div>
-                                    <h4 className="font-medium text-white">{ticket.name}</h4>
-                                    <p className="text-sm text-white/60 mt-1">{ticket.description}</p>
-                                  </div>
-                                  <div className="text-lg font-bold text-white">{formatPrice(ticket.price)}</div>
+                      <div>
+                        <h4 className="text-lg font-semibold mb-4 text-white/90">Ticket Details</h4>
+                        <div className="space-y-6">
+                          <div>
+                            <Label htmlFor="quantity" className="text-white/90">Number of Tickets</Label>
+                            <div className="flex mt-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => {
+                                  decreaseQuantity(setTicketQuantity, ticketQuantity);
+                                  if (ticketCategory) {
+                                    const ticket = ticketClasses.find(t => t.id === ticketCategory);
+                                    if (ticket) {
+                                      setTotalPrice((ticketQuantity - 1) * ticket.price);
+                                    }
+                                  }
+                                }}
+                                disabled={ticketQuantity <= 1}
+                                className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
+                                {ticketQuantity}
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => {
+                                  increaseQuantity(setTicketQuantity, ticketQuantity, 8);
+                                  if (ticketCategory) {
+                                    const ticket = ticketClasses.find(t => t.id === ticketCategory);
+                                    if (ticket) {
+                                      setTotalPrice((ticketQuantity + 1) * ticket.price);
+                                    }
+                                  }
+                                }}
+                                disabled={ticketQuantity >= 8}
+                                className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <p className="text-white/50 text-sm mt-1">Maximum 8 tickets per booking</p>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="concert-date" className="text-white/90">Concert Date</Label>
+                            <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5">
+                              <div className="flex items-center gap-3">
+                                <CalendarDays className="h-5 w-5 text-pink-500" />
+                                <div>
+                                  <div className="font-medium text-white">December 21, 2025</div>
+                                  <div className="text-sm text-white/60">7:00 PM - 11:00 PM</div>
                                 </div>
                               </div>
-                            ))}
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <Label className="text-white/90">Concert Details</Label>
+                            <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
+                              <div className="flex items-start gap-2">
+                                <CheckCircle className="h-4 w-4 text-pink-500 mt-0.5" />
+                                <span className="text-white/70 text-sm">Main Performer - Singer & Actor: Vijay Antony</span>
+                              </div>
+                              <div className="flex items-start gap-2">
+                                <CheckCircle className="h-4 w-4 text-pink-500 mt-0.5" />
+                                <span className="text-white/70 text-sm">Special Performances by Guest Artists</span>
+                              </div>
+                              <div className="flex items-start gap-2">
+                                <CheckCircle className="h-4 w-4 text-pink-500 mt-0.5" />
+                                <span className="text-white/70 text-sm">World-class Sound and Lighting System</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <Label className="text-white/90">Summary</Label>
+                            <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Ticket Type</span>
+                                <span className="font-medium text-white">
+                                  {ticketCategory ? ticketClasses.find(t => t.id === ticketCategory)?.name : "Select a ticket"}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Quantity</span>
+                                <span className="font-medium text-white">{ticketQuantity}</span>
+                              </div>
+                              <div className="pt-2 border-t border-white/20 flex justify-between">
+                                <span className="font-medium text-white">Total Amount</span>
+                                <span className="font-bold text-pink-400 text-lg">
+                                  {totalPrice > 0 ? formatPrice(totalPrice) : "---"}
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
+                      <Button
+                        variant="outline"
+                        onClick={() => setOpenBookingSection(null)}
+                        className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
+                        disabled={!ticketCategory}
+                        onClick={() => {
+                          // Handle booking logic
+                          setOpenBookingSection(null);
+                          // Show success message or redirect to payment
+                        }}
+                      >
+                        <Ticket className="mr-1.5 h-3.5 w-3.5" />
+                        Proceed to Payment
+                      </Button>
                     </div>
                   </div>
                 </div>
-                
-                <DialogFooter className={`border-t border-white/10 pt-3 sm:pt-4 flex flex-col sm:flex-row gap-2 sm:gap-3 sm:justify-end mt-4 ${isIpad9thGeneration ? "ipad-9th-dialog-footer" : "ipad-dialog-footer"}`}>
-                  <Button 
-                    className={`${attraction.buttonColor} text-white text-sm h-9 w-full sm:w-auto safari-button-fix cross-browser-rounded ${isIpad9thGeneration ? "ipad-9th-button-fix" : "ipad-button-fix"}`}
-                    onClick={() => {
-                      setActiveAttraction(null);
-                      attraction.bookingAction();
-                    }}
-                  >
-                    {attraction.icon}
-                    <span className="ml-1.5">Book Now</span>
-                  </Button>
-                </DialogFooter>
-              </>
-            );
-          })()}
-        </DialogContent>
-      </Dialog>
+              </motion.div>
+            )}
+            
+            {openBookingSection === "helicopter" && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="mb-8"
+              >
+                <div className="booking-form-section helicopter">
+                  <div className="booking-form-header">
+                    <div className="flex items-center gap-2">
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center">
+                        <Plane className="h-5 w-5 text-white" />
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-bold text-indigo-500">Book Helicopter Ride</h3>
+                    </div>
+                    <Button 
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setOpenBookingSection(null)}
+                      className="text-white hover:bg-white/10"
+                    >
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </div>
+                  
+                  <div className="booking-form-content open">
+                    <div className="booking-form-grid">
+                      <div>
+                        <h4 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Package</h4>
+                        <div className="space-y-3 md:space-y-4">
+                          {helicopterPackages.map((pkg) => (
+                            <div 
+                              key={pkg.id} 
+                              className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all ${
+                                selectedHelicopterPackage === pkg.id 
+                                  ? 'border-indigo-500 bg-indigo-500/10'
+                                  : 'border-white/10 hover:border-indigo-500/50 bg-white/5'
+                              }`}
+                              onClick={() => setSelectedHelicopterPackage(pkg.id)}
+                            >
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h4 className="font-medium text-white text-sm sm:text-base">{pkg.name}</h4>
+                                  <div className="text-xs sm:text-sm text-indigo-400 font-medium mt-1">{pkg.duration}</div>
+                                  <p className="text-xs sm:text-sm text-white/60 mt-1">{pkg.description}</p>
+                                </div>
+                                <div className="font-bold text-white text-base sm:text-lg">{formatPrice(pkg.price)}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <div className="mt-4 md:mt-6 bg-indigo-900/20 p-3 sm:p-4 rounded-lg border border-indigo-500/20">
+                          <h4 className="text-xs sm:text-sm font-medium text-indigo-300 mb-2">Package Includes:</h4>
+                          <ul className="space-y-1.5 sm:space-y-2">
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-400 mt-0.5" />
+                              Professional pilots with safety briefing
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-400 mt-0.5" />
+                              Commemorative certificate
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-400 mt-0.5" />
+                              Professional photos available for purchase
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-indigo-400 mt-0.5" />
+                              Lucky draw entry for 1-day luxury Alappuzha boat house stay
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-lg font-semibold mb-4 text-white/90 mt-4 md:mt-0">Booking Details</h4>
+                        <div className="space-y-6">
+                          <div>
+                            <Label htmlFor="heli-date" className="text-white/90">Select Date</Label>
+                            <Select>
+                              <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                                <SelectValue placeholder="Select date" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#0c1e3c] border-indigo-500/20 text-white">
+                                <SelectItem value="dec21" className="focus:bg-indigo-500/20 focus:text-white">December 21, 2025</SelectItem>
+                                <SelectItem value="dec22" className="focus:bg-indigo-500/20 focus:text-white">December 22, 2025</SelectItem>
+                                <SelectItem value="dec23" className="focus:bg-indigo-500/20 focus:text-white">December 23, 2025</SelectItem>
+                                <SelectItem value="dec24" className="focus:bg-indigo-500/20 focus:text-white">December 24, 2025</SelectItem>
+                                <SelectItem value="dec25" className="focus:bg-indigo-500/20 focus:text-white">December 25, 2025</SelectItem>
+                                <SelectItem value="dec26" className="focus:bg-indigo-500/20 focus:text-white">December 26, 2025</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="heli-time" className="text-white/90">Select Time Slot</Label>
+                            <Select>
+                              <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                                <SelectValue placeholder="Select time" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#0c1e3c] border-indigo-500/20 text-white">
+                                <SelectItem value="9am" className="focus:bg-indigo-500/20 focus:text-white">9:00 AM</SelectItem>
+                                <SelectItem value="10am" className="focus:bg-indigo-500/20 focus:text-white">10:00 AM</SelectItem>
+                                <SelectItem value="11am" className="focus:bg-indigo-500/20 focus:text-white">11:00 AM</SelectItem>
+                                <SelectItem value="12pm" className="focus:bg-indigo-500/20 focus:text-white">12:00 PM</SelectItem>
+                                <SelectItem value="1pm" className="focus:bg-indigo-500/20 focus:text-white">1:00 PM</SelectItem>
+                                <SelectItem value="2pm" className="focus:bg-indigo-500/20 focus:text-white">2:00 PM</SelectItem>
+                                <SelectItem value="3pm" className="focus:bg-indigo-500/20 focus:text-white">3:00 PM</SelectItem>
+                                <SelectItem value="4pm" className="focus:bg-indigo-500/20 focus:text-white">4:00 PM</SelectItem>
+                                <SelectItem value="5pm" className="focus:bg-indigo-500/20 focus:text-white">5:00 PM</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="heli-tickets" className="text-white/90">Number of Tickets</Label>
+                            <div className="flex mt-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => decreaseQuantity(setHelicopterTickets, helicopterTickets)}
+                                disabled={helicopterTickets <= 1}
+                                className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
+                                {helicopterTickets}
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => increaseQuantity(setHelicopterTickets, helicopterTickets, 4)}
+                                disabled={helicopterTickets >= 4}
+                                className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <p className="text-sm text-white/50 mt-1">Maximum 4 tickets per booking</p>
+                          </div>
+                          
+                          <div>
+                            <Label className="text-white/90">Summary</Label>
+                            <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Package</span>
+                                <span className="font-medium text-white">
+                                  {selectedHelicopterPackage 
+                                    ? helicopterPackages.find(p => p.id === selectedHelicopterPackage)?.name 
+                                    : "Select a package"}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Tickets</span>
+                                <span className="font-medium text-white">{helicopterTickets}</span>
+                              </div>
+                              <div className="pt-2 border-t border-white/20 flex justify-between">
+                                <span className="font-medium text-white">Total Amount</span>
+                                <span className="font-bold text-indigo-400 text-lg">
+                                  {selectedHelicopterPackage 
+                                    ? formatPrice((helicopterPackages.find(p => p.id === selectedHelicopterPackage)?.price || 0) * helicopterTickets) 
+                                    : "---"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
+                      <Button
+                        variant="outline"
+                        onClick={() => setOpenBookingSection(null)}
+                        className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
+                        disabled={!selectedHelicopterPackage}
+                        onClick={() => {
+                          // Handle booking logic
+                          setOpenBookingSection(null);
+                          // Show success message or redirect to payment
+                        }}
+                      >
+                        <Plane className="mr-1.5 h-3.5 w-3.5" />
+                        Secure Your Ride
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            
+            {openBookingSection === "shopping" && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="mb-8"
+              >
+                <div className="booking-form-section shopping">
+                  <div className="booking-form-header">
+                    <div className="flex items-center gap-2">
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 flex items-center justify-center">
+                        <ShoppingBag className="h-5 w-5 text-white" />
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-bold text-amber-500">Book Shopping Arena Pass</h3>
+                    </div>
+                    <Button 
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setOpenBookingSection(null)}
+                      className="text-white hover:bg-white/10"
+                    >
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </div>
+                  
+                  <div className="booking-form-content open">
+                    <div className="booking-form-grid">
+                      <div>
+                        <h4 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Pass Type</h4>
+                        <div className="space-y-3 md:space-y-4">
+                          <div 
+                            className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all ${
+                              true 
+                                ? 'border-amber-500 bg-amber-500/10'
+                                : 'border-white/10 hover:border-amber-500/50 bg-white/5'
+                            }`}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h4 className="font-medium text-white text-sm sm:text-base">Shopping Festival Pass</h4>
+                                <div className="text-xs sm:text-sm text-amber-400 font-medium mt-1">Full access to all shopping areas</div>
+                                <p className="text-xs sm:text-sm text-white/60 mt-1">Access to 300+ stalls, theme park, and entertainment zones</p>
+                              </div>
+                              <div className="font-bold text-white text-base sm:text-lg">{formatPrice(499)}</div>
+                            </div>
+                          </div>
+
+                          <div 
+                            className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all
+                              border-white/10 hover:border-amber-500/50 bg-white/5
+                            }`}
+                          >
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h4 className="font-medium text-white text-sm sm:text-base">VIP Shopping Experience</h4>
+                                <div className="text-xs sm:text-sm text-amber-400 font-medium mt-1">Premium shopping experience</div>
+                                <p className="text-xs sm:text-sm text-white/60 mt-1">Includes priority access, exclusive discounts, and complimentary refreshments</p>
+                              </div>
+                              <div className="font-bold text-white text-base sm:text-lg">{formatPrice(999)}</div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="mt-4 md:mt-6 bg-amber-900/20 p-3 sm:p-4 rounded-lg border border-amber-500/20">
+                          <h4 className="text-xs sm:text-sm font-medium text-amber-300 mb-2">Shopping Festival Features:</h4>
+                          <ul className="space-y-1.5 sm:space-y-2">
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-400 mt-0.5" />
+                              300+ curated stalls and shops
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-400 mt-0.5" />
+                              Products from across India
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-400 mt-0.5" />
+                              Live demonstrations and workshops
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-400 mt-0.5" />
+                              Access to theme park with fun activities
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-lg font-semibold mb-4 text-white/90 mt-4 md:mt-0">Booking Details</h4>
+                        <div className="space-y-6">
+                          <div>
+                            <Label htmlFor="shopping-date" className="text-white/90">Select Date</Label>
+                            <Select>
+                              <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                                <SelectValue placeholder="Select date" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#0c1e3c] border-amber-500/20 text-white">
+                                <SelectItem value="dec22" className="focus:bg-amber-500/20 focus:text-white">December 22, 2025</SelectItem>
+                                <SelectItem value="dec23" className="focus:bg-amber-500/20 focus:text-white">December 23, 2025</SelectItem>
+                                <SelectItem value="dec24" className="focus:bg-amber-500/20 focus:text-white">December 24, 2025</SelectItem>
+                                <SelectItem value="dec25" className="focus:bg-amber-500/20 focus:text-white">December 25, 2025</SelectItem>
+                                <SelectItem value="dec26" className="focus:bg-amber-500/20 focus:text-white">December 26, 2025</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="shopping-adults" className="text-white/90">Number of Adults</Label>
+                            <div className="flex mt-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => decreaseQuantity(setAdultCount, adultCount)}
+                                disabled={adultCount <= 1}
+                                className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
+                                {adultCount}
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => increaseQuantity(setAdultCount, adultCount, 10)}
+                                disabled={adultCount >= 10}
+                                className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="shopping-children" className="text-white/90">Number of Children</Label>
+                            <div className="flex mt-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => decreaseQuantity(setChildCount, childCount, 0)}
+                                disabled={childCount <= 0}
+                                className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
+                                {childCount}
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => increaseQuantity(setChildCount, childCount, 10)}
+                                disabled={childCount >= 10}
+                                className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <p className="text-white/50 text-sm mt-1">Children under 5 years enter free</p>
+                          </div>
+                          
+                          <div>
+                            <Label className="text-white/90">Summary</Label>
+                            <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Pass Type</span>
+                                <span className="font-medium text-white">Shopping Festival Pass</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Adults</span>
+                                <span className="font-medium text-white">{adultCount}</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Children</span>
+                                <span className="font-medium text-white">{childCount}</span>
+                              </div>
+                              <div className="pt-2 border-t border-white/20 flex justify-between">
+                                <span className="font-medium text-white">Total Amount</span>
+                                <span className="font-bold text-amber-400 text-lg">
+                                  {formatPrice(499 * adultCount)}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
+                      <Button
+                        variant="outline"
+                        onClick={() => setOpenBookingSection(null)}
+                        className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
+                        onClick={() => {
+                          // Handle booking logic
+                          setOpenBookingSection(null);
+                          // Show success message or redirect to payment
+                        }}
+                      >
+                        <ShoppingBag className="mr-1.5 h-3.5 w-3.5" />
+                        Purchase Passes
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            
+            {openBookingSection === "food" && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="mb-8"
+              >
+                <div className="booking-form-section food">
+                  <div className="booking-form-header">
+                    <div className="flex items-center gap-2">
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 flex items-center justify-center">
+                        <Utensils className="h-5 w-5 text-white" />
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-bold text-emerald-500">Book Food Combos</h3>
+                    </div>
+                    <Button 
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setOpenBookingSection(null)}
+                      className="text-white hover:bg-white/10"
+                    >
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </div>
+                  
+                  <div className="booking-form-content open">
+                    <div className="booking-form-grid">
+                      <div>
+                        <h4 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Food Combo</h4>
+                        <div className="space-y-3 md:space-y-4">
+                          {foodCombos.map((combo) => (
+                            <div 
+                              key={combo.id} 
+                              className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all ${
+                                selectedFoodCombo === combo.id 
+                                  ? 'border-emerald-500 bg-emerald-500/10'
+                                  : 'border-white/10 hover:border-emerald-500/50 bg-white/5'
+                              }`}
+                              onClick={() => setSelectedFoodCombo(combo.id)}
+                            >
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h4 className="font-medium text-white text-sm sm:text-base">{combo.name}</h4>
+                                  <p className="text-xs sm:text-sm text-white/60 mt-1">{combo.description}</p>
+                                </div>
+                                <div className="font-bold text-white text-base sm:text-lg">{formatPrice(combo.price)}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <div className="mt-4 md:mt-6 bg-emerald-900/20 p-3 sm:p-4 rounded-lg border border-emerald-500/20">
+                          <h4 className="text-xs sm:text-sm font-medium text-emerald-300 mb-2">Food Combo Information:</h4>
+                          <ul className="space-y-1.5 sm:space-y-2">
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400 mt-0.5" />
+                              Pre-order to avoid queues at the venue
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400 mt-0.5" />
+                              Vegetarian and non-vegetarian options available
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400 mt-0.5" />
+                              Collect from the designated food counters
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-emerald-400 mt-0.5" />
+                              Special festival menu available
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-lg font-semibold mb-4 text-white/90 mt-4 md:mt-0">Order Details</h4>
+                        <div className="space-y-6">
+                          <div>
+                            <Label htmlFor="food-preference" className="text-white/90">Food Preference</Label>
+                            <Select>
+                              <SelectTrigger className="bg-white/5 border-white/20 text-white mt-2">
+                                <SelectValue placeholder="Select preference" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#0c1e3c] border-emerald-500/20 text-white">
+                                <SelectItem value="veg" className="focus:bg-emerald-500/20 focus:text-white">Vegetarian</SelectItem>
+                                <SelectItem value="nonveg" className="focus:bg-emerald-500/20 focus:text-white">Non-Vegetarian</SelectItem>
+                                <SelectItem value="mixed" className="focus:bg-emerald-500/20 focus:text-white">Mixed</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="food-date" className="text-white/90">Pickup Date</Label>
+                            <Select>
+                              <SelectTrigger className="bg-white/5 border-white/20 text-white mt-2">
+                                <SelectValue placeholder="Select date" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#0c1e3c] border-emerald-500/20 text-white">
+                                <SelectItem value="dec21" className="focus:bg-emerald-500/20 focus:text-white">December 21, 2025</SelectItem>
+                                <SelectItem value="dec22" className="focus:bg-emerald-500/20 focus:text-white">December 22, 2025</SelectItem>
+                                <SelectItem value="dec23" className="focus:bg-emerald-500/20 focus:text-white">December 23, 2025</SelectItem>
+                                <SelectItem value="dec24" className="focus:bg-emerald-500/20 focus:text-white">December 24, 2025</SelectItem>
+                                <SelectItem value="dec25" className="focus:bg-emerald-500/20 focus:text-white">December 25, 2025</SelectItem>
+                                <SelectItem value="dec26" className="focus:bg-emerald-500/20 focus:text-white">December 26, 2025</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="food-quantity" className="text-white/90">Number of Combos</Label>
+                            <div className="flex mt-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => decreaseQuantity(setFoodComboQuantity, foodComboQuantity)}
+                                disabled={foodComboQuantity <= 1}
+                                className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
+                                {foodComboQuantity}
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => increaseQuantity(setFoodComboQuantity, foodComboQuantity, 6)}
+                                disabled={foodComboQuantity >= 6}
+                                className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <p className="text-white/50 text-sm mt-1">Maximum 6 combos per booking</p>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="food-notes" className="text-white/90">Special Requests (Optional)</Label>
+                            <Input 
+                              id="food-notes" 
+                              className="mt-2 bg-white/5 border-white/20 text-white focus-visible:ring-emerald-500/40" 
+                              placeholder="Any dietary requirements or allergies" 
+                            />
+                          </div>
+                          
+                          <div>
+                            <Label className="text-white/90">Summary</Label>
+                            <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Combo Type</span>
+                                <span className="font-medium text-white">
+                                  {selectedFoodCombo 
+                                    ? foodCombos.find(c => c.id === selectedFoodCombo)?.name 
+                                    : "Select a combo"}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Quantity</span>
+                                <span className="font-medium text-white">{foodComboQuantity}</span>
+                              </div>
+                              <div className="pt-2 border-t border-white/20 flex justify-between">
+                                <span className="font-medium text-white">Total Amount</span>
+                                <span className="font-bold text-emerald-400 text-lg">
+                                  {selectedFoodCombo 
+                                    ? formatPrice((foodCombos.find(c => c.id === selectedFoodCombo)?.price || 0) * foodComboQuantity) 
+                                    : "---"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
+                      <Button
+                        variant="outline"
+                        onClick={() => setOpenBookingSection(null)}
+                        className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white"
+                        disabled={!selectedFoodCombo}
+                        onClick={() => {
+                          // Handle booking logic
+                          setOpenBookingSection(null);
+                          // Show success message or redirect to payment
+                        }}
+                      >
+                        <Utensils className="mr-1.5 h-3.5 w-3.5" />
+                        Order Food Combo
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+            
+            {openBookingSection === "cake" && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                className="mb-8"
+              >
+                <div className="booking-form-section cake">
+                  <div className="booking-form-header">
+                    <div className="flex items-center gap-2">
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 flex items-center justify-center">
+                        <Gift className="h-5 w-5 text-white" />
+                      </div>
+                      <h3 className="text-lg sm:text-xl font-bold text-rose-500">Book Celebration Cake</h3>
+                    </div>
+                    <Button 
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setOpenBookingSection(null)}
+                      className="text-white hover:bg-white/10"
+                    >
+                      <X className="h-5 w-5" />
+                    </Button>
+                  </div>
+                  
+                  <div className="booking-form-content open">
+                    <div className="booking-form-grid">
+                      <div>
+                        <h4 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Cake</h4>
+                        <div className="space-y-3 md:space-y-4">
+                          {cakeOptions.map((cake) => (
+                            <div 
+                              key={cake.id} 
+                              className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all ${
+                                selectedCake === cake.id 
+                                  ? 'border-rose-500 bg-rose-500/10'
+                                  : 'border-white/10 hover:border-rose-500/50 bg-white/5'
+                              }`}
+                              onClick={() => setSelectedCake(cake.id)}
+                            >
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h4 className="font-medium text-white text-sm sm:text-base">{cake.name}</h4>
+                                  <p className="text-xs sm:text-sm text-white/60 mt-1">{cake.description}</p>
+                                </div>
+                                <div className="font-bold text-white text-base sm:text-lg">{formatPrice(cake.price)}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <div className="mt-4 md:mt-6 bg-rose-900/20 p-3 sm:p-4 rounded-lg border border-rose-500/20">
+                          <h4 className="text-xs sm:text-sm font-medium text-rose-300 mb-2">Cake Ordering Information:</h4>
+                          <ul className="space-y-1.5 sm:space-y-2">
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-rose-400 mt-0.5" />
+                              Order at least 24 hours in advance
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-rose-400 mt-0.5" />
+                              Custom cake designs available
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-rose-400 mt-0.5" />
+                              Collect from the dessert booth at the venue
+                            </li>
+                            <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
+                              <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-rose-400 mt-0.5" />
+                              Perfect for celebrations during the festival
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-lg font-semibold mb-4 text-white/90 mt-4 md:mt-0">Cake Details</h4>
+                        <div className="space-y-6">
+                          <div>
+                            <Label htmlFor="cake-message" className="text-white/90">Cake Message</Label>
+                            <Input 
+                              id="cake-message" 
+                              className="mt-2 bg-white/5 border-white/20 text-white focus-visible:ring-rose-500/40" 
+                              placeholder="E.g., Happy Birthday John!"
+                              value={cakeMessage}
+                              onChange={(e) => setCakeMessage(e.target.value)}
+                            />
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="cake-date" className="text-white/90">Pickup Date</Label>
+                            <Select>
+                              <SelectTrigger className="bg-white/5 border-white/20 text-white mt-2">
+                                <SelectValue placeholder="Select date" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#0c1e3c] border-rose-500/20 text-white">
+                                <SelectItem value="dec21" className="focus:bg-rose-500/20 focus:text-white">December 21, 2025</SelectItem>
+                                <SelectItem value="dec22" className="focus:bg-rose-500/20 focus:text-white">December 22, 2025</SelectItem>
+                                <SelectItem value="dec23" className="focus:bg-rose-500/20 focus:text-white">December 23, 2025</SelectItem>
+                                <SelectItem value="dec24" className="focus:bg-rose-500/20 focus:text-white">December 24, 2025</SelectItem>
+                                <SelectItem value="dec25" className="focus:bg-rose-500/20 focus:text-white">December 25, 2025</SelectItem>
+                                <SelectItem value="dec26" className="focus:bg-rose-500/20 focus:text-white">December 26, 2025</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="cake-time" className="text-white/90">Pickup Time</Label>
+                            <Select>
+                              <SelectTrigger className="bg-white/5 border-white/20 text-white mt-2">
+                                <SelectValue placeholder="Select time" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-[#0c1e3c] border-rose-500/20 text-white">
+                                <SelectItem value="11am" className="focus:bg-rose-500/20 focus:text-white">11:00 AM</SelectItem>
+                                <SelectItem value="12pm" className="focus:bg-rose-500/20 focus:text-white">12:00 PM</SelectItem>
+                                <SelectItem value="1pm" className="focus:bg-rose-500/20 focus:text-white">1:00 PM</SelectItem>
+                                <SelectItem value="2pm" className="focus:bg-rose-500/20 focus:text-white">2:00 PM</SelectItem>
+                                <SelectItem value="3pm" className="focus:bg-rose-500/20 focus:text-white">3:00 PM</SelectItem>
+                                <SelectItem value="4pm" className="focus:bg-rose-500/20 focus:text-white">4:00 PM</SelectItem>
+                                <SelectItem value="5pm" className="focus:bg-rose-500/20 focus:text-white">5:00 PM</SelectItem>
+                                <SelectItem value="6pm" className="focus:bg-rose-500/20 focus:text-white">6:00 PM</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="cake-quantity" className="text-white/90">Quantity</Label>
+                            <div className="flex mt-2">
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => decreaseQuantity(setCakeQuantity, cakeQuantity)}
+                                disabled={cakeQuantity <= 1}
+                                className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Minus className="h-4 w-4" />
+                              </Button>
+                              <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
+                                {cakeQuantity}
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="icon"
+                                onClick={() => increaseQuantity(setCakeQuantity, cakeQuantity, 3)}
+                                disabled={cakeQuantity >= 3}
+                                className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                              >
+                                <Plus className="h-4 w-4" />
+                              </Button>
+                            </div>
+                            <p className="text-white/50 text-sm mt-1">Maximum 3 cakes per booking</p>
+                          </div>
+                          
+                          <div>
+                            <Label className="text-white/90">Summary</Label>
+                            <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Cake Type</span>
+                                <span className="font-medium text-white">
+                                  {selectedCake 
+                                    ? cakeOptions.find(c => c.id === selectedCake)?.name 
+                                    : "Select a cake"}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Message</span>
+                                <span className="font-medium text-white line-clamp-1">
+                                  {cakeMessage || "Not specified"}
+                                </span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-white/70">Quantity</span>
+                                <span className="font-medium text-white">{cakeQuantity}</span>
+                              </div>
+                              <div className="pt-2 border-t border-white/20 flex justify-between">
+                                <span className="font-medium text-white">Total Amount</span>
+                                <span className="font-bold text-rose-400 text-lg">
+                                  {selectedCake 
+                                    ? formatPrice((cakeOptions.find(c => c.id === selectedCake)?.price || 0) * cakeQuantity) 
+                                    : "---"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
+                      <Button
+                        variant="outline"
+                        onClick={() => setOpenBookingSection(null)}
+                        className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
+                        disabled={!selectedCake}
+                        onClick={() => {
+                          // Handle booking logic
+                          setOpenBookingSection(null);
+                          // Show success message or redirect to payment
+                        }}
+                      >
+                        <Gift className="mr-1.5 h-3.5 w-3.5" />
+                        Order Cake
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </section>
       
+      {/* Event Details Section */}
+      <section className="bg-[#0e1b36] py-16">
+        <div className="container mx-auto px-3 sm:px-4">
+          <div className="flex flex-col items-center justify-center mb-10">
+            <Badge className="bg-[#4eb4a7]/20 text-[#4eb4a7] border-none backdrop-blur-sm py-1 px-4 mb-6 text-sm">
+              EVENT DETAILS
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-6">
+              The Ultimate Festival Experience
+            </h2>
+            <p className="text-white/70 text-center max-w-3xl mx-auto text-sm sm:text-base">
+              Prince Group's Rhythm of Carnival brings you 6 days of non-stop entertainment, shopping, 
+              and unique experiences at Kanyakumari's biggest festival of 2025!
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {/* Event Date Card */}
+            <div className="bg-[#0c1e3c]/80 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+              <div className="h-14 w-14 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center mb-5">
+                <CalendarDays className="h-7 w-7 text-[#4eb4a7]" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">Event Date</h3>
+              <p className="text-white/70">December 21-26, 2025</p>
+            </div>
+            
+            {/* Location Card */}
+            <div className="bg-[#0c1e3c]/80 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+              <div className="h-14 w-14 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center mb-5">
+                <MapPin className="h-7 w-7 text-[#4eb4a7]" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">Location</h3>
+              <p className="text-white/70">Kanyakumari, Tamil Nadu</p>
+            </div>
+            
+            {/* Attendees Card */}
+            <div className="bg-[#0c1e3c]/80 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+              <div className="h-14 w-14 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center mb-5">
+                <Users className="h-7 w-7 text-[#4eb4a7]" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">Attendees</h3>
+              <p className="text-white/70">Expected 10,000+</p>
+            </div>
+            
+            {/* Registered Card */}
+            <div className="bg-[#0c1e3c]/80 backdrop-blur-sm rounded-lg p-6 border border-white/10">
+              <div className="h-14 w-14 rounded-full bg-[#4eb4a7]/20 flex items-center justify-center mb-5">
+                <Ticket className="h-7 w-7 text-[#4eb4a7]" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-3">Registered</h3>
+              <p className="text-white/70">30,000+ Tickets</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Key Attractions Section */}
+      <section className="bg-[#0c1b30] py-16" id="attractions">
+        <div className="container mx-auto px-3 sm:px-4">
+          <div className="flex flex-col items-center justify-center mb-12">
+            <Badge className="bg-[#4eb4a7]/20 text-[#4eb4a7] border-none backdrop-blur-sm py-1 px-4 mb-6 text-sm">
+              ATTRACTIONS
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white text-center mb-6">
+              Key Festival Attractions
+            </h2>
+            <p className="text-white/70 text-center max-w-3xl mx-auto text-sm sm:text-base">
+              Discover all the exciting experiences waiting for you at Rhythm of Carnival.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Live Concert Card */}
+            <div className="rounded-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-pink-600 to-red-600 h-48 relative">
+                <Badge className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white border-none">
+                  Featured
+                </Badge>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
+                  <MusicIcon className="h-8 w-8 text-white" />
+                </div>
+              </div>
+              <div className="bg-[#0c1e3c] p-5">
+                <h3 className="text-2xl font-bold text-pink-500 mb-2">Live Concert</h3>
+                <p className="text-white/70 mb-4">Experience the electrifying performance by Vijay Antony and other top artists</p>
+                
+                <div className="space-y-2 mb-5">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-pink-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">World-class sound and light system</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-pink-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">Multiple seating options available</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <Button 
+                    onClick={() => handleOpenBookingSection("concert")}
+                    className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
+                  >
+                    <MusicIcon className="mr-2 h-4 w-4" />
+                    Book Tickets
+                  </Button>
+                  
+                  <Button variant="ghost" size="icon" className="text-white/70 hover:bg-white/10">
+                    <Info className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Helicopter Card */}
+            <div className="rounded-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 h-48 relative">
+                <Badge className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white border-none">
+                  Featured
+                </Badge>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
+                  <Plane className="h-8 w-8 text-white" />
+                </div>
+              </div>
+              <div className="bg-[#0c1e3c] p-5">
+                <h3 className="text-2xl font-bold text-indigo-500 mb-2">Helicopter Ride</h3>
+                <p className="text-white/70 mb-4">Experience breathtaking aerial views of Kanyakumari from above</p>
+                
+                <div className="space-y-2 mb-5">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-indigo-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">Panoramic views of the Arabian Sea, Bay of Bengal and Indian Ocean</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-indigo-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">Professional pilots with safety briefing</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <Button 
+                    onClick={() => handleOpenBookingSection("helicopter")}
+                    className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white"
+                  >
+                    <Plane className="mr-2 h-4 w-4" />
+                    Book Tickets
+                  </Button>
+                  
+                  <Button variant="ghost" size="icon" className="text-white/70 hover:bg-white/10">
+                    <Info className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Shopping Festival Card */}
+            <div className="rounded-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-amber-500 to-orange-600 h-48 relative">
+                <Badge className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white border-none">
+                  Featured
+                </Badge>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
+                  <ShoppingBag className="h-8 w-8 text-white" />
+                </div>
+              </div>
+              <div className="bg-[#0c1e3c] p-5">
+                <h3 className="text-2xl font-bold text-amber-500 mb-2">Shopping Festival</h3>
+                <p className="text-white/70 mb-4">Explore over 300 stalls with a wide range of products and exclusive offers</p>
+                
+                <div className="space-y-2 mb-5">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-amber-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">300+ curated stalls and shops</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-amber-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">Exclusive festival discounts</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <Button 
+                    onClick={() => handleOpenBookingSection("shopping")}
+                    className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
+                  >
+                    <ShoppingBag className="mr-2 h-4 w-4" />
+                    Book Tickets
+                  </Button>
+                  
+                  <Button variant="ghost" size="icon" className="text-white/70 hover:bg-white/10">
+                    <Info className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Food Combo Card */}
+            <div className="rounded-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-emerald-500 to-green-600 h-48 relative">
+                <Badge className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white border-none">
+                  Featured
+                </Badge>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
+                  <Utensils className="h-8 w-8 text-white" />
+                </div>
+              </div>
+              <div className="bg-[#0c1e3c] p-5">
+                <h3 className="text-2xl font-bold text-emerald-500 mb-2">Food Combo</h3>
+                <p className="text-white/70 mb-4">Pre-book your food packages for the festival day</p>
+                
+                <div className="space-y-2 mb-5">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-emerald-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">Pre-book to avoid queues</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-emerald-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">Multiple cuisine options</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <Button 
+                    onClick={() => handleOpenBookingSection("food")}
+                    className="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white"
+                  >
+                    <Utensils className="mr-2 h-4 w-4" />
+                    Book Tickets
+                  </Button>
+                  
+                  <Button variant="ghost" size="icon" className="text-white/70 hover:bg-white/10">
+                    <Info className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Cake Pre-Booking Card */}
+            <div className="rounded-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-rose-500 to-pink-600 h-48 relative">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
+                  <Gift className="h-8 w-8 text-white" />
+                </div>
+              </div>
+              <div className="bg-[#0c1e3c] p-5">
+                <h3 className="text-2xl font-bold text-rose-500 mb-2">Cake Pre-Booking</h3>
+                <p className="text-white/70 mb-4">Pre-order celebration cakes for your special moments at the festival</p>
+                
+                <div className="space-y-2 mb-5">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-rose-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">Custom designs available</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-rose-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">Multiple flavors to choose from</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <Button 
+                    onClick={() => handleOpenBookingSection("cake")}
+                    className="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
+                  >
+                    <Gift className="mr-2 h-4 w-4" />
+                    Book Tickets
+                  </Button>
+                  
+                  <Button variant="ghost" size="icon" className="text-white/70 hover:bg-white/10">
+                    <Info className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+            
+            {/* Theme Park Card */}
+            <div className="rounded-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-500 to-cyan-600 h-48 relative">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-16 w-16 rounded-full bg-white/20 flex items-center justify-center">
+                  <Sparkles className="h-8 w-8 text-white" />
+                </div>
+              </div>
+              <div className="bg-[#0c1e3c] p-5">
+                <h3 className="text-2xl font-bold text-blue-500 mb-2">Theme Park</h3>
+                <p className="text-white/70 mb-4">Enjoy thrilling rides and fun activities for all ages</p>
+                
+                <div className="space-y-2 mb-5">
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-blue-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">Various rides for all age groups</p>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <CheckCircle className="h-5 w-5 text-blue-500 mt-0.5" />
+                    <p className="text-white/70 text-sm">Games and entertainment</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <Button 
+                    onClick={() => handleOpenBookingSection("shopping")}
+                    className="bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white"
+                  >
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    Book Tickets
+                  </Button>
+                  
+                  <Button variant="ghost" size="icon" className="text-white/70 hover:bg-white/10">
+                    <Info className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

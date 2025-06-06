@@ -127,22 +127,14 @@
   -webkit-transition: transform 0.5s ease;
 }
 
-/* Fix button alignment in footer */
-.dialog-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
 /* Prevent content from being hidden under the navbar */
 .content-padding-top {
-  padding-top: 72px;
+  padding-top: 60px;
 }
 
 @media (min-width: 768px) {
   .content-padding-top {
-    padding-top: 76px;
+    padding-top: 64px;
   }
 }
 
@@ -806,5 +798,215 @@ html.ipad-9th-gen [role="dialog"][data-state="open"] {
       grid-template-columns: repeat(2, 1fr) !important;
       gap: 16px !important;
     }
+  }
+}
+
+/* Collapsible Booking Forms */
+.booking-form-section {
+  margin-top: 1rem;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: rgba(12, 30, 60, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transform: translateZ(0);
+}
+
+.booking-form-header {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.booking-form-content {
+  height: 0;
+  overflow: hidden;
+  transition: height 0.4s ease;
+}
+
+.booking-form-content.open {
+  height: auto;
+  overflow: visible;
+  padding: 1.5rem;
+}
+
+.booking-form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .booking-form-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+/* Concert Booking */
+.booking-form-section.concert {
+  border-color: rgba(236, 72, 153, 0.3);
+}
+
+.booking-form-section.concert .booking-form-header {
+  background: linear-gradient(90deg, rgba(236, 72, 153, 0.1), rgba(219, 39, 119, 0.1));
+}
+
+/* Helicopter Booking */
+.booking-form-section.helicopter {
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.booking-form-section.helicopter .booking-form-header {
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.1), rgba(79, 70, 229, 0.1));
+}
+
+/* Shopping Booking */
+.booking-form-section.shopping {
+  border-color: rgba(245, 158, 11, 0.3);
+}
+
+.booking-form-section.shopping .booking-form-header {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
+}
+
+/* Food Combo Booking */
+.booking-form-section.food {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.booking-form-section.food .booking-form-header {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+}
+
+/* Cake Booking */
+.booking-form-section.cake {
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+.booking-form-section.cake .booking-form-header {
+  background: linear-gradient(90deg, rgba(244, 63, 94, 0.1), rgba(225, 29, 72, 0.1));
+}
+
+/* Booking Form Elements */
+.booking-option {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.booking-option:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.booking-option.selected {
+  border-color: currentColor;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.booking-form-section .summary-box {
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.booking-form-section .quantity-selector {
+  display: flex;
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.booking-form-section .quantity-selector button {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  height: 2.5rem;
+  width: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.booking-form-section .quantity-selector button:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.booking-form-section .quantity-selector button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.booking-form-section .quantity-display {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+}
+
+/* Animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.booking-form-section {
+  animation: slideDown 0.3s ease forwards;
+}
+
+/* iPad 9th gen specific fixes */
+@media only screen and (-webkit-min-device-pixel-ratio: 2) and (device-width: 810px) and (device-height: 1080px) {
+  .booking-form-section {
+    border-width: 2px;
+    margin: 1.25rem 0;
+  }
+  
+  .booking-form-header {
+    padding: 1.25rem;
+  }
+  
+  .booking-form-content.open {
+    padding: 1.25rem;
+  }
+  
+  .booking-form-grid {
+    gap: 1.5rem;
+  }
+  
+  /* Fix for tappable areas */
+  .booking-option {
+    padding: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Fix for iPad buttons */
+  .booking-form-section .quantity-selector button {
+    height: 3rem;
+    width: 3rem;
+  }
+  
+  .booking-form-section .quantity-display {
+    font-size: 1.25rem;
   }
 } 
