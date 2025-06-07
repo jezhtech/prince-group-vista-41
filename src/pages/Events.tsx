@@ -633,8 +633,8 @@ const Events = () => {
       id: "concert",
       name: "Live Concert",
       description: "Experience the electrifying performance by Vijay Antony and other top artists",
-      image: "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?q=80&w=2574&auto=format&fit=crop",
-      heroImage: "/images/concert-hero.jpg",
+      image: "/images/vijay_antony.jpg",
+      heroImage: "/images/vijay_antony.jpg",
       icon: <MusicIcon className="h-10 w-10" />,
       color: "from-pink-600 to-red-600",
       textColor: "text-pink-600",
@@ -677,7 +677,7 @@ const Events = () => {
       id: "shopping",
       name: "Shopping Festival",
       description: "Explore over 300 stalls with a wide range of products and exclusive offers",
-      image: "https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=2215&auto=format&fit=crop",
+      image: "/images/theme-park.jpg",
       heroImage: "/images/shopping-hero.jpg",
       icon: <ShoppingBag className="h-10 w-10" />,
       color: "from-amber-500 to-orange-600",
@@ -769,7 +769,7 @@ const Events = () => {
       setCurrentAttractionIndex((prevIndex) => 
         prevIndex === attractions.filter(a => a.featured).length - 1 ? 0 : prevIndex + 1
       );
-    }, 2000);
+    }, 3000);
     
     return () => clearInterval(timer);
   }, [attractions]);
@@ -983,16 +983,98 @@ const Events = () => {
   return (
     <div className="min-h-screen flex flex-col bg-black" ref={containerRef}>
       <Helmet>
-        <title>Rhythm Of Carnival 2025 | Prince Group's Mega Event</title>
-        <meta name="description" content="Experience the Rhythm Of Carnival by Prince Group. A 6-day spectacular event from December 21-26, 2025 featuring music, helicopter rides, shopping, and attractions." />
+        <title>Rhythm Of Carnival 2025 | Live Music, Helicopter Rides & Shopping Festival | Prince Group</title>
+        <meta name="description" content="Join Prince Group's Rhythm Of Carnival, December 21-26, 2025 in Kanyakumari. Experience Vijay Antony live in concert, helicopter rides over scenic views, 300+ shopping stalls with exclusive discounts, and gourmet food combos." />
+        <meta name="keywords" content="Rhythm Of Carnival, Prince Group event, Vijay Antony concert, Kanyakumari festival, helicopter rides, shopping festival, Tamil Nadu events, entertainment 2025, cultural festival" />
+        <meta property="og:title" content="Rhythm Of Carnival 2025 | Prince Group's 6-Day Mega Event" />
+        <meta property="og:description" content="Experience the electrifying Rhythm Of Carnival featuring Vijay Antony live, helicopter rides, shopping festival, and food experiences. Book your tickets now!" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://princegroupofcompanies.in/events" />
+        <meta property="og:image" content="/images/event-cover.jpg" />
+        <meta property="og:site_name" content="Prince Group Events" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Rhythm Of Carnival 2025 | Prince Group Mega Event" />
+        <meta name="twitter:description" content="6-day festival with live concert, helicopter rides, shopping, and more in Kanyakumari. December 21-26, 2025." />
+        <meta name="twitter:image" content="/images/event-cover.jpg" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://princegroupofcompanies.in/events" />
+        <meta name="geo.region" content="IN-TN" />
+        <meta name="geo.placename" content="Kanyakumari" />
+        <meta name="author" content="Prince Group" />
+        <meta name="application-name" content="Prince Group Events" />
+        <meta name="apple-mobile-web-app-title" content="Rhythm Of Carnival" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="theme-color" content="#0c1e3c" />
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "Event",
+              "name": "Rhythm Of Carnival 2025",
+              "description": "A 6-day spectacular event featuring music, helicopter rides, shopping, and attractions",
+              "startDate": "2025-12-21T09:00:00+05:30",
+              "endDate": "2025-12-26T22:00:00+05:30",
+              "eventStatus": "https://schema.org/EventScheduled",
+              "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+              "location": {
+                "@type": "Place",
+                "name": "Prince Group Event Grounds",
+                "address": {
+                  "@type": "PostalAddress",
+                  "addressLocality": "Kanyakumari",
+                  "addressRegion": "Tamil Nadu",
+                  "addressCountry": "IN"
+                }
+              },
+              "image": [
+                "https://princegroupofcompanies.in/images/event-cover.jpg"
+              ],
+              "offers": {
+                "@type": "AggregateOffer",
+                "url": "https://princegroupofcompanies.in/events",
+                "priceCurrency": "INR",
+                "lowPrice": "499",
+                "highPrice": "19999",
+                "availability": "https://schema.org/InStock"
+              },
+              "performer": {
+                "@type": "PerformingGroup",
+                "name": "Vijay Antony and other top artists"
+              },
+              "organizer": {
+                "@type": "Organization",
+                "name": "Prince Group",
+                "url": "https://princegroupofcompanies.in"
+              }
+            }
+          `}
+        </script>
       </Helmet>
       
       {/* Add the booking form styles */}
-      <style type="text/css">{bookingFormStyles}</style>
+      <style type="text/css">
+        {bookingFormStyles}
+        {`
+          /* Desktop navbar positioning fix */
+          @media (min-width: 1024px) {
+            .events-navbar {
+              background-color: #0c1e3c !important;
+              top: 50px !important;
+              height: 60px !important;
+              z-index: 999 !important;
+            }
+            
+            /* Ensure main content has proper spacing */
+            .events-hero-section {
+              padding-top: 3rem !important;
+            }
+          }
+        `}
+      </style>
       
       
       {/* Custom Event Navbar - Themed for the event */}
-      <nav className="fixed top-0 left-0 right-0 z-[999] bg-transparent backdrop-blur-sm py-3 pt-20 ios-fixed-fix">
+      <nav className="fixed top-0 lg:top-[50px] left-0 right-0 z-[999] bg-transparent backdrop-blur-sm py-3 ios-fixed-fix events-navbar">
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
@@ -1061,7 +1143,10 @@ const Events = () => {
                 className={`rounded-full transition-colors duration-300 border-${attractions[currentAttractionIndex].textColor.split('-')[1]} ${attractions[currentAttractionIndex].textColor} hover:bg-${attractions[currentAttractionIndex].textColor.split('-')[1]}/10 text-xs sm:text-sm safari-button-fix`}
                 onClick={() => window.history.back()}
               >
-                <ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 rotate-180" />
+                <ArrowRight 
+                  className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 rotate-180" 
+                  style={isIPad9thGen() ? { transform: 'rotate(180deg)' } : {}} 
+                />
                 Go Back
               </Button>
           </div>
@@ -1070,9 +1155,9 @@ const Events = () => {
       </nav>
       
       {/* Hero Section with Attraction Slideshow */}
-      <section className="relative w-full overflow-hidden content-padding-top ipad-landscape-fix mt-0"> {/* Changed mt-0 to mt-6 to add spacing after the banner */}
+      <section className="relative w-full overflow-hidden content-padding-top ipad-landscape-fix mt-0 lg:mt-[40px]" style={{ marginTop: isIPad9thGen() ? '-15px' : '' }}> {/* Specific margin adjustment for iPad 9th gen */}
         {/* Height calculation: 100vh */}
-        <div className="min-h-screen safari-flex-fix pt-24 md:pt-18 lg:pt-24" ref={heroSectionRef} id="hero-section">
+        <div className="min-h-screen safari-flex-fix pt-30 md:pt-18 lg:pt-24 events-hero-section" ref={heroSectionRef} id="hero-section">
           {/* Animated Background */}
           <div className="absolute inset-0 z-0">
             {/* 3D Starfield Background */}
@@ -1121,7 +1206,7 @@ const Events = () => {
           </div>
           
           {/* Content Container */}
-          <div className="container mx-auto px-3 sm:px-4 h-full relative z-10 flex flex-col justify-center pt-2 md:pt-4 lg:pt-6">
+          <div className="container mx-auto px-3 sm:px-4 h-full relative z-10 flex flex-col justify-center pt-2 md:pt-4 lg:pt-6 events-container">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 md:gap-6 lg:gap-8 items-center">
               {/* Main Event Content */}
               <motion.div
@@ -1174,10 +1259,11 @@ const Events = () => {
                   
                   {/* Animated "Carnival" text */}
                   <motion.div 
-                    className="relative mt-1 sm:mt-2"
+                    className="relative mt-1 sm:mt-2 ipad-9th-carnival-fix"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
+                    style={{ marginTop: isIPad9thGen() ? '-5px' : '' }}
                   >
                     <motion.div
                       className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 blur-xl opacity-70"
@@ -1364,7 +1450,7 @@ const Events = () => {
                           />
                         ) : attractions[currentAttractionIndex].id === "concert" ? (
                           <img 
-                            src="https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?q=80&w=2574&auto=format&fit=crop" 
+                            src="/images/vijay_antony.jpg" 
                             alt="Concert" 
                             className="w-full h-full object-cover safari-image-fix"
                           />
@@ -1391,7 +1477,7 @@ const Events = () => {
                             className="w-full h-full object-cover safari-image-fix"
                             onError={(e) => {
                               // Fallback to unsplash image if local image is missing
-                              e.currentTarget.src = "https://images.unsplash.com/photo-1607083206968-13611e3d76db?q=80&w=2215&auto=format&fit=crop";
+                              e.currentTarget.src = "/images/theme-park.jpg";
                             }}
                           />
                         ) : null}
@@ -1472,9 +1558,16 @@ const Events = () => {
                       );
                     }}
                     aria-label="Previous attraction"
+                    style={isIPad9thGen() ? { top: '45%' } : {}}
                   >
                     {/* Explicit left-facing arrow */}
-                    <ArrowRight className="h-5 w-5 rotate-180" style={{ transform: 'rotate(180deg)' }} />
+                    <ArrowRight 
+                      className="h-5 w-5 rotate-180" 
+                      style={isIPad9thGen() ? 
+                        { transform: 'rotate(180deg) !important' } : 
+                        { transform: 'rotate(180deg)' }
+                      } 
+                    />
                   </button>
                   
                   <button
@@ -1485,9 +1578,16 @@ const Events = () => {
                       );
                     }}
                     aria-label="Next attraction"
+                    style={isIPad9thGen() ? { top: '45%' } : {}}
                   >
                     {/* Explicit right-facing arrow */}
-                    <ArrowRight className="h-5 w-5" style={{ transform: 'rotate(0deg)' }} />
+                    <ArrowRight 
+                      className="h-5 w-5" 
+                      style={isIPad9thGen() ? 
+                        { transform: 'rotate(0deg) !important' } : 
+                        { transform: 'rotate(0deg)' }
+                      } 
+                    />
                   </button>
                   
                   {/* Decorative Elements */}

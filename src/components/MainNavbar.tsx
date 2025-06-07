@@ -15,6 +15,18 @@ const isIPad = () => {
   return /iPad|Macintosh/i.test(userAgent) && 'ontouchend' in document;
 };
 
+// Function to detect iPad 9th generation
+const isIPad9thGen = () => {
+  // Check for iPad 9th generation screen dimensions (1024x768 or 768x1024)
+  if (typeof window !== 'undefined') {
+    return (
+      (window.innerWidth === 768 && window.innerHeight === 1024) || 
+      (window.innerWidth === 1024 && window.innerHeight === 768)
+    );
+  }
+  return false;
+};
+
 // Elegant shimmer animation for Events menu item
 const shimmerAnimation = {
   background: [
@@ -63,13 +75,17 @@ const MainNavbar = () => {
   const [hoveredService, setHoveredService] = useState<string | null>(null);
   const [isMobileOrTablet, setIsMobileOrTablet] = useState(false);
   const [isIpad, setIsIpad] = useState(false);
+  const [isIpad9th, setIsIpad9th] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
     const handleResize = () => {
       const isTablet = window.innerWidth < TABLET_BREAKPOINT;
       const ipadDetected = isIPad();
+      const iPad9thGenDetected = isIPad9thGen();
+      
       setIsIpad(ipadDetected);
+      setIsIpad9th(iPad9thGenDetected);
       setIsMobileOrTablet(isTablet || ipadDetected);
     };
 
@@ -151,6 +167,9 @@ const MainNavbar = () => {
 
   // If it's an iPad, always use mobile layout
   const shouldUseMobileLayout = isMobileOrTablet || isIpad;
+
+  // Additional classes for iPad 9th generation
+  const iPad9thClasses = isIpad9th ? 'ipad-9th-navbar' : '';
 
   // Special rendering for the Events menu item - elegant shimmer effect
   const renderNavItem = (item) => {
@@ -280,7 +299,7 @@ const MainNavbar = () => {
           scrolled 
             ? 'bg-white/80 backdrop-blur-xl shadow-xl py-2' 
             : 'bg-white/70 backdrop-blur-md shadow-md py-4'
-      }`}
+        } ${iPad9thClasses}`}
     >
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center relative">

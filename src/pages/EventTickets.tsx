@@ -190,8 +190,80 @@ const EventTickets = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fdfc] via-white to-[#f0faf9]">
       <Helmet>
-        <title>Ticket Classes - Rhythm Of Carnival</title>
-        <meta name="description" content="Explore the different ticket classes available for the Rhythm Of Carnival event. Choose from Elite, VVIP, Ultra Luxury, Luxury, VIP, Eco, and Eco Standing options." />
+        <title>Event Tickets & Pricing 2025 | Elite, VVIP, Ultra Luxury Options | Rhythm Of Carnival</title>
+        <meta name="description" content="Book tickets for Rhythm Of Carnival 2025 in Kanyakumari. Choose from Elite (₹19,999), VVIP (₹14,999), Ultra Luxury (₹9,999), Luxury (₹4,999), VIP (₹2,499), Eco (₹999) and Eco Standing (₹499) options with exclusive benefits." />
+        <meta name="keywords" content="Rhythm Of Carnival tickets, event tickets Kanyakumari, Vijay Antony concert tickets, festival passes, Elite tickets, VVIP tickets, budget-friendly event tickets, Prince Group event" />
+        <meta property="og:title" content="Event Tickets & Pricing | Rhythm Of Carnival 2025" />
+        <meta property="og:description" content="Book your tickets for Rhythm Of Carnival 2025. Premium options from Elite to Eco Standing available with exclusive benefits." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://princegroupofcompanies.in/events/tickets" />
+        <meta property="og:image" content="/images/tickets-cover.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Event Tickets | Rhythm Of Carnival 2025" />
+        <meta name="twitter:description" content="Book your tickets now. Premium options available from ₹499 to ₹19,999 with exclusive benefits." />
+        <meta name="twitter:image" content="/images/tickets-cover.jpg" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://princegroupofcompanies.in/events/tickets" />
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "Event",
+              "name": "Rhythm Of Carnival 2025",
+              "description": "A 6-day spectacular event featuring music, helicopter rides, shopping, and attractions",
+              "startDate": "2025-12-21T09:00:00+05:30",
+              "endDate": "2025-12-26T22:00:00+05:30",
+              "location": {
+                "@type": "Place",
+                "name": "Prince Group Event Grounds",
+                "address": {
+                  "@type": "PostalAddress",
+                  "addressLocality": "Kanyakumari",
+                  "addressRegion": "Tamil Nadu",
+                  "addressCountry": "IN"
+                }
+              },
+              "offers": [
+                {
+                  "@type": "Offer",
+                  "name": "Elite",
+                  "price": "19999",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock",
+                  "url": "https://princegroupofcompanies.in/events/tickets",
+                  "description": "Elite experience with exclusive amenities and prime viewing"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "VVIP",
+                  "price": "14999",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock",
+                  "url": "https://princegroupofcompanies.in/events/tickets",
+                  "description": "Very exclusive access with premium services and seating"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Ultra Luxury",
+                  "price": "9999",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock",
+                  "url": "https://princegroupofcompanies.in/events/tickets",
+                  "description": "Ultra-premium comfort with excellent views"
+                },
+                {
+                  "@type": "Offer",
+                  "name": "Eco Standing",
+                  "price": "499",
+                  "priceCurrency": "INR",
+                  "availability": "https://schema.org/InStock",
+                  "url": "https://princegroupofcompanies.in/events/tickets",
+                  "description": "Affordable standing area with full event access"
+                }
+              ]
+            }
+          `}
+        </script>
       </Helmet>
       <MainNavbar />
       <main className="flex-grow">

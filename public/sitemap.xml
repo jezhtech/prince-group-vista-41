@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Main Pages -->
+  <url>
+    <loc>https://princegroupofcompanies.in/</loc>
+    <lastmod>2023-12-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://princegroupofcompanies.in/teal-cg-logo.png</image:loc>
+      <image:title>Prince Group Logo</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://princegroupofcompanies.in/about</loc>
+    <lastmod>2023-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://princegroupofcompanies.in/documentation-services</loc>
+    <lastmod>2023-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://princegroupofcompanies.in/loan-services</loc>
+    <lastmod>2023-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://princegroupofcompanies.in/branches</loc>
+    <lastmod>2023-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://princegroupofcompanies.in/contact</loc>
+    <lastmod>2023-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://princegroupofcompanies.in/terms</loc>
+    <lastmod>2023-12-15</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  
+  <!-- Event Pages - High Priority During Event Season -->
+  <url>
+    <loc>https://princegroupofcompanies.in/events</loc>
+    <lastmod>2023-12-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://princegroupofcompanies.in/images/event-cover.jpg</image:loc>
+      <image:title>Rhythm Of Carnival 2025</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://princegroupofcompanies.in/events/attractions</loc>
+    <lastmod>2023-12-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://princegroupofcompanies.in/images/attractions-cover.jpg</image:loc>
+      <image:title>Festival Attractions</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://princegroupofcompanies.in/events/tickets</loc>
+    <lastmod>2023-12-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://princegroupofcompanies.in/images/tickets-cover.jpg</image:loc>
+      <image:title>Event Tickets</image:title>
+    </image:image>
+  </url>
+</urlset> 

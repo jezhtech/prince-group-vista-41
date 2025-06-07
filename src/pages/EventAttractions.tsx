@@ -238,8 +238,74 @@ const EventAttractions = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fdfc] via-white to-[#f0faf9]">
       <Helmet>
-        <title>Attractions - Rhythm Of Carnival</title>
-        <meta name="description" content="Explore the exciting attractions at the Rhythm Of Carnival event including helicopter rides, theme park, water games, petting zoo, aquarium displays, food court and toys store." />
+        <title>Festival Attractions & Activities 2025 | Helicopter Rides, Pet Zoo & Shopping | Rhythm Of Carnival</title>
+        <meta name="description" content="Discover exciting attractions at Rhythm Of Carnival 2025 in Kanyakumari - helicopter rides over Arabian Sea, petting zoo with exotic animals, theme park adventures, aquarium displays, and 300+ shopping stalls with exclusive discounts." />
+        <meta name="keywords" content="festival attractions, helicopter rides Kanyakumari, theme park, water games, petting zoo, aquarium displays, Rhythm Of Carnival attractions, Prince Group event, shopping festival" />
+        <meta property="og:title" content="Festival Attractions & Activities | Rhythm Of Carnival 2025" />
+        <meta property="og:description" content="Explore helicopter rides, theme park, water games, petting zoo, aquarium displays, food court and more at Rhythm Of Carnival." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://princegroupofcompanies.in/events/attractions" />
+        <meta property="og:image" content="/images/attractions-cover.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Festival Attractions | Rhythm Of Carnival 2025" />
+        <meta name="twitter:description" content="Explore our premium attractions including helicopter rides, theme park, water games, petting zoo and more." />
+        <meta name="twitter:image" content="/images/attractions-cover.jpg" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://princegroupofcompanies.in/events/attractions" />
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "ItemList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "item": {
+                    "@type": "Event",
+                    "name": "Helicopter Rides",
+                    "description": "Experience breathtaking aerial views of Kanyakumari from above",
+                    "image": "https://princegroupofcompanies.in/heli/ER2A0460-scaled.jpg",
+                    "offers": {
+                      "@type": "Offer",
+                      "price": "1999",
+                      "priceCurrency": "INR"
+                    },
+                    "location": {
+                      "@type": "Place",
+                      "name": "Prince Group Event Grounds",
+                      "address": {
+                        "@type": "PostalAddress",
+                        "addressLocality": "Kanyakumari",
+                        "addressRegion": "Tamil Nadu",
+                        "addressCountry": "IN"
+                      }
+                    }
+                  }
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "item": {
+                    "@type": "Event",
+                    "name": "Theme Park",
+                    "description": "Enjoy thrilling rides and attractions for all ages",
+                    "image": "https://princegroupofcompanies.in/images/theme-park.jpg"
+                  }
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "item": {
+                    "@type": "Event",
+                    "name": "Water Games",
+                    "description": "Cool off with exciting water-based activities and games"
+                  }
+                }
+              ]
+            }
+          `}
+        </script>
       </Helmet>
       
       <MainNavbar />

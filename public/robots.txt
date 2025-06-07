@@ -12,3 +12,12 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /internal/
+Disallow: /temp/
+Disallow: /draft/
+
+# Crawl-delay: 10
+
+Sitemap: https://princegroupofcompanies.in/sitemap.xml

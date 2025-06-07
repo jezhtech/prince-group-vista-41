@@ -96,6 +96,660 @@
     button[aria-label="Toggle menu"] {
       display: none !important;
     }
+    
+    /* Ensure desktop menu items are properly aligned */
+    nav {
+      height: 60px !important;
+    }
+    
+    /* Desktop page content fix for events page */
+    .events-page {
+      padding-top: 110px !important; /* Banner (50px) + navbar (60px) */
+    }
+  }
+
+  /* Fix for event banner on iOS devices */
+  div[class*="fixed top-0 left-0 right-0"],
+  div[class*="fixed top-0"] {
+    z-index: 1001 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+  
+  /* Fix for desktop navbar positioning - ensure it's below banner */
+  @media (min-width: 1024px) {
+    nav.events-navbar,
+    nav.ios-fixed-fix {
+      position: fixed !important;
+      top: 50px !important; /* Position below banner height */
+      margin-top: 0 !important;
+      z-index: 999 !important;
+    }
+    
+    /* Adjust main content to account for navbar below banner */
+    main, div[class*="pt-"], div[class*="mt-"] {
+      padding-top: calc(50px + 60px) !important; /* Banner + navbar height */
+    }
+  }
+
+  /* iPad-specific banner class */
+  .ipad-event-banner {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 1010 !important; /* Higher z-index to ensure it's above everything */
+    height: 40px !important;
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+  }
+  
+  /* When banner is present, adjust navbar on iPads */
+  .ipad-event-banner ~ nav,
+  body:has(.ipad-event-banner) nav {
+    margin-top: 40px !important;
+    top: 40px !important;
+    position: fixed !important;
+    z-index: 1000 !important;
+  }
+
+  /* Specific class for iPad 9th gen navbar */
+  .ipad-9th-navbar {
+    margin-top: 40px !important; /* Place navbar below banner */
+    top: 40px !important;
+    position: fixed !important;
+    z-index: 1000 !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+  }
+
+  /* Fix for Event page custom navbar on iOS */
+  .ios-fixed-fix {
+    position: fixed !important;
+    top: 40px !important; /* Position below banner */
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 999 !important;
+    transform: translateZ(0) !important;
+    -webkit-transform: translateZ(0) !important;
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+  }
+
+  /* Specific fix for iPad 9th generation (2048 x 1536) */
+  @media only screen 
+    and (min-device-width: 768px) 
+    and (max-device-width: 1024px)
+    and (device-aspect-ratio: 3/4) {
+    /* Desktop-like layout for iPad 9th gen */
+    
+    /* Override any mobile layout for iPad 9th gen */
+    html.ipad-9th-gen .events-navbar .hidden.md\:flex {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      flex-direction: row !important;
+      justify-content: center !important;
+      gap: 24px !important;
+      margin-right: 20px !important;
+      flex-wrap: nowrap !important;
+      overflow-x: visible !important;
+    }
+    
+    html.ipad-9th-gen .events-navbar button[aria-label="Toggle menu"],
+    html.ipad-9th-gen Sheet,
+    html.ipad-9th-gen .events-navbar Sheet,
+    html.ipad-9th-gen .events-navbar div > Sheet,
+    html.ipad-9th-gen .events-navbar button.md\:hidden {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      width: 0 !important;
+      height: 0 !important;
+      overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    
+    /* Override all-iPad rules specifically for iPad 9th gen */
+    html.ipad-9th-gen .lg\:block {
+      display: block !important;
+    }
+    
+    html.ipad-9th-gen .lg\:hidden {
+      display: none !important;
+    }
+    
+    html.ipad-9th-gen button[aria-label="Toggle menu"] {
+      display: none !important;
+    }
+    
+    /* Event Banner styling like desktop */
+    html.ipad-9th-gen div[class*="fixed top-0 left-0 right-0"],
+    html.ipad-9th-gen div[class*="fixed top-0"] {
+      position: fixed !important;
+      top: 0 !important;
+      z-index: 1001 !important;
+      height: 50px !important; /* Increased height to match desktop */
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding: 0 16px !important;
+      background-color: #6a3ebf !important; /* Purple banner color */
+    }
+    
+    /* Ticket count section */
+    html.ipad-9th-gen .hidden.sm\:flex {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    /* Event timer section */
+    html.ipad-9th-gen .hidden.sm\:flex.items-center.text-\[10px\] {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    /* Specific fixes for banner items on iPad 9th gen */
+    html.ipad-9th-gen div[class*="fixed top-0"] .font-bold.text-xs,
+    html.ipad-9th-gen div[class*="fixed top-0"] .text-\[10px\].text-pink-200 {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    /* Make sure the countdown timer is fully visible */
+    html.ipad-9th-gen div[class*="fixed top-0"] .flex.items-center.text-\[10px\] {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      background-color: rgba(67, 56, 202, 0.5) !important;
+      padding: 4px 8px !important;
+      border-radius: 9999px !important;
+    }
+    
+    /* Ensure ticket counter is properly displayed */
+    html.ipad-9th-gen div[class*="fixed top-0"] span.font-bold {
+      font-weight: bold !important;
+      color: white !important;
+    }
+    
+    /* Force horizontal display for navigation items in iPad 9th gen */
+    html.ipad-9th-gen .events-navbar .container {
+      max-width: 100% !important;
+      display: flex !important;
+      justify-content: space-between !important;
+      align-items: center !important;
+      padding: 0 16px !important;
+    }
+    
+    /* Additional iPad 9th gen specific fixes for navbar menu - hide mobile menu */
+    html.ipad-9th-gen Sheet,
+    html.ipad-9th-gen .events-navbar Sheet,
+    html.ipad-9th-gen .events-navbar div > Sheet {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+    
+    /* Ensure the "Go Back" button is properly positioned on the right */
+    html.ipad-9th-gen .events-navbar .flex.items-center.gap-2 {
+      justify-content: flex-end !important;
+      width: auto !important;
+      margin-left: auto !important;
+    }
+    
+    /* Force mobile items to show on iPad 9th gen with proper horizontal layout */
+    html.ipad-9th-gen .events-navbar .hidden.md\:flex {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      flex-direction: row !important;
+      justify-content: center !important;
+      gap: 24px !important;
+      margin-right: 20px !important;
+      flex-wrap: nowrap !important;
+      overflow-x: visible !important;
+    }
+    
+    /* Make menu buttons visible and styled properly */
+    html.ipad-9th-gen .events-navbar .hidden.md\:flex button {
+      display: inline-flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      white-space: nowrap !important;
+      text-align: center !important;
+      padding: 8px 12px !important;
+      font-size: 14px !important;
+    }
+    
+    /* Additional fix for mobile menu button */
+    html.ipad-9th-gen .events-navbar button[aria-label="Toggle menu"],
+    html.ipad-9th-gen .events-navbar button.md\:hidden {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      width: 0 !important;
+      height: 0 !important;
+      overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    
+         /* Direct class targeting for the Carnival text spacing issue */
+     html.ipad-9th-gen .ipad-9th-carnival-fix {
+       margin-top: -10px !important;
+       padding-top: 0 !important;
+       margin-bottom: 0 !important;
+       padding-bottom: 0 !important;
+       position: relative !important;
+       top: 0 !important;
+       transform: translateY(0) !important;
+     }
+    
+    /* Additional iPad 9th gen specific fixes for navbar menu - hide mobile menu */
+    html.ipad-9th-gen Sheet,
+    html.ipad-9th-gen .events-navbar Sheet,
+    html.ipad-9th-gen .events-navbar div > Sheet {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+    }
+    
+    /* Ensure the "Go Back" button is properly positioned on the right */
+    html.ipad-9th-gen .events-navbar .flex.items-center.gap-2 {
+      justify-content: flex-end !important;
+      width: auto !important;
+      margin-left: auto !important;
+    }
+    
+    /* Force mobile items to show on iPad 9th gen with proper horizontal layout */
+    html.ipad-9th-gen .events-navbar .hidden.md\:flex {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      flex-direction: row !important;
+      justify-content: center !important;
+      gap: 24px !important;
+      margin-right: 20px !important;
+      flex-wrap: nowrap !important;
+      overflow-x: visible !important;
+    }
+    
+    /* Make menu buttons visible and styled properly */
+    html.ipad-9th-gen .events-navbar .hidden.md\:flex button {
+      display: inline-flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      white-space: nowrap !important;
+      text-align: center !important;
+      padding: 8px 12px !important;
+      font-size: 14px !important;
+    }
+    
+    /* Additional fix for mobile menu button */
+    html.ipad-9th-gen .events-navbar button[aria-label="Toggle menu"],
+    html.ipad-9th-gen .events-navbar button.md\:hidden {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      width: 0 !important;
+      height: 0 !important;
+      overflow: hidden !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    
+    /* Override media query rules that might be hiding desktop menu */
+    @media only screen 
+      and (min-device-width: 768px) 
+      and (max-device-width: 1024px)
+      and (device-aspect-ratio: 3/4) {
+      /* Basic display fixes for the navbar menu */
+      html.ipad-9th-gen .events-navbar .hidden.md\:flex {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        flex-direction: row !important;
+      }
+      
+      html.ipad-9th-gen button[aria-label="Toggle menu"],
+      html.ipad-9th-gen .events-navbar button.md\:hidden {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+      }
+      
+      /* Fix 1: Reduce navbar height and padding to minimize space */
+      html.ipad-9th-gen nav.events-navbar {
+        height: 50px !important; /* Further reduced height */
+        padding: 2px 16px !important; /* Further reduced padding */
+        min-height: 0 !important;
+        margin-bottom: 0 !important;
+      }
+      
+      /* Fix 2: Reduce spacing between hero section and navbar */
+      html.ipad-9th-gen section.relative.content-padding-top {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        position: relative !important;
+        top: 40px !important; /* Added negative top to move hero section up */
+      }
+      
+      html.ipad-9th-gen .events-hero-section {
+        padding-top: 40px !important; /* Further reduced from 12px to 0 */
+        margin-top: 0px !important;
+      }
+      
+      /* Additional fix for container padding */
+      html.ipad-9th-gen .events-container {
+        padding-top: 0 !important;
+        margin-top: 0px !important;
+      }
+      
+      /* Adjust content within hero section */
+      html.ipad-9th-gen .mobile-padding-fix {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+      }
+      
+      /* Adjust the badge in hero section */
+      html.ipad-9th-gen .cross-browser-rounded.mb-3.md\\:mb-6 {
+        margin-bottom: 8px !important;
+      }
+      
+      /* Fix 3: Reduce space between "Rhythm Of" and "Carnival" text */
+      html.ipad-9th-gen h1 .relative.mt-1,
+      html.ipad-9th-gen h1 .relative.sm\\:mt-2 {
+        margin-top: -5px !important;
+      }
+      
+      /* Make sure the "Rhythm Of" and "Carnival" text are closer together */
+      html.ipad-9th-gen h1.text-3xl.sm\\:text-4xl .relative.mt-1,
+      html.ipad-9th-gen h1.text-3xl.sm\\:text-4xl .relative.sm\\:mt-2,
+      html.ipad-9th-gen h1.text-3xl.sm\\:text-4xl .relative.overflow-hidden + .relative,
+      html.ipad-9th-gen h1 motion\\.div.relative.mt-1,
+      html.ipad-9th-gen h1 motion\\.div.relative.sm\\:mt-2 {
+        margin-top: -5px !important;
+      }
+      
+      /* Additional fix for motion divs */
+      html.ipad-9th-gen h1 > div + div,
+      html.ipad-9th-gen h1 > motion\\.div + motion\\.div {
+        margin-top: -5px !important;
+      }
+      
+      /* Direct targeting of the Carnival motion.div */
+      html.ipad-9th-gen h1 motion\\.div[class*="mt-1"],
+      html.ipad-9th-gen h1 motion\\.div[class*="mt-2"] {
+        margin-top: -10px !important;
+        padding-top: 0 !important;
+      }
+      
+      /* Target the exact structure from Events.tsx */
+      html.ipad-9th-gen h1 motion\\.div + motion\\.div,
+      html.ipad-9th-gen h1 .relative.overflow-hidden + motion\\.div,
+      html.ipad-9th-gen h1 .relative.overflow-hidden + .relative.mt-1,
+      html.ipad-9th-gen h1 .relative.overflow-hidden + .relative.sm\\:mt-2 {
+        margin-top: -15px !important;
+      }
+      
+      /* Force no space with !important and negative margin */
+      html.ipad-9th-gen h1.text-3xl.sm\\:text-4xl.md\\:text-5xl motion\\.div + motion\\.div {
+        margin-top: -20px !important;
+      }
+      
+      /* Extremely specific selector for the motion div with Carnival text */
+      html.ipad-9th-gen h1.text-3xl.sm\\:text-4xl.md\\:text-5xl.lg\\:text-6xl.xl\\:text-7xl motion\\.div.relative.mt-1,
+      html.ipad-9th-gen h1.text-3xl.sm\\:text-4xl.md\\:text-5xl.lg\\:text-6xl.xl\\:text-7xl motion\\.div.relative.sm\\:mt-2 {
+        margin-top: -20px !important;
+        position: relative !important;
+        top: -10px !important;
+      }
+      
+      /* ===== BALANCED FIX FOR IPAD 9TH GEN TEXT SPACING ===== */
+      /* Direct fixes for the exact HTML structure with moderate negative margins */
+      html.ipad-9th-gen h1 > motion.div + motion.div,
+      html.ipad-9th-gen h1 > div + motion.div,
+      html.ipad-9th-gen h1 > div.relative + div.relative,
+      html.ipad-9th-gen h1 > div.relative.overflow-hidden + div.relative,
+      html.ipad-9th-gen h1 > div.relative.overflow-hidden + motion.div.relative {
+        margin-top: -5px !important;
+        padding-top: 0 !important;
+        position: relative !important;
+        top: 0 !important;
+      }
+      
+      /* Target the exact JSX structure in the Events.tsx file */
+      html.ipad-9th-gen h1.font-bold > div.relative.overflow-hidden + div.relative {
+        margin-top: -5px !important;
+        position: relative !important;
+        top: 0 !important;
+      }
+      
+      /* Target by exact class and element structure with no escaping */
+      html.ipad-9th-gen h1.text-3xl.font-bold motion.div[class*="relative mt-1"],
+      html.ipad-9th-gen h1.text-3xl.font-bold motion.div[class*="relative mt-2"],
+      html.ipad-9th-gen h1.text-3xl.font-bold motion.div[class*="relative sm:mt-2"] {
+        margin-top: -5px !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        position: relative !important;
+        top: 0 !important;
+      }
+      
+      /* Force slight negative margin to the Carnival text element using direct child selectors */
+      html.ipad-9th-gen h1.font-bold > *:nth-child(2) {
+        margin-top: -5px !important;
+        position: relative !important;
+        top: 0 !important;
+      }
+      
+      /* Use a more generic selector to ensure we catch all cases */
+      @supports (-webkit-touch-callout: none) {
+        html.ipad-9th-gen h1.font-bold > div:first-child + div,
+        html.ipad-9th-gen h1.font-bold > div:first-child + motion.div {
+          margin-top: -5px !important;
+          position: relative !important;
+          top: 0 !important;
+          transform: translateY(0) !important;
+        }
+      }
+      
+      /* Direct class targeting for the element we just added the class to */
+      html.ipad-9th-gen .ipad-9th-carnival-fix {
+        margin-top: -50px !important;
+        padding-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+        position: relative !important;
+        top: -30px !important;
+        transform: translateY(-20px) !important;
+      }
+      
+      /* Move carousel up in hero section */
+      html.ipad-9th-gen .lg\\:col-span-7 {
+        margin-top: -50px !important;
+      }
+      
+      /* Fix for Key Attractions section on iPad 9th gen - force 3-column layout */
+      html.ipad-9th-gen #attractions .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+        display: grid !important;
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 1.5rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      
+      /* Force full width container in attractions section */
+      html.ipad-9th-gen #attractions .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      
+      /* Explicitly set the width of attraction cards */
+      html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+      
+      /* Reset any transforms or positioning that might affect layout */
+      html.ipad-9th-gen #attractions .grid > * {
+        transform: none !important;
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+        float: none !important;
+        flex: 1 1 0 !important;
+      }
+      
+      /* Alternative grid approach using flexbox */
+      @supports (-webkit-touch-callout: none) {
+        html.ipad-9th-gen #attractions .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+          display: flex !important;
+          flex-wrap: wrap !important;
+          justify-content: space-between !important;
+          width: 100% !important;
+        }
+        
+        html.ipad-9th-gen #attractions .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 > * {
+          flex: 0 0 calc(33.333% - 1rem) !important;
+          margin-bottom: 1.5rem !important;
+          max-width: calc(33.333% - 1rem) !important;
+          width: calc(33.333% - 1rem) !important;
+        }
+      }
+      
+      /* Force attraction cards to be visible */
+      html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+      }
+      
+      /* Target the exact attraction card structure */
+      html.ipad-9th-gen #attractions > div > div > div {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 1.5rem !important;
+        width: 100% !important;
+      }
+      
+      /* Direct child targeting for attraction cards */
+      html.ipad-9th-gen #attractions > div > div > div > div {
+        grid-column: span 1 !important;
+        width: 100% !important;
+      }
+      
+      /* Try inline-grid approach */
+      html.ipad-9th-gen #attractions div[class*="grid-cols-1"] {
+        display: inline-grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        width: 100% !important;
+      }
+      
+      /* Aggressive fix for full-width grid layout */
+      @media only screen 
+        and (min-device-width: 768px) 
+        and (max-device-width: 1024px)
+        and (device-aspect-ratio: 3/4) {
+        /* Target all divs that might be grids inside the attractions section */
+        html.ipad-9th-gen #attractions div[class*="grid"] {
+          display: grid !important;
+          grid-template-columns: repeat(3, 1fr) !important;
+          width: 100% !important;
+          max-width: 100vw !important;
+        }
+        
+        /* Hard-coded column approach */
+        html.ipad-9th-gen #attractions > div > div:last-child > div {
+          display: grid !important;
+          grid-template-columns: 33% 33% 33% !important;
+          width: 100% !important;
+        }
+      }
+      
+      /* Fix font sizes and spacing for attraction cards to fit better in 3-column layout */
+      html.ipad-9th-gen #attractions .bg-\[#0c1e3c\] {
+        padding: 1rem !important;
+      }
+      
+      html.ipad-9th-gen #attractions .text-2xl.font-bold {
+        font-size: 1.25rem !important;
+        line-height: 1.75rem !important;
+      }
+      
+      html.ipad-9th-gen #attractions .text-white\/70.mb-4 {
+        font-size: 0.875rem !important;
+        line-height: 1.25rem !important;
+      }
+      
+      html.ipad-9th-gen #attractions .flex.items-start.gap-2 p {
+        font-size: 0.75rem !important;
+        line-height: 1rem !important;
+      }
+      
+      html.ipad-9th-gen #attractions .h-48 {
+        height: 10rem !important;
+      }
+      
+      /* Ensure buttons in attraction cards fit properly */
+      html.ipad-9th-gen #attractions button {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.875rem !important;
+      }
+      
+      /* Optimize attraction section for iPad 9th gen in portrait mode */
+      @media only screen 
+        and (min-device-width: 768px) 
+        and (max-device-width: 1024px)
+        and (device-aspect-ratio: 3/4)
+        and (orientation: portrait) {
+        html.ipad-9th-gen #attractions .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+      }
+      
+      /* Optimize attraction section for iPad 9th gen in landscape mode */
+      @media only screen 
+        and (min-device-width: 768px) 
+        and (max-device-width: 1024px)
+        and (device-aspect-ratio: 3/4)
+        and (orientation: landscape) {
+        html.ipad-9th-gen #attractions .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+          grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+      }
+      
+      /* Fix carousel navigation arrows - ensure they point in opposite directions */
+      html.ipad-9th-gen .attraction-nav-button.left .h-5.w-5.rotate-180 {
+        transform: rotate(180deg) !important;
+      }
+      
+      html.ipad-9th-gen .attraction-nav-button.right .h-5.w-5 {
+        transform: rotate(0deg) !important;
+      }
+      
+      /* Fix "Go Back" button arrow direction */
+      html.ipad-9th-gen .events-navbar button[class*="rounded-full"] .rotate-180 {
+        transform: rotate(180deg) !important;
+      }
+    }
   }
 
   /* iPad specific fixes - portrait mode */
@@ -127,6 +781,20 @@
       max-width: 100% !important;
       padding-left: 16px !important;
       padding-right: 16px !important;
+    }
+    
+    /* Exception for iPad 9th gen - keep desktop layout in portrait mode */
+    html.ipad-9th-gen .lg\:block {
+      display: block !important;
+    }
+    
+    html.ipad-9th-gen .lg\:hidden {
+      display: none !important;
+    }
+    
+    html.ipad-9th-gen button[aria-label="Toggle menu"] {
+      display: none !important;
+      visibility: hidden !important;
     }
   }
 
@@ -187,6 +855,30 @@
     nav div[class*="lg:hidden"] {
       display: block !important;
     }
+    
+    /* Exception for iPad 9th gen - keep desktop layout in landscape mode */
+    html.ipad-9th-gen .lg\:block {
+      display: block !important;
+    }
+    
+    html.ipad-9th-gen .lg\:hidden {
+      display: none !important;
+    }
+    
+    html.ipad-9th-gen button[aria-label="Toggle menu"] {
+      display: none !important;
+      visibility: hidden !important;
+    }
+    
+    html.ipad-9th-gen nav .hidden.lg\:block,
+    html.ipad-9th-gen nav div[class*="hidden lg:block"] {
+      display: flex !important;
+    }
+    
+    html.ipad-9th-gen nav .lg\:hidden,
+    html.ipad-9th-gen nav div[class*="lg:hidden"] {
+      display: none !important;
+    }
   }
   
   /* All-iPads override (covers all iPad sizes including Pro) */
@@ -218,6 +910,373 @@
         position: relative !important;
         z-index: 9999 !important;
       }
+      
+      /* Exception for iPad 9th gen - make it behave like desktop */
+      html.ipad-9th-gen .lg\:block {
+        display: block !important;
+      }
+      
+      html.ipad-9th-gen .lg\:hidden {
+        display: none !important;
+      }
+      
+      html.ipad-9th-gen button[aria-label="Toggle menu"] {
+        display: none !important;
+        visibility: hidden !important;
+      }
     }
+  }
+
+  /* Hard-coded column approach */
+  html.ipad-9th-gen #attractions > div > div:last-child > div {
+    display: grid !important;
+    grid-template-columns: 33% 33% 33% !important;
+    width: 100% !important;
+  }
+  
+  /* Super specific fix - target the exact grid with concert, helicopter, and shopping cards */
+  html.ipad-9th-gen section#attractions div.container div.grid:has(.rounded-xl) {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1.5rem !important;
+    width: 100% !important;
+  }
+  
+  /* Ultimate nuclear option - force each attraction card into position */
+  html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden:nth-child(3n+1) {
+    grid-column: 1 !important;
+  }
+  
+  html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden:nth-child(3n+2) {
+    grid-column: 2 !important;
+  }
+  
+  html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden:nth-child(3n+3) {
+    grid-column: 3 !important;
+  }
+  
+  /* Force responsive grid layout on iPad 9th gen with flexbox fallback */
+  @supports not (display: grid) {
+    html.ipad-9th-gen #attractions .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+      display: flex !important;
+      flex-wrap: wrap !important;
+    }
+    
+    html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden {
+      flex: 0 0 31% !important;
+      margin: 1% !important;
+    }
+  }
+
+  /* Safari-specific fixes for the attractions grid */
+  @media not all and (min-resolution: 0.001dpcm) {
+    @supports (-webkit-appearance: none) {
+      html.ipad-9th-gen #attractions .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+        display: -webkit-grid !important;
+        display: grid !important;
+        -webkit-grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        width: 100% !important;
+      }
+      
+      html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden {
+        -webkit-grid-column: auto !important;
+        grid-column: auto !important;
+        width: 100% !important;
+      }
+      
+      /* Ensure attraction cards are visible in Safari */
+      html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden {
+        opacity: 1 !important;
+        visibility: visible !important;
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+      }
+    }
+  }
+} 
+
+/* Special override for iPad 9th gen Key Attractions section */
+html.ipad-9th-gen #attractions {
+  display: block !important;
+  width: 100% !important;
+}
+
+html.ipad-9th-gen #attractions .container {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+/* Extremely specific selector to override any other styles */
+html.ipad-9th-gen section#attractions div.container div.grid {
+  display: flex !important;
+  flex-flow: row wrap !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+
+/* Direct child selector for cards */
+html.ipad-9th-gen section#attractions div.container div.grid > div {
+  flex: 0 0 30% !important;
+  width: 30% !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Specific fix for iPad 9th gen in portrait mode */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px)
+  and (orientation: portrait) {
+  
+  html.ipad-9th-gen section#attractions div.container div.grid > div {
+    flex: 0 0 48% !important;
+    width: 48% !important;
+  }
+}
+
+/* Super specific selector - override any previous styles */
+html.ipad-9th-gen section#attractions div.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: space-between !important;
+}
+
+html.ipad-9th-gen section#attractions div.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 > .rounded-xl {
+  flex: 0 0 30% !important;
+  max-width: 30% !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Special fix for attractions section in portrait mode */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px)
+  and (orientation: portrait) {
+  
+  html.ipad-9th-gen section#attractions div.grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 > .rounded-xl {
+    flex: 0 0 48% !important;
+    max-width: 48% !important;
+  }
+} 
+
+/* ==== COMPLETELY NEW FIX FOR IPAD 9TH GEN ATTRACTION CARDS */
+/* This is a clean implementation specifically for the key attractions section */
+
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+  
+  /* Target iPad 9th gen with html class */
+  html.ipad-9th-gen #attractions .container {
+    max-width: 95% !important;
+    margin: 0 auto !important;
+    padding: 0 15px !important;
+  }
+  
+  /* Change grid to flex layout */
+  html.ipad-9th-gen #attractions .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-3 {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    margin: 0 -10px !important; /* Negative margin to offset card padding */
+  }
+  
+  /* Style each attraction card */
+  html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden {
+    flex: 0 0 calc(33.333% - 20px) !important;
+    margin: 0 10px 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  
+  /* For portrait orientation, use 2 columns */
+  @media (orientation: portrait) {
+    html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden {
+      flex: 0 0 calc(50% - 20px) !important;
+    }
+  }
+}
+
+/* Ensure image proportions are maintained in attraction cards */
+html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden .h-48 {
+  height: 12rem !important;
+  position: relative !important;
+}
+
+/* Ensure card content is properly sized */
+html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden .bg-\[#0c1e3c\] {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* Make buttons at bottom of cards wrap if needed */
+html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden .flex.items-center.justify-between {
+  flex-wrap: wrap !important;
+}
+
+/* ADDITIONAL FIX - MORE SPECIFIC TARGETING */
+@supports (-webkit-touch-callout: none) {
+  html.ipad-9th-gen section#attractions {
+    padding: 4rem 0 !important;
+  }
+  
+  html.ipad-9th-gen section#attractions > div.container > div:last-child {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    margin: 0 -10px !important;
+  }
+  
+  /* Direct inline-style approach for attraction cards */
+  html.ipad-9th-gen section#attractions > div.container > div:last-child > div {
+    display: inline-block !important;
+    width: calc(33.333% - 20px) !important;
+    margin: 0 10px 20px !important;
+    vertical-align: top !important;
+  }
+  
+  /* EXTREME APPROACH - Target by position in grid */
+  html.ipad-9th-gen section#attractions > div.container > div:last-child > div:nth-child(1),
+  html.ipad-9th-gen section#attractions > div.container > div:last-child > div:nth-child(2),
+  html.ipad-9th-gen section#attractions > div.container > div:last-child > div:nth-child(3),
+  html.ipad-9th-gen section#attractions > div.container > div:last-child > div:nth-child(4),
+  html.ipad-9th-gen section#attractions > div.container > div:last-child > div:nth-child(5) {
+    display: inline-block !important;
+    width: calc(33.333% - 20px) !important;
+    margin: 0 10px 20px !important;
+    vertical-align: top !important;
+  }
+  
+  /* Portrait mode - 2 column layout */
+  @media (orientation: portrait) {
+    html.ipad-9th-gen section#attractions > div.container > div:last-child > div {
+      width: calc(50% - 20px) !important;
+    }
+    
+    html.ipad-9th-gen section#attractions > div.container > div:last-child > div:nth-child(1),
+    html.ipad-9th-gen section#attractions > div.container > div:last-child > div:nth-child(2),
+    html.ipad-9th-gen section#attractions > div.container > div:last-child > div:nth-child(3),
+    html.ipad-9th-gen section#attractions > div.container > div:last-child > div:nth-child(4),
+    html.ipad-9th-gen section#attractions > div.container > div:last-child > div:nth-child(5) {
+      width: calc(50% - 20px) !important;
+    }
+  }
+} 
+
+/* COMPLETELY NEW FIX FOR IPAD 9TH GEN ATTRACTION CARDS */
+
+/* Clear any previous fixes that might conflict */
+html.ipad-9th-gen #attractions .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 24px !important;
+  width: 100% !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+/* Make cards full width of their grid cell and match desktop design */
+html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 450px !important; /* Force taller height to match desktop */
+  display: flex !important;
+  flex-direction: column !important;
+  margin: 0 !important;
+  overflow: hidden !important; /* Keep overflow hidden for rounded corners */
+  border-radius: 12px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Fix card image section */
+html.ipad-9th-gen #attractions .rounded-xl.overflow-hidden > div:first-child {
+  height: 192px !important; /* Force taller image area */
+  min-height: 192px !important;
+  position: relative !important;
+  width: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Fix card content section */
+html.ipad-9th-gen #attractions .bg-\[#0c1e3c\] {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  padding: 20px !important;
+  height: auto !important;
+}
+
+/* Improve card title */
+html.ipad-9th-gen #attractions .text-2xl.font-bold {
+  font-size: 24px !important;
+  line-height: 32px !important;
+  margin-bottom: 8px !important;
+  font-weight: 700 !important;
+}
+
+/* Fix card description */
+html.ipad-9th-gen #attractions .text-white\/70.mb-4 {
+  font-size: 16px !important;
+  line-height: 24px !important;
+  margin-bottom: 16px !important;
+  display: block !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Fix feature list spacing */
+html.ipad-9th-gen #attractions .space-y-2.mb-5 {
+  margin-bottom: 20px !important;
+  display: block !important;
+}
+
+/* Fix feature items */
+html.ipad-9th-gen #attractions .flex.items-start.gap-2 {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  margin-bottom: 8px !important;
+}
+
+/* Fix feature text */
+html.ipad-9th-gen #attractions .flex.items-start.gap-2 p {
+  font-size: 14px !important;
+  line-height: 20px !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Fix button container */
+html.ipad-9th-gen #attractions .flex.items-center.justify-between {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  margin-top: auto !important;
+}
+
+/* Fix the action buttons */
+html.ipad-9th-gen #attractions button {
+  font-size: 14px !important;
+  padding: 8px 16px !important;
+  border-radius: 6px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Make button icon visible */
+html.ipad-9th-gen #attractions button svg {
+  width: 16px !important;
+  height: 16px !important;
+  margin-right: 8px !important;
+  display: inline-block !important;
+}
+
+/* Only use 2 columns in portrait mode */
+@media (orientation: portrait) {
+  html.ipad-9th-gen #attractions .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 20px !important;
   }
 } 

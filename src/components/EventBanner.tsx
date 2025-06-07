@@ -47,6 +47,7 @@ const EventBanner = ({
     seconds: 0
   });
   const [isMobile, setIsMobile] = useState(false);
+  const [isIpad, setIsIpad] = useState(false);
   const typingSpeed = 40; // faster typing speed
   const pauseDuration = 1500; // pause between messages
   
@@ -54,6 +55,14 @@ const EventBanner = ({
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 640);
+      
+      // Check for iPad 9th generation - most reliable way is to check for screen dimensions
+      // iPad 9th gen has 1024x768 (landscape) or 768x1024 (portrait) resolution
+      const isIpad9thGen = 
+        (window.innerWidth === 768 && window.innerHeight === 1024) || 
+        (window.innerWidth === 1024 && window.innerHeight === 768);
+        
+      setIsIpad(isIpad9thGen);
     };
     
     checkMobile();
@@ -145,7 +154,7 @@ const EventBanner = ({
   if (hideOnMobile && isMobile) return null;
   
   return (
-    <div className={`${position} top-0 left-0 right-0 h-[60px] sm:h-[50px] w-full bg-gradient-to-r from-purple-900 via-indigo-800 to-purple-800 text-white z-[1001] border-b-2 border-pink-500 shadow-xl overflow-hidden ${additionalClassName}`}>
+    <div className={`${position} top-0 left-0 right-0 h-[60px] sm:h-[50px] w-full bg-gradient-to-r from-purple-900 via-indigo-800 to-purple-800 text-white z-[1001] border-b-2 border-pink-500 shadow-xl overflow-hidden ${isIpad ? 'ipad-event-banner' : ''} ${additionalClassName}`}>
       {/* Background animations */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
