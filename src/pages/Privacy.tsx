@@ -1,10 +1,16 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
+import MainNavbar from "@/components/MainNavbar";
 
 const Privacy = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
+    <div className="min-h-screen flex flex-col bg-white pt-[60px] sm:pt-[50px]">
+      <Helmet>
+        <title>Privacy Policy | Prince Group</title>
+        <meta name="description" content="Prince Group's privacy policy details how we collect, use, and protect your personal information when using our services." />
+      </Helmet>
+      <MainNavbar />
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative bg-prince-green py-16">

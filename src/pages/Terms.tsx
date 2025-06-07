@@ -1,10 +1,16 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Helmet } from "react-helmet-async";
+import MainNavbar from "@/components/MainNavbar";
 
 const Terms = () => {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
+    <div className="min-h-screen flex flex-col bg-white pt-[60px] sm:pt-[50px]">
+      <Helmet>
+        <title>Terms and Conditions | Prince Group</title>
+        <meta name="description" content="Read Prince Group's terms and conditions for using our documentation and loan services." />
+      </Helmet>
+      <MainNavbar />
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative bg-prince-green py-16">

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 const Logo: React.FC = () => {
   return (
     <Link to="/" className="flex items-center">
-      <div className="h-12 flex items-center mr-2">
+      <div className="h-14 flex items-center mr-2">
         {/* Static image with minimal styling for Safari */}
         <img 
           src="/teal-cg-logo.png" 

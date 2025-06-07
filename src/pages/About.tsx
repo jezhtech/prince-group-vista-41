@@ -79,10 +79,10 @@ const About = () => {
   }, [carouselApi]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fdfc] via-white to-[#f0faf9]">
+    <div className="min-h-screen flex flex-col bg-white pt-[60px] sm:pt-[50px]">
       <Helmet>
-        <title>About Us - Prince Group</title>
-        <meta name="description" content="Learn about Prince Group's mission, values, and the team behind our success in documentation and loan services." />
+        <title>About Prince Group | 20 Branches All Over Kanyakumari District</title>
+        <meta name="description" content="Learn about Prince Group, the one brand for all your needs with 20 branches across Kanyakumari District." />
       </Helmet>
       <MainNavbar />
       <main className="flex-grow">

@@ -769,7 +769,7 @@ const Events = () => {
       setCurrentAttractionIndex((prevIndex) => 
         prevIndex === attractions.filter(a => a.featured).length - 1 ? 0 : prevIndex + 1
       );
-    }, 5000);
+    }, 2000);
     
     return () => clearInterval(timer);
   }, [attractions]);
@@ -990,12 +990,13 @@ const Events = () => {
       {/* Add the booking form styles */}
       <style type="text/css">{bookingFormStyles}</style>
       
+      
       {/* Custom Event Navbar - Themed for the event */}
-      <nav className="fixed top-0 left-0 right-0 z-[999] bg-transparent backdrop-blur-sm py-3 ios-fixed-fix">
+      <nav className="fixed top-0 left-0 right-0 z-[999] bg-transparent backdrop-blur-sm py-3 pt-20 ios-fixed-fix">
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-2">
-              <img src="/teal-cg-logo.png" alt="Prince Group" className="h-7 sm:h-8 w-auto safari-image-fix" />
+              <img src="/teal-cg-logo.png" alt="Prince Group" className="h-12 sm:h-12 w-auto safari-image-fix" />
             </div>
             
             {/* Desktop Navigation */}
@@ -1010,7 +1011,7 @@ const Events = () => {
                   onClick={attraction.bookingAction}
                 >
                   {attraction.name}
-                </Button>
+              </Button>
               ))}
             </div>
             
@@ -1051,7 +1052,7 @@ const Events = () => {
                         {attraction.name}
                       </Button>
                     ))}
-                  </div>
+          </div>
                 </SheetContent>
               </Sheet>
               
@@ -1063,15 +1064,15 @@ const Events = () => {
                 <ArrowRight className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 rotate-180" />
                 Go Back
               </Button>
-            </div>
+          </div>
           </div>
         </div>
       </nav>
       
       {/* Hero Section with Attraction Slideshow */}
-      <section className="relative w-full overflow-hidden content-padding-top ipad-landscape-fix mt-0">
+      <section className="relative w-full overflow-hidden content-padding-top ipad-landscape-fix mt-0"> {/* Changed mt-0 to mt-6 to add spacing after the banner */}
         {/* Height calculation: 100vh */}
-        <div className="min-h-screen safari-flex-fix pt-4 md:pt-8 lg:pt-10" ref={heroSectionRef} id="hero-section">
+        <div className="min-h-screen safari-flex-fix pt-24 md:pt-18 lg:pt-24" ref={heroSectionRef} id="hero-section">
           {/* Animated Background */}
           <div className="absolute inset-0 z-0">
             {/* 3D Starfield Background */}
@@ -1134,16 +1135,127 @@ const Events = () => {
                   <span className="font-medium">21 - 26 December 2025</span>
                 </Badge>
                 
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 md:mb-6 leading-tight">
-                  <span 
-                    className="block text-[#4eb4a7]"
-                    style={{
-                      textShadow: "0px 0px 15px rgba(78, 180, 167, 0.5)"
-                    }}
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 md:mb-6 leading-tight relative">
+                  {/* Animated "Rhythm Of" text */}
+                  <motion.div 
+                    className="relative overflow-hidden"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
                   >
-                    Rhythm Of
-                  </span>
-                  <span className="text-white">Carnival</span>
+                    {["R", "h", "y", "t", "h", "m", " ", "O", "f"].map((letter, index) => (
+                      <motion.span
+                        key={index}
+                        className={`inline-block ${attractions[currentAttractionIndex].textColor}`}
+                        initial={{ y: 50, opacity: 0 }}
+                        animate={{ 
+                          y: 0, 
+                          opacity: 1,
+                        }}
+                        transition={{ 
+                          duration: 0.4, 
+                          delay: index * 0.05,
+                          type: "spring",
+                          stiffness: 100
+                        }}
+                        style={{
+                          textShadow: `0px 0px 15px rgba${attractions[currentAttractionIndex].textColor.includes('pink') ? '(236, 72, 153, 0.6)' : 
+                                      attractions[currentAttractionIndex].textColor.includes('indigo') ? '(99, 102, 241, 0.6)' :
+                                      attractions[currentAttractionIndex].textColor.includes('amber') ? '(245, 158, 11, 0.6)' :
+                                      attractions[currentAttractionIndex].textColor.includes('emerald') ? '(16, 185, 129, 0.6)' :
+                                      attractions[currentAttractionIndex].textColor.includes('rose') ? '(244, 63, 94, 0.6)' :
+                                      '(78, 180, 167, 0.6)'}`
+                        }}
+                      >
+                        {letter}
+                      </motion.span>
+                    ))}
+                  </motion.div>
+                  
+                  {/* Animated "Carnival" text */}
+                  <motion.div 
+                    className="relative mt-1 sm:mt-2"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                  >
+                    <motion.div
+                      className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-blue-600/20 blur-xl opacity-70"
+                      animate={{
+                        background: [
+                          "linear-gradient(90deg, rgba(147, 51, 234, 0.2) 0%, rgba(236, 72, 153, 0.2) 50%, rgba(59, 130, 246, 0.2) 100%)",
+                          "linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(147, 51, 234, 0.2) 50%, rgba(236, 72, 153, 0.2) 100%)",
+                          "linear-gradient(90deg, rgba(236, 72, 153, 0.2) 0%, rgba(59, 130, 246, 0.2) 50%, rgba(147, 51, 234, 0.2) 100%)",
+                        ],
+                      }}
+                      transition={{
+                        duration: 8,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                      }}
+                    />
+                    
+                    {["C", "a", "r", "n", "i", "v", "a", "l"].map((letter, index) => (
+                      <motion.span
+                        key={index}
+                        className="inline-block text-white"
+                        initial={{ y: 30, opacity: 0, scale: 0.8 }}
+                        animate={{ 
+                          y: 0, 
+                          opacity: 1,
+                          scale: 1,
+                        }}
+                        transition={{ 
+                          duration: 0.5, 
+                          delay: 0.6 + index * 0.08,
+                          type: "spring",
+                          stiffness: 120
+                        }}
+                        style={{
+                          textShadow: "0px 0px 20px rgba(255, 255, 255, 0.7)"
+                        }}
+                      >
+                        {letter}
+                      </motion.span>
+                    ))}
+                    
+                    {/* Floating particles around text */}
+                    <motion.div 
+                      className="absolute inset-0 pointer-events-none"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 1, delay: 1.2 }}
+                    >
+                      {[...Array(12)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          className="absolute rounded-full w-1 h-1 sm:w-2 sm:h-2 bg-white/50"
+                          initial={{ 
+                            x: Math.random() * 100 - 50, 
+                            y: Math.random() * 100 - 50,
+                            opacity: 0.3 + Math.random() * 0.7,
+                            scale: 0.2 + Math.random() * 0.8
+                          }}
+                          animate={{ 
+                            x: Math.random() * 100 - 50, 
+                            y: Math.random() * 100 - 50,
+                            opacity: [0.3 + Math.random() * 0.7, 0.6 + Math.random() * 0.4, 0.3 + Math.random() * 0.7],
+                            scale: [0.2 + Math.random() * 0.8, 0.4 + Math.random() * 0.6, 0.2 + Math.random() * 0.8]
+                          }}
+                          transition={{ 
+                            duration: 3 + Math.random() * 4, 
+                            repeat: Infinity,
+                            repeatType: "reverse",
+                            ease: "easeInOut"
+                          }}
+                          style={{
+                            left: `${Math.random() * 100}%`,
+                            top: `${Math.random() * 100}%`,
+                          }}
+                        />
+                      ))}
+                    </motion.div>
+                  </motion.div>
                 </h1>
                 
                 <p className="text-sm sm:text-base md:text-lg lg:text-xl text-white/80 mb-4 md:mb-6 max-w-xl leading-relaxed mobile-text-fix">
@@ -1175,19 +1287,19 @@ const Events = () => {
                 <div className="space-y-2 sm:space-y-3">
                   <h3 className="text-white/80 text-[10px] sm:text-xs uppercase tracking-wider">Book Tickets</h3>
                   <div className="grid grid-cols-1 gap-1.5 sm:gap-2 mb-2">
-                                          <Button
-                        size="sm"
+                  <Button
+                    size="sm"
                         className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white h-10 sm:h-11 py-0 w-full safari-button-fix cross-browser-rounded"
                         onClick={() => handleOpenBookingSection("concert")}
-                      >
+                  >
                         <MusicIcon className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
                         <span className="text-[10px] sm:text-xs md:text-sm">Concert</span>
-                      </Button>
+                  </Button>
                   </div>
                   
                   <div className="grid grid-cols-2 gap-1.5 sm:gap-2 md:grid-cols-2 lg:grid-cols-2">
-                    <Button
-                      size="sm"
+                  <Button
+                    size="sm"
                       className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white h-8 sm:h-9 py-0 safari-button-fix cross-browser-rounded"
                       onClick={() => handleOpenBookingSection("helicopter")}
                     >
@@ -1220,8 +1332,8 @@ const Events = () => {
                     >
                       <Gift className="mr-1 h-3 w-3 sm:mr-2 sm:h-4 sm:w-4" />
                       <span className="text-[10px] sm:text-xs md:text-sm">Cake Booking</span>
-                    </Button>
-                  </div>
+                  </Button>
+                </div>
               </div>
               </motion.div>
               
@@ -1290,8 +1402,8 @@ const Events = () => {
                           <Badge className={`${attractions[currentAttractionIndex].buttonColor} text-white backdrop-blur-sm text-[10px] sm:text-xs py-0.5 px-1.5 sm:py-1 sm:px-2 cross-browser-rounded`}>
                             Featured Experience
                           </Badge>
-                        </div>
-                      </div>
+                </div>
+              </div>
 
                       {/* Attraction Details */}
                       <div className="p-3 sm:p-4 md:p-6">
@@ -1349,7 +1461,7 @@ const Events = () => {
                         aria-label={`Go to slide ${index + 1}`}
                       />
                     ))}
-                  </div>
+                        </div>
 
                   {/* Modified Side Navigation Arrows with improved visibility for iPad 9th gen */}
                   <button
@@ -1383,8 +1495,8 @@ const Events = () => {
                   <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-gradient-to-br from-[#4eb4a7]/20 to-[#85cbc3]/20 rounded-full blur-3xl -z-10"></div>
                           </div>
               </motion.div>
-            </div>
-          </div>
+                        </div>
+                      </div>
         </div>
       </section>
       
@@ -1405,9 +1517,9 @@ const Events = () => {
                     <div className="flex items-center gap-2">
                       <div className="h-10 w-10 rounded-full bg-gradient-to-r from-pink-600 to-red-600 flex items-center justify-center">
                         <MusicIcon className="h-5 w-5 text-white" />
-                      </div>
+                          </div>
                       <h3 className="text-lg sm:text-xl font-bold text-pink-500">Book Concert Tickets</h3>
-                    </div>
+                          </div>
                     <Button 
                       variant="ghost"
                       size="icon"
@@ -1416,7 +1528,7 @@ const Events = () => {
                     >
                       <X className="h-5 w-5" />
                     </Button>
-                  </div>
+                          </div>
                   
                   <div className="booking-form-content open">
                     <div className="booking-form-grid">
@@ -1565,7 +1677,7 @@ const Events = () => {
                                 <span className="font-medium text-white">Total Amount</span>
                                 <span className="font-bold text-pink-400 text-lg">
                                   {totalPrice > 0 ? formatPrice(totalPrice) : "---"}
-                                </span>
+                                  </span>
                               </div>
                             </div>
                           </div>
@@ -1612,7 +1724,7 @@ const Events = () => {
                     <div className="flex items-center gap-2">
                       <div className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center">
                         <Plane className="h-5 w-5 text-white" />
-                      </div>
+                              </div>
                       <h3 className="text-lg sm:text-xl font-bold text-indigo-500">Book Helicopter Ride</h3>
                     </div>
                     <Button 
@@ -1645,13 +1757,13 @@ const Events = () => {
                                   <h4 className="font-medium text-white text-sm sm:text-base">{pkg.name}</h4>
                                   <div className="text-xs sm:text-sm text-indigo-400 font-medium mt-1">{pkg.duration}</div>
                                   <p className="text-xs sm:text-sm text-white/60 mt-1">{pkg.description}</p>
-                                </div>
-                                <div className="font-bold text-white text-base sm:text-lg">{formatPrice(pkg.price)}</div>
                               </div>
+                                <div className="font-bold text-white text-base sm:text-lg">{formatPrice(pkg.price)}</div>
                             </div>
+                          </div>
                           ))}
                         </div>
-                        
+
                         <div className="mt-4 md:mt-6 bg-indigo-900/20 p-3 sm:p-4 rounded-lg border border-indigo-500/20">
                           <h4 className="text-xs sm:text-sm font-medium text-indigo-300 mb-2">Package Includes:</h4>
                           <ul className="space-y-1.5 sm:space-y-2">
@@ -1726,10 +1838,10 @@ const Events = () => {
                                 className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
                               >
                                 <Minus className="h-4 w-4" />
-                              </Button>
+                        </Button>
                               <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
                                 {helicopterTickets}
-                              </div>
+                      </div>
                               <Button
                                 variant="outline"
                                 size="icon"
@@ -1739,9 +1851,9 @@ const Events = () => {
                               >
                                 <Plus className="h-4 w-4" />
                               </Button>
-                            </div>
+                    </div>
                             <p className="text-sm text-white/50 mt-1">Maximum 4 tickets per booking</p>
-                          </div>
+                </div>
                           
                           <div>
                             <Label className="text-white/90">Summary</Label>
@@ -1841,9 +1953,9 @@ const Events = () => {
                                 <h4 className="font-medium text-white text-sm sm:text-base">Shopping Festival Pass</h4>
                                 <div className="text-xs sm:text-sm text-amber-400 font-medium mt-1">Full access to all shopping areas</div>
                                 <p className="text-xs sm:text-sm text-white/60 mt-1">Access to 300+ stalls, theme park, and entertainment zones</p>
-                              </div>
+                        </div>
                               <div className="font-bold text-white text-base sm:text-lg">{formatPrice(499)}</div>
-                            </div>
+                      </div>
                           </div>
 
                           <div 
@@ -1852,13 +1964,13 @@ const Events = () => {
                             }`}
                           >
                             <div className="flex justify-between items-start">
-                              <div>
+                        <div>
                                 <h4 className="font-medium text-white text-sm sm:text-base">VIP Shopping Experience</h4>
                                 <div className="text-xs sm:text-sm text-amber-400 font-medium mt-1">Premium shopping experience</div>
                                 <p className="text-xs sm:text-sm text-white/60 mt-1">Includes priority access, exclusive discounts, and complimentary refreshments</p>
-                              </div>
-                              <div className="font-bold text-white text-base sm:text-lg">{formatPrice(999)}</div>
                             </div>
+                              <div className="font-bold text-white text-base sm:text-lg">{formatPrice(999)}</div>
+                          </div>
                           </div>
                         </div>
                         
@@ -1882,8 +1994,8 @@ const Events = () => {
                               Access to theme park with fun activities
                             </li>
                           </ul>
-                        </div>
-                      </div>
+                            </div>
+                            </div>
                       
                       <div>
                         <h4 className="text-lg font-semibold mb-4 text-white/90 mt-4 md:mt-0">Booking Details</h4>
@@ -1902,7 +2014,7 @@ const Events = () => {
                                 <SelectItem value="dec26" className="focus:bg-amber-500/20 focus:text-white">December 26, 2025</SelectItem>
                               </SelectContent>
                             </Select>
-                          </div>
+                            </div>
                           
                           <div>
                             <Label htmlFor="shopping-adults" className="text-white/90">Number of Adults</Label>
@@ -1928,9 +2040,9 @@ const Events = () => {
                               >
                                 <Plus className="h-4 w-4" />
                               </Button>
-                            </div>
                           </div>
-                          
+                        </div>
+                        
                           <div>
                             <Label htmlFor="shopping-children" className="text-white/90">Number of Children</Label>
                             <div className="flex mt-2">
@@ -2024,7 +2136,7 @@ const Events = () => {
                     <div className="flex items-center gap-2">
                       <div className="h-10 w-10 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 flex items-center justify-center">
                         <Utensils className="h-5 w-5 text-white" />
-                      </div>
+                            </div>
                       <h3 className="text-lg sm:text-xl font-bold text-emerald-500">Book Food Combos</h3>
                     </div>
                     <Button 
@@ -2056,12 +2168,12 @@ const Events = () => {
                                 <div>
                                   <h4 className="font-medium text-white text-sm sm:text-base">{combo.name}</h4>
                                   <p className="text-xs sm:text-sm text-white/60 mt-1">{combo.description}</p>
-                                </div>
-                                <div className="font-bold text-white text-base sm:text-lg">{formatPrice(combo.price)}</div>
-                              </div>
                             </div>
-                          ))}
+                                <div className="font-bold text-white text-base sm:text-lg">{formatPrice(combo.price)}</div>
+                          </div>
                         </div>
+                          ))}
+                      </div>
                         
                         <div className="mt-4 md:mt-6 bg-emerald-900/20 p-3 sm:p-4 rounded-lg border border-emerald-500/20">
                           <h4 className="text-xs sm:text-sm font-medium text-emerald-300 mb-2">Food Combo Information:</h4>
@@ -2083,8 +2195,8 @@ const Events = () => {
                               Special festival menu available
                             </li>
                           </ul>
-                        </div>
-                      </div>
+                    </div>
+                </div>
                       
                       <div>
                         <h4 className="text-lg font-semibold mb-4 text-white/90 mt-4 md:mt-0">Order Details</h4>
@@ -2131,10 +2243,10 @@ const Events = () => {
                                 className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
                               >
                                 <Minus className="h-4 w-4" />
-                              </Button>
+                  </Button>
                               <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
                                 {foodComboQuantity}
-                              </div>
+                </div>
                               <Button
                                 variant="outline"
                                 size="icon"
@@ -2236,11 +2348,11 @@ const Events = () => {
                     >
                       <X className="h-5 w-5" />
                     </Button>
-                  </div>
-                  
+            </div>
+
                   <div className="booking-form-content open">
                     <div className="booking-form-grid">
-                      <div>
+                <div>
                         <h4 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">Select Cake</h4>
                         <div className="space-y-3 md:space-y-4">
                           {cakeOptions.map((cake) => (
@@ -2257,10 +2369,10 @@ const Events = () => {
                                 <div>
                                   <h4 className="font-medium text-white text-sm sm:text-base">{cake.name}</h4>
                                   <p className="text-xs sm:text-sm text-white/60 mt-1">{cake.description}</p>
-                                </div>
+                      </div>
                                 <div className="font-bold text-white text-base sm:text-lg">{formatPrice(cake.price)}</div>
-                              </div>
-                            </div>
+                      </div>
+                      </div>
                           ))}
                         </div>
                         
@@ -2282,8 +2394,8 @@ const Events = () => {
                             <li className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70">
                               <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-rose-400 mt-0.5" />
                               Perfect for celebrations during the festival
-                            </li>
-                          </ul>
+                    </li>
+                  </ul>
                         </div>
                       </div>
                       
@@ -2348,10 +2460,10 @@ const Events = () => {
                                 className="rounded-r-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
                               >
                                 <Minus className="h-4 w-4" />
-                              </Button>
+                  </Button>
                               <div className="flex-1 flex items-center justify-center border-y border-white/20 bg-white/5 text-white">
                                 {cakeQuantity}
-                              </div>
+                </div>
                               <Button
                                 variant="outline"
                                 size="icon"
@@ -2361,9 +2473,9 @@ const Events = () => {
                               >
                                 <Plus className="h-4 w-4" />
                               </Button>
-                            </div>
+                </div>
                             <p className="text-white/50 text-sm mt-1">Maximum 3 cakes per booking</p>
-                          </div>
+              </div>
                           
                           <div>
                             <Label className="text-white/90">Summary</Label>
@@ -2375,7 +2487,7 @@ const Events = () => {
                                     ? cakeOptions.find(c => c.id === selectedCake)?.name 
                                     : "Select a cake"}
                                 </span>
-                              </div>
+            </div>
                               <div className="flex justify-between">
                                 <span className="text-white/70">Message</span>
                                 <span className="font-medium text-white line-clamp-1">
@@ -2426,8 +2538,8 @@ const Events = () => {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
-      </section>
+          </div>
+        </section>
       
       {/* Event Details Section */}
       <section className="bg-[#0e1b36] py-16">

@@ -340,59 +340,10 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fdfc] via-white to-[#f0faf9]">
+    <div className="min-h-screen flex flex-col bg-white pt-[60px] sm:pt-[50px]">
       <Helmet>
-        <title>Contact Us - Prince Group</title>
-        <meta name="description" content="Get in touch with Prince Group for documentation and loan services in Kanyakumari. We're here to help you with all your needs." />
-        {/* Add custom CSS for map markers */}
-        <style>
-          {`
-            .custom-div-icon {
-              background: none;
-              border: none;
-            }
-            .leaflet-marker-icon {
-              background: none !important;
-              border: none !important;
-            }
-            @keyframes pulse {
-              0% {
-                box-shadow: 0 0 0 0 rgba(78, 180, 167, 0.7);
-              }
-              70% {
-                box-shadow: 0 0 0 10px rgba(78, 180, 167, 0);
-              }
-              100% {
-                box-shadow: 0 0 0 0 rgba(78, 180, 167, 0);
-              }
-            }
-            @keyframes float {
-              0% {
-                transform: translateY(0px);
-              }
-              50% {
-                transform: translateY(-5px);
-              }
-              100% {
-                transform: translateY(0px);
-              }
-            }
-            @keyframes pulse-ring {
-              0% {
-                transform: translate(-50%, 0) scale(0.8);
-                opacity: 0.8;
-              }
-              70% {
-                transform: translate(-50%, 0) scale(1.5);
-                opacity: 0;
-              }
-              100% {
-                transform: translate(-50%, 0) scale(0.8);
-                opacity: 0;
-              }
-            }
-          `}
-        </style>
+        <title>Contact Us | Prince Group Customer Support</title>
+        <meta name="description" content="Get in touch with Prince Group for documentation services, loan inquiries, or general information. Visit our branches or contact us online." />
       </Helmet>
       <MainNavbar />
       

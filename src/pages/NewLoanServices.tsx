@@ -75,10 +75,10 @@ const NewLoanServices = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white pt-[60px] sm:pt-[50px]">
       <Helmet>
-        <title>Loan Services - Prince Group</title>
-        <meta name="description" content="Flexible financial solutions including personal loans, business loans, home loans, and vehicle loans with competitive rates, minimal documentation, and quick approvals." />
+        <title>Loan Services | Prince Group</title>
+        <meta name="description" content="Flexible loan options including personal loans, home loans, education loans, and business loans with competitive interest rates and quick approval." />
       </Helmet>
       <MainNavbar />
       <main className="flex-grow pt-20">

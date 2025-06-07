@@ -94,10 +94,10 @@ const DocumentationServices = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white pt-[60px] sm:pt-[50px]">
       <Helmet>
-        <title>Documentation Services - Prince Group</title>
-        <meta name="description" content="Professional documentation services including property registration, legal documentation, business permits, and educational certificates with expert guidance and same-day processing." />
+        <title>Documentation Services | Prince Group</title>
+        <meta name="description" content="Professional documentation services for property registration, vehicle registration, license applications, and more at Prince Group." />
       </Helmet>
       <MainNavbar />
       <main className="flex-grow pt-20">

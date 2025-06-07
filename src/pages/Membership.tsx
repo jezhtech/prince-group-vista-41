@@ -104,10 +104,10 @@ const Membership = () => {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fdfc] via-white to-[#f0faf9]">
+    <div className="min-h-screen flex flex-col bg-white pt-[60px] sm:pt-[50px]">
       <Helmet>
-        <title>Membership Coming Soon - Prince Group</title>
-        <meta name="description" content="Prince Group membership program is coming soon. Subscribe to get notified when we launch." />
+        <title>Membership Benefits | Prince Group</title>
+        <meta name="description" content="Join Prince Group's membership program for exclusive benefits, priority service, discounts on documentation and loan services, and special event access." />
       </Helmet>
       <MainNavbar />
       <main className="flex-grow">

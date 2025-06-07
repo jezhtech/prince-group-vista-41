@@ -15,6 +15,47 @@ const isIPad = () => {
   return /iPad|Macintosh/i.test(userAgent) && 'ontouchend' in document;
 };
 
+// Elegant shimmer animation for Events menu item
+const shimmerAnimation = {
+  background: [
+    "linear-gradient(90deg, rgba(78, 180, 167, 0) 0%, rgba(78, 180, 167, 0.1) 50%, rgba(78, 180, 167, 0) 100%)",
+    "linear-gradient(90deg, rgba(78, 180, 167, 0) 0%, rgba(96, 175, 180, 0.2) 50%, rgba(78, 180, 167, 0) 100%)",
+    "linear-gradient(90deg, rgba(78, 180, 167, 0) 0%, rgba(78, 180, 167, 0.1) 50%, rgba(78, 180, 167, 0) 100%)",
+  ],
+  backgroundSize: ["200% 100%", "200% 100%", "200% 100%"],
+  backgroundPosition: ["100% 0%", "0% 0%", "100% 0%"],
+  transition: {
+    duration: 3,
+    repeat: Infinity,
+    ease: "easeInOut",
+  }
+};
+
+// Floating animation for Events menu item
+const floatAnimation = {
+  y: [0, -4, 0],
+  transition: {
+    duration: 2.5,
+    repeat: Infinity,
+    ease: "easeInOut"
+  }
+};
+
+// Attention pulse animation for the Events icon
+const iconPulseAnimation = {
+  scale: [1, 1.15, 1],
+  filter: [
+    "drop-shadow(0 0 0 rgba(78, 180, 167, 0))",
+    "drop-shadow(0 0 3px rgba(78, 180, 167, 0.7))",
+    "drop-shadow(0 0 0 rgba(78, 180, 167, 0))"
+  ],
+  transition: {
+    duration: 2,
+    repeat: Infinity,
+    ease: "easeInOut"
+  }
+};
+
 const MainNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -97,7 +138,13 @@ const MainNavbar = () => {
       ]
     },
     { name: 'Branches', path: '/branches', icon: <Building2 className="w-4 h-4" /> },
-    { name: 'Events', path: '/events', icon: <Calendar className="w-4 h-4" /> },
+    { 
+      name: 'Events', 
+      path: '/events', 
+      icon: <Calendar className="w-4 h-4 text-[#4eb4a7]" />,
+      highlight: true,
+      isNew: true
+    },
     { name: 'Membership', path: '/membership', icon: <UsersIcon className="w-4 h-4" /> },
     { name: 'About', path: '/about', icon: <Info className="w-4 h-4" /> },
   ];
@@ -105,10 +152,131 @@ const MainNavbar = () => {
   // If it's an iPad, always use mobile layout
   const shouldUseMobileLayout = isMobileOrTablet || isIpad;
 
+  // Special rendering for the Events menu item - elegant shimmer effect
+  const renderNavItem = (item) => {
+    if (item.highlight) {
+      return (
+        <motion.div
+          className="relative"
+          animate={floatAnimation}
+          whileHover={{ y: 0 }}
+        >
+          <div className="relative">
+            <motion.div
+              className="absolute inset-0 rounded-full z-0"
+              animate={shimmerAnimation}
+            />
+            <div className="absolute inset-0 rounded-full z-0 animate-pulse-slow bg-[#4eb4a7]/10"></div>
+            <Link
+              to={item.path}
+              className={`relative z-10 px-4 py-2 rounded-full flex items-center gap-2 transition-all ${
+                isActive(item.path) 
+                  ? 'bg-[#4eb4a7] text-white shadow-md' 
+                  : 'bg-white/50 backdrop-blur-sm text-[#4eb4a7] border border-[#4eb4a7]/20 hover:border-[#4eb4a7]/50 shadow-sm'
+              }`}
+            >
+              <motion.div animate={iconPulseAnimation}>
+                {item.icon}
+              </motion.div>
+              <span className="font-medium relative">
+                {item.name}
+                <motion.span 
+                  className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#4eb4a7]/60 rounded-full"
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
+                  transition={{ 
+                    duration: 0.8, 
+                    repeat: Infinity, 
+                    repeatType: "reverse", 
+                    ease: "easeInOut",
+                    delay: 0.5
+                  }}
+                />
+              </span>
+              {item.isNew && (
+                <span className="ml-1 h-2 w-2 rounded-full bg-[#4eb4a7] animate-ping-slow" />
+              )}
+            </Link>
+          </div>
+        </motion.div>
+      );
+    }
+
+    return (
+      <Link
+        to={item.path}
+        className={`px-4 py-2 rounded-full flex items-center gap-2 transition-all ${
+          isActive(item.path) 
+            ? 'bg-[#4eb4a7] text-white' 
+            : 'text-gray-700 hover:bg-[#85cbc3]/20'
+        }`}
+      >
+        {item.icon}
+        <span>{item.name}</span>
+      </Link>
+    );
+  };
+
+  // Special rendering for the Events mobile menu item
+  const renderMobileNavItem = (item) => {
+    if (item.highlight) {
+      return (
+        <motion.div
+          className="relative"
+          animate={floatAnimation}
+          whileHover={{ y: 0 }}
+        >
+          <div className="relative overflow-hidden rounded-lg">
+            <motion.div
+              className="absolute inset-0 z-0"
+              animate={shimmerAnimation}
+            />
+            <div className="absolute inset-0 z-0 animate-pulse-slow bg-[#4eb4a7]/10"></div>
+            <Link
+              to={item.path}
+              className={`relative z-10 flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                isActive(item.path) 
+                  ? 'bg-[#4eb4a7] text-white shadow-md' 
+                  : 'text-[#4eb4a7] bg-white border border-[#4eb4a7]/20 shadow-md hover:border-[#4eb4a7]/50'
+              }`}
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <motion.div animate={iconPulseAnimation}>
+                {item.icon}
+              </motion.div>
+              <span className="font-medium">{item.name}</span>
+              {item.isNew && (
+                <div className="relative ml-2 flex items-center">
+                  <span className="h-2 w-2 rounded-full bg-[#4eb4a7] animate-ping-slow"></span>
+                  <span className="ml-1 text-xs text-[#4eb4a7]/80">New</span>
+                </div>
+              )}
+            </Link>
+          </div>
+        </motion.div>
+      );
+    }
+
+    return (
+      <Link
+        to={item.path}
+        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+          isActive(item.path) 
+            ? 'bg-[#4eb4a7] text-white shadow-md' 
+            : 'text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5'
+        }`}
+        onClick={() => setIsMenuOpen(false)}
+      >
+        {item.icon}
+        <span className="font-medium">{item.name}</span>
+      </Link>
+    );
+  };
+
   return (
     <>
     <nav 
-        className={`fixed top-0 left-0 right-0 z-[999] transform translate-z-0 will-change-transform transition-all duration-500 ${
+        className={`fixed top-[50px] left-0 right-0 z-[999] transform translate-z-0 will-change-transform transition-all duration-500 ${
           scrolled 
             ? 'bg-white/80 backdrop-blur-xl shadow-xl py-2' 
             : 'bg-white/70 backdrop-blur-md shadow-md py-4'
@@ -214,17 +382,7 @@ const MainNavbar = () => {
                         </AnimatePresence>
                     </div>
                   ) : (
-                    <Link
-                      to={item.path}
-                        className={`px-4 py-2 rounded-full flex items-center gap-2 transition-all ${
-                        isActive(item.path) 
-                            ? 'bg-[#4eb4a7] text-white' 
-                            : 'text-gray-700 hover:bg-[#85cbc3]/20'
-                      }`}
-                    >
-                        {item.icon}
-                      {item.name}
-                    </Link>
+                    renderNavItem(item)
                   )}
                 </div>
               ))}
@@ -309,7 +467,7 @@ const MainNavbar = () => {
                     <h3 className="font-bold text-[#4eb4a7] text-xl">Prince Group</h3>
                   </div>
                   
-                  {navItems.map((item) => (
+              {navItems.map((item) => (
                     <motion.div 
                       key={item.name}
                       initial={{ opacity: 0, x: 20 }}
@@ -318,57 +476,46 @@ const MainNavbar = () => {
                       className="mb-2"
                     >
                       {item.hasDropdown ? (
-                        <div>
-                          <button
-                            onClick={() => toggleDropdown(item.name)}
+                    <div>
+                      <button
+                        onClick={() => toggleDropdown(item.name)}
                             className={`flex w-full items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all ${
                               isActive(item.path) 
                                 ? 'bg-[#4eb4a7] text-white shadow-md' 
                                 : 'text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5'
-                            }`}
-                          >
+                        }`}
+                      >
                             <div className="flex items-center gap-3">
                               {item.icon}
                               <span className="font-medium">{item.name}</span>
                             </div>
                             <ChevronDown className={`h-4 w-4 transition-transform ${activeDropdown === item.name ? 'rotate-180' : ''}`} />
-                          </button>
+                      </button>
 
-                          {activeDropdown === item.name && (
+                      {activeDropdown === item.name && (
                             <div className="pl-4 mt-2 space-y-2 border-l-2 border-[#4eb4a7]/30">
-                              {item.dropdown.map((dropdownItem) => (
-                                <Link
-                                  key={dropdownItem.name}
-                                  to={dropdownItem.path}
+                          {item.dropdown.map((dropdownItem) => (
+                            <Link
+                              key={dropdownItem.name}
+                              to={dropdownItem.path}
                                   className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-[#4eb4a7]/5"
-                                  onClick={() => {
-                                    setActiveDropdown(null);
-                                    setIsMenuOpen(false);
-                                  }}
-                                >
+                              onClick={() => {
+                                setActiveDropdown(null);
+                                setIsMenuOpen(false);
+                              }}
+                            >
                                   {dropdownItem.icon}
                                   <span>{dropdownItem.name}</span>
-                                </Link>
-                              ))}
-                            </div>
-                          )}
+                            </Link>
+                          ))}
                         </div>
-                      ) : (
-                        <Link
-                          to={item.path}
-                          className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                            isActive(item.path) 
-                              ? 'bg-[#4eb4a7] text-white shadow-md' 
-                              : 'text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5'
-                          }`}
-                          onClick={() => setIsMenuOpen(false)}
-                        >
-                          {item.icon}
-                          <span className="font-medium">{item.name}</span>
-                        </Link>
                       )}
+                    </div>
+                  ) : (
+                        renderMobileNavItem(item)
+                  )}
                     </motion.div>
-                  ))}
+              ))}
                   
                   <div className="pt-6 mt-2 border-t border-gray-200 space-y-4 bg-white">
                     <Button 
@@ -376,11 +523,11 @@ const MainNavbar = () => {
                       variant="outline" 
                       className="w-full rounded-full border-[#4eb4a7] hover:bg-[#4eb4a7]/5 hover:border-[#4eb4a7] bg-white text-[#4eb4a7]"
                     >
-                      <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                         <User className="mr-2 h-4 w-4" /> 
                         <span className="font-medium">Login</span>
-                      </Link>
-                    </Button>
+                  </Link>
+                </Button>
                     
                     <Button 
                       asChild 
@@ -389,9 +536,9 @@ const MainNavbar = () => {
                       <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
                         <span className="font-medium">Contact Us</span>
                       </Link>
-                    </Button>
-                  </div>
-                </div>
+                </Button>
+              </div>
+            </div>
               </motion.div>
             </motion.div>
           )}
@@ -421,6 +568,34 @@ const MainNavbar = () => {
               <Link to="/branches" className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1">
                 <Building2 className="w-3 h-3" /> Find Branch
               </Link>
+              <span className="text-gray-300">|</span>
+              <motion.div
+                className="relative"
+                animate={floatAnimation}
+                whileHover={{ y: 0 }}
+              >
+                <Link to="/events" className="text-sm text-[#4eb4a7] font-medium hover:underline flex items-center gap-1">
+                  <motion.div animate={iconPulseAnimation}>
+                    <Calendar className="w-3 h-3" />
+                  </motion.div>
+                  <span className="relative">
+                    Events
+                    <motion.span 
+                      className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#4eb4a7]/60 rounded-full"
+                      initial={{ scaleX: 0, opacity: 0 }}
+                      animate={{ scaleX: 1, opacity: 1 }}
+                      transition={{ 
+                        duration: 0.8, 
+                        repeat: Infinity, 
+                        repeatType: "reverse", 
+                        ease: "easeInOut",
+                        delay: 0.5
+                      }}
+                    />
+                  </span>
+                  <span className="ml-1 h-1.5 w-1.5 rounded-full bg-[#4eb4a7] animate-ping-slow" />
+                </Link>
+              </motion.div>
           </div>
           </motion.div>
         )}

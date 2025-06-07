@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import MainNavbar from "@/components/MainNavbar";
 import MainFooter from "@/components/MainFooter";
+import EventTicketBanner from "@/components/EventTicketBanner";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -106,10 +107,15 @@ const Index = () => {
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://princegroupcompanies.in" />
       </Helmet>
+      
+      {/* Event Ticket Banner - Placed before navbar */}
+      <EventTicketBanner />
+      
       <MainNavbar />
-      <main className="flex-grow">
+      
+      <main className="flex-grow pt-2">
         {/* Innovative Hero Section */}
-        <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-gray-50 to-white">
+        <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-gray-50 to-white pt-7">
           {/* Animated Background Pattern */}
           <div className="absolute inset-0 overflow-hidden">
             <div className="absolute -top-1/2 -right-1/2 w-[150%] h-[150%] bg-gradient-to-br from-[#4eb4a7]/5 via-[#60afb4]/5 to-[#85cbc3]/5 rounded-full animate-pulse" />
@@ -142,7 +148,7 @@ const Index = () => {
             />
           </div>
 
-          <div className="container mx-auto px-4 relative z-10 pt-28">
+          <div className="container mx-auto px-4 relative z-10 pt-36">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Left Side - Interactive Service Selector */}
               <motion.div 

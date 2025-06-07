@@ -154,10 +154,10 @@ const Branches = () => {
   });
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fdfc] via-white to-[#f0faf9]">
+    <div className="min-h-screen flex flex-col bg-white pt-[60px] sm:pt-[50px]">
       <Helmet>
-        <title>Our Branches - Prince Group</title>
-        <meta name="description" content="Find Prince Group branch locations across Kanyakumari District with contact information, addresses, and operating hours." />
+        <title>Our Branches | Prince Group Locations</title>
+        <meta name="description" content="Find Prince Group branches across Kanyakumari District. Visit us at our 20+ locations for documentation and loan services." />
       </Helmet>
       <MainNavbar />
       <main className="flex-grow pt-20">
