@@ -54,7 +54,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <ScrollToTop />
-          <EventPromoPopup />
+          
           <EventBanner position="fixed" />
           <Routes>
             <Route path="/" element={<Index />} />
