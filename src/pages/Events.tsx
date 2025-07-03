@@ -226,7 +226,10 @@ const Events = () => {
       <nav className="fixed top-12 bg-black/20 left-0 right-0 z-[999] backdrop-blur-sm py-3">
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex justify-between items-center">
-            <Link to="/" className="flex items-center gap-2 p-2 pb-0 md:p-0">
+            <Link
+              to="https://princegroupofcompanies.in"
+              className="flex items-center gap-2 p-2 pb-0 md:p-0"
+            >
               <img
                 src="/teal-cg-logo.png"
                 alt="Prince Group"
