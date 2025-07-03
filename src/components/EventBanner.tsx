@@ -256,13 +256,10 @@ const EventBanner = ({
           )}
           
           {/* CTA Button */}
-          <Link to="/events">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button 
-                size="sm" 
+          <Link to="https://events.princegroupofcompanies.in">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                size="sm"
                 className="h-8 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 rounded-full text-white text-xs"
               >
                 <motion.span
