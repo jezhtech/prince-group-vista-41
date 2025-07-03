@@ -57,7 +57,7 @@ const App = () => (
           
           <EventBanner position="fixed" />
           <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<Events />} />
             <Route path="/services" element={<Services />} />
             <Route path="/services/documentation" element={<DocumentationServices />} />
             <Route path="/documentation-services" element={<DocumentationServices />} />
