@@ -84,6 +84,9 @@ const EventBanner = ({
             setDisplayedText(
               currentMessage.substring(0, displayedText.length + 1)
             );
+            setDisplayedText(
+              currentMessage.substring(0, displayedText.length + 1)
+            );
           }, typingSpeed);
         } else {
           // Finished typing, pause before erasing
@@ -95,6 +98,9 @@ const EventBanner = ({
         // Erasing the message
         if (displayedText.length > 0) {
           timer = setTimeout(() => {
+            setDisplayedText(
+              displayedText.substring(0, displayedText.length - 1)
+            );
             setDisplayedText(
               displayedText.substring(0, displayedText.length - 1)
             );
@@ -166,18 +172,6 @@ const EventBanner = ({
       {/* Background animations */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-xl"
-          animate={{
-            x: [0, 10, 0],
-            y: [0, -10, 0],
-          }}
-          transition={{
-            duration: 6,
-            repeat: Infinity,
-            repeatType: "reverse",
-          }}
-        />
-        <motion.div
           className="absolute -bottom-20 -left-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-xl"
           animate={{
             x: [0, -10, 0],
@@ -224,9 +218,9 @@ const EventBanner = ({
               animate={{ y: isTyping ? [1, 0] : [0, 0] }}
               transition={{ duration: 0.2 }}
             >
-              <span className="bg-gradient-to-r from-white via-pink-100 to-white bg-clip-text text-transparent">
+              <motion.span className="bg-gradient-to-r from-white via-pink-100 to-white bg-clip-text text-transparent">
                 {displayedText}
-              </span>
+              </motion.span>
               <motion.span
                 animate={{ opacity: [1, 0, 1] }}
                 transition={{ duration: 0.8, repeat: Infinity }}
