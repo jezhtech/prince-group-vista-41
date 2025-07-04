@@ -6,6 +6,8 @@ import { CheckCircle } from "lucide-react";
 import { Minus, Plus, Ticket, CalendarDays, MusicIcon } from "lucide-react";
 import { Dialog, DialogContent } from "./ui/dialog";
 import { useState, useCallback, useMemo } from "react";
+import { cn, isIOS } from "@/lib/utils";
+import { Input } from "./ui/input";
 
 const TICKET_CLASSES = [
   {
@@ -102,6 +104,10 @@ const EVENT_DETAILS = {
   ],
 };
 
+const EVENT_OFFERS = [
+  "Subscribe our youtube channel to get Rs 2000 discount on all tickets",
+];
+
 const GENERAL_BENEFITS = [
   "Entry to all concert areas based on ticket class",
   "Access to food and beverage stalls",
@@ -147,7 +153,6 @@ export const EventBooking = ({
       setTicketQuantity(newQuantity);
     }
   }, []);
-  console.log("jcioej")
 
   const handleClose = useCallback(() => {
     setIsBookingOpen(false);
@@ -200,14 +205,19 @@ export const EventBooking = ({
           </Button>
         </div>
 
-        <div className="booking-form-content open">
+        <div className={cn("booking-form-content open", isIOS && "mb-0")}>
           <div className="booking-form-grid">
             {/* Left Column - Ticket Selection */}
             <div>
               <h4 className="text-base sm:text-lg font-semibold mb-3 md:mb-4 text-white/90">
                 Select Ticket Class
               </h4>
-              <div className="space-y-3 md:space-y-4 max-h-96 overflow-y-auto">
+              <div
+                className={cn(
+                  "space-y-3 md:space-y-4 overflow-y-auto",
+                  isIOS ? "mb-3" : "max-h-96"
+                )}
+              >
                 {TICKET_CLASSES.map((ticket) => (
                   <motion.div
                     key={ticket.id}
@@ -252,7 +262,12 @@ export const EventBooking = ({
               </div>
 
               {/* General Benefits */}
-              <div className="mt-4 md:mt-6 bg-pink-900/20 p-3 sm:p-4 rounded-lg border border-pink-500/20">
+              <div
+                className={cn(
+                  "bg-pink-900/20 p-3 sm:p-4 rounded-lg border border-pink-500/20",
+                  isIOS ? "" : "mt-4 md:mt-6"
+                )}
+              >
                 <h4 className="text-xs sm:text-sm font-medium text-pink-300 mb-2">
                   All Tickets Include:
                 </h4>
@@ -275,13 +290,13 @@ export const EventBooking = ({
               <h4 className="text-lg font-semibold mb-4 text-white/90">
                 Ticket Details
               </h4>
-              <div className="space-y-6">
+              <div className={cn(isIOS ? "space-y-2" : "space-y-6")}>
                 {/* Quantity Selection */}
                 <div>
                   <Label htmlFor="quantity" className="text-white/90">
                     Number of Tickets
                   </Label>
-                  <div className="flex mt-2">
+                  <div className={cn("flex", isIOS ? "" : "mt-4")}>
                     <Button
                       variant="outline"
                       size="icon"
@@ -317,20 +332,23 @@ export const EventBooking = ({
                   <Label htmlFor="concert-date" className="text-white/90">
                     Concert Date
                   </Label>
-                  <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5">
-                    <div className="flex items-center gap-3">
-                      <CalendarDays className="h-5 w-5 text-pink-500 flex-shrink-0" />
-                      <div>
-                        <div className="font-medium text-white">
-                          {EVENT_DETAILS.date}
-                        </div>
-                        <div className="text-sm text-white/60">
-                          {EVENT_DETAILS.time}
-                        </div>
-                        <div className="text-sm text-white/60">
-                          {EVENT_DETAILS.location}
-                        </div>
-                      </div>
+                  <div
+                    className={cn(
+                      "flex items-start gap-3 p-4 border border-white/20 rounded-lg bg-white/5",
+                      !isIOS && "mt-2"
+                    )}
+                  >
+                    <CalendarDays className="h-5 w-5 text-pink-500 flex-shrink-0" />
+                    <div>
+                      <p className="font-medium text-white">
+                        {EVENT_DETAILS.date}
+                      </p>
+                      <p className="text-sm text-white/60">
+                        {EVENT_DETAILS.time}
+                      </p>
+                      <p className="text-sm text-white/60">
+                        {EVENT_DETAILS.location}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -338,7 +356,12 @@ export const EventBooking = ({
                 {/* Event Features */}
                 <div>
                   <Label className="text-white/90">Concert Details</Label>
-                  <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-2">
+                  <div
+                    className={cn(
+                      "p-4 border border-white/20 rounded-lg bg-white/5 space-y-2",
+                      !isIOS && "mt-2"
+                    )}
+                  >
                     {EVENT_DETAILS.features.map((feature, idx) => (
                       <div key={idx} className="flex items-start gap-2">
                         <CheckCircle className="h-4 w-4 text-pink-500 mt-0.5 flex-shrink-0" />
@@ -351,57 +374,83 @@ export const EventBooking = ({
                 {/* Summary */}
                 <div>
                   <Label className="text-white/90">Booking Summary</Label>
-                  <div className="mt-2 p-4 border border-white/20 rounded-lg bg-white/5 space-y-3">
-                    <div className="flex justify-between">
+                  <div
+                    className={cn(
+                      "p-4 border border-white/20 rounded-lg bg-white/5 space-y-3",
+                      !isIOS && "mt-2"
+                    )}
+                  >
+                    <p className="flex justify-between">
                       <span className="text-white/70">Ticket Type</span>
                       <span className="font-medium text-white">
                         {selectedTicket?.name || "Select a ticket"}
                       </span>
-                    </div>
-                    <div className="flex justify-between">
+                    </p>
+                    <p className="flex justify-between">
                       <span className="text-white/70">Quantity</span>
                       <span className="font-medium text-white">
                         {ticketQuantity}
                       </span>
-                    </div>
+                    </p>
                     {selectedTicket && (
-                      <div className="flex justify-between">
+                      <p className="flex justify-between">
                         <span className="text-white/70">Price per ticket</span>
                         <span className="font-medium text-white">
                           {formatPrice(selectedTicket.price)}
                         </span>
-                      </div>
+                      </p>
                     )}
-                    <div className="pt-2 border-t border-white/20 flex justify-between">
-                      <span className="font-medium text-white">
-                        Subtotal
-                      </span>
+                    <p className="pt-2 border-t border-white/20 flex justify-between">
+                      <span className="font-medium text-white">Subtotal</span>
                       <span className="font-bold text-pink-400 text-lg">
                         {totalPrice > 0 ? formatPrice(totalPrice) : "---"}
                       </span>
-                    </div>
-                    <div className="pt-2 border-t border-white/20 flex justify-between">
-                      <span className="font-medium text-white">
-                        Discount
-                      </span>
+                    </p>
+                    <p className="pt-2 border-t border-white/20 flex justify-between">
+                      <span className="font-medium text-white">Discount</span>
                       <span className="font-bold text-pink-400 text-lg">
                         {totalPrice > 0 ? totalPrice * 0.05 : "---"}
                       </span>
-                    </div>
-                    <div className="pt-2 border-t border-white/20 flex justify-between">
-                      <span className="font-medium text-white">
-                        GST (18%)
-                      </span>
+                    </p>
+                    <p className="pt-2 border-t border-white/20 flex justify-between">
+                      <span className="font-medium text-white">GST (18%)</span>
                       <span className="font-bold text-pink-400 text-lg">
                         {totalPrice > 0 ? totalPrice * 0.18 : "---"}
                       </span>
-                    </div>
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-white/90">Referral Code</Label>
+                  <Input
+                    className="bg-white/5 border-white/20 text-white"
+                    type="text"
+                    placeholder="Enter referral code"
+                  />
+                </div>
+                {/* Event Offers */}
+                <div>
+                  <Label className="text-white/90">Event Offers</Label>
+                  <div
+                    className={cn(
+                      "p-4 border border-white/20 rounded-lg bg-white/5 space-y-2",
+                      !isIOS && "mt-2"
+                    )}
+                  >
+                    {EVENT_OFFERS.map((feature, idx) => (
+                      <div key={idx} className="flex items-start gap-2">
+                        <CheckCircle className="h-4 w-4 text-pink-500 mt-0.5 flex-shrink-0" />
+                        <span className="text-white/70 text-sm">{feature}</span>
+                      </div>
+                    ))}
+                    <Button size="sm" className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white">
+                      Subscribe Now
+                    </Button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
             <Button

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, Fragment } from "react";
 import MainFooter from "@/components/MainFooter";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, isObject } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,7 +29,7 @@ import {
   CalendarIcon,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { cn, isIOS } from "@/lib/utils";
 import { EventBooking } from "@/components/EventBooking";
 
 const Events = () => {
@@ -161,27 +161,6 @@ const Events = () => {
     return () => clearInterval(timer);
   }, [performers.length]);
 
-  // Handle quantity changes
-  const increaseQuantity = (
-    setter: React.Dispatch<React.SetStateAction<number>>,
-    value: number,
-    max = 10
-  ) => {
-    if (value < max) {
-      setter(value + 1);
-    }
-  };
-
-  const decreaseQuantity = (
-    setter: React.Dispatch<React.SetStateAction<number>>,
-    value: number,
-    min = 1
-  ) => {
-    if (value > min) {
-      setter(value - 1);
-    }
-  };
-
   // Format price as Indian Rupees
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -223,7 +202,11 @@ const Events = () => {
       </Helmet>
 
       {/* Custom Event Navbar */}
-      <nav className="fixed top-12 bg-black/20 left-0 right-0 z-[999] backdrop-blur-sm py-3">
+      <nav
+      style={{
+        marginTop: isIOS ? "48px" : 0,
+      }}
+       className="sticky top-12 bg-black/20 left-0 right-0 z-[999] backdrop-blur-sm py-3">
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex justify-between items-center">
             <Link
@@ -233,7 +216,7 @@ const Events = () => {
               <img
                 src="/teal-cg-logo.png"
                 alt="Prince Group"
-                className="h-12 w-auto"
+                className="h-12 w-60 object-contain"
               />
             </Link>
 
