@@ -329,7 +329,7 @@ const Events = () => {
                   transition={{ duration: 0.8, delay: 0.4 }}
                 >
                   Experience the biggest musical night in Kanyakumari featuring
-                  three sensational performers
+                  sensational performers
                 </motion.p>
 
                 {/* Location Info */}
