@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X, ChevronDown, User, Search } from 'lucide-react';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Menu, X, ChevronDown, User, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Logo from './Logo';
+import Logo from "./Logo";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,20 +21,20 @@ const Navbar = () => {
   };
 
   const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'About Us', path: '/about' },
-    { 
-      name: 'Services', 
-      path: '/services',
+    { name: "Home", path: "/" },
+    { name: "About Us", path: "/about" },
+    {
+      name: "Services",
+      path: "/services",
       dropdown: [
-        { name: 'Documentation Services', path: '/services/documentation' },
-        { name: 'Loan Services', path: '/loan-services' },
-      ]
+        { name: "Documentation Services", path: "/services/documentation" },
+        { name: "Loan Services", path: "/loan-services" },
+      ],
     },
-    { name: 'Branches', path: '/branches' },
-    { name: 'Tariff Comparison', path: '/tariff-comparison' },
-    { name: 'Events', path: '/events' },
-    { name: 'Membership', path: '/membership' },
+    { name: "Branches", path: "/branches" },
+    { name: "Tariff Comparison", path: "/tariff-comparison" },
+    { name: "Events", path: "https://events.princegroupofcompanies.in" },
+    { name: "Membership", path: "/membership" },
   ];
 
   return (
@@ -102,7 +102,11 @@ const Navbar = () => {
               onClick={toggleMenu}
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-ui-blue-600 focus:outline-none"
             >
-              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>

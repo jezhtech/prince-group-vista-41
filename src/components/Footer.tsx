@@ -1,6 +1,13 @@
-import { Link } from "react-router-dom";
-import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
-import Logo from './Logo';
+import { Link, useLoaderData, useLocation } from "react-router-dom";
+import {
+  Facebook,
+  Instagram,
+  Twitter,
+  Mail,
+  Phone,
+  MapPin,
+} from "lucide-react";
+import Logo from "./Logo";
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -17,13 +24,22 @@ const Footer = () => {
               20 Branches All-Over Kanyakumari District
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-300 hover:text-prince-accent transition-colors">
+              <a
+                href="#"
+                className="text-gray-300 hover:text-prince-accent transition-colors"
+              >
                 <Facebook />
               </a>
-              <a href="#" className="text-gray-300 hover:text-prince-accent transition-colors">
+              <a
+                href="#"
+                className="text-gray-300 hover:text-prince-accent transition-colors"
+              >
                 <Twitter />
               </a>
-              <a href="#" className="text-gray-300 hover:text-prince-accent transition-colors">
+              <a
+                href="#"
+                className="text-gray-300 hover:text-prince-accent transition-colors"
+              >
                 <Instagram />
               </a>
             </div>
@@ -35,32 +51,50 @@ const Footer = () => {
             </h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/" className="text-gray-300 hover:text-prince-accent transition-colors">
+                <Link
+                  to="/"
+                  className="text-gray-300 hover:text-prince-accent transition-colors"
+                >
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-gray-300 hover:text-prince-accent transition-colors">
+                <Link
+                  to="/about"
+                  className="text-gray-300 hover:text-prince-accent transition-colors"
+                >
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/services" className="text-gray-300 hover:text-prince-accent transition-colors">
+                <Link
+                  to="/services"
+                  className="text-gray-300 hover:text-prince-accent transition-colors"
+                >
                   Our Services
                 </Link>
               </li>
               <li>
-                <Link to="/branches" className="text-gray-300 hover:text-prince-accent transition-colors">
+                <Link
+                  to="/branches"
+                  className="text-gray-300 hover:text-prince-accent transition-colors"
+                >
                   Branches
                 </Link>
               </li>
               <li>
-                <Link to="/events" className="text-gray-300 hover:text-prince-accent transition-colors">
+                <Link
+                  to="/events"
+                  className="text-gray-300 hover:text-prince-accent transition-colors"
+                >
                   Events
                 </Link>
               </li>
               <li>
-                <Link to="/membership" className="text-gray-300 hover:text-prince-accent transition-colors">
+                <Link
+                  to="/membership"
+                  className="text-gray-300 hover:text-prince-accent transition-colors"
+                >
                   Membership
                 </Link>
               </li>
@@ -73,12 +107,18 @@ const Footer = () => {
             </h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/privacy" className="text-gray-300 hover:text-prince-accent transition-colors">
+                <Link
+                  to="/privacy"
+                  className="text-gray-300 hover:text-prince-accent transition-colors"
+                >
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-gray-300 hover:text-prince-accent transition-colors">
+                <Link
+                  to="/terms"
+                  className="text-gray-300 hover:text-prince-accent transition-colors"
+                >
                   Terms & Conditions
                 </Link>
               </li>
@@ -114,9 +154,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-          <p>
-            &copy; {year} Prince Group. All rights reserved.
-          </p>
+          <p>&copy; {year} Prince Group. All rights reserved.</p>
         </div>
       </div>
     </footer>

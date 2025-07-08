@@ -1,16 +1,7 @@
-import { useState, useEffect, useRef, Fragment } from "react";
+import { useState, useEffect, useRef } from "react";
 import MainFooter from "@/components/MainFooter";
-import { motion, AnimatePresence, isObject } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Helmet } from "react-helmet-async";
@@ -18,12 +9,7 @@ import "./events.css";
 import {
   MapPin,
   Ticket,
-  CheckCircle,
-  Plus,
-  Minus,
   ArrowRight,
-  Heart,
-  Share2,
   Users,
   CalendarDays,
   CalendarIcon,
@@ -203,10 +189,11 @@ const Events = () => {
 
       {/* Custom Event Navbar */}
       <nav
-      style={{
-        marginTop: isIOS ? "48px" : 0,
-      }}
-       className="sticky top-12 bg-black/20 left-0 right-0 z-[999] backdrop-blur-sm py-3">
+        style={{
+          marginTop: isIOS ? "48px" : 0,
+        }}
+        className="sticky top-12 bg-black/20 left-0 right-0 z-[999] backdrop-blur-sm py-3"
+      >
         <div className="container mx-auto px-3 sm:px-4">
           <div className="flex justify-between items-center">
             <Link
@@ -220,7 +207,7 @@ const Events = () => {
               />
             </Link>
 
-            <div className="items-center gap-2 hidden md:flex">
+            <div className={cn("items-center gap-2 hidden md:flex")}>
               <Button
                 className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white text-lg"
                 onClick={() => setIsBookingOpen(true)}
@@ -234,7 +221,12 @@ const Events = () => {
       </nav>
 
       {/* Hero Section with Performers Carousel */}
-      <section className="relative w-full overflow-hidden pt-40 md:pt-24">
+      <section
+        className={cn(
+          "relative w-full overflow-hidden pt-4",
+          isIOS() && "pt-40"
+        )}
+      >
         <div className="min-h-screen flex items-center">
           {/* Animated Background */}
           <div className="absolute inset-0 z-0">
@@ -651,7 +643,7 @@ const Events = () => {
         setIsBookingOpen={setIsBookingOpen}
       />
 
-      <MainFooter />
+      <MainFooter theme="dark" />
     </div>
   );
 };

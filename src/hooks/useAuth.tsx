@@ -1,0 +1,130 @@
+import {
+  useState,
+  useEffect,
+  createContext,
+  useContext,
+  ReactNode,
+} from "react";
+import {
+  User,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
+  updateProfile,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+  PhoneAuthProvider,
+  signInWithCredential,
+} from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { createUser } from "@/services/user";
+import { User as UserType } from "@/types/user";
+
+interface AuthContextType {
+  currentUser: User | null;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<void>;
+  signUp: (user: Partial<UserType>, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  updateUserProfile: (displayName: string) => Promise<void>;
+  sendPhoneOTP: (
+    phoneNumber: string,
+    recaptchaVerifier: RecaptchaVerifier
+  ) => Promise<any>;
+  verifyPhoneOTP: (verificationId: string, otp: string) => Promise<any>;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+}
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setCurrentUser(user);
+      }
+      setLoading(false);
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const signIn = async (email: string, password: string) => {
+    await signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const signUp = async (user: UserType, password: string) => {
+    const result = await createUserWithEmailAndPassword(
+      auth,
+      user.email,
+      password
+    );
+
+    const token = await result.user.getIdToken();
+    await createUser(token, { ...user, firebaseId: result.user.uid });
+    
+    await updateProfile(result.user, { displayName: user.fullName });
+  };
+
+  const logout = async () => {
+    setCurrentUser(null);
+    await signOut(auth);
+  };
+
+  const resetPassword = async (email: string) => {
+    await sendPasswordResetEmail(auth, email);
+  };
+
+  const updateUserProfile = async (displayName: string) => {
+    if (currentUser) {
+      await updateProfile(currentUser, { displayName });
+    }
+  };
+
+  const sendPhoneOTP = async (
+    phoneNumber: string,
+    recaptchaVerifier: RecaptchaVerifier
+  ) => {
+    return await signInWithPhoneNumber(auth, phoneNumber, recaptchaVerifier);
+  };
+
+  const verifyPhoneOTP = async (verificationId: string, otp: string) => {
+    const credential = PhoneAuthProvider.credential(verificationId, otp);
+    return await signInWithCredential(auth, credential);
+  };
+
+  const value = {
+    currentUser,
+    loading,
+    signIn,
+    signUp,
+    logout,
+    resetPassword,
+    updateUserProfile,
+    sendPhoneOTP,
+    verifyPhoneOTP,
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {!loading && children}
+    </AuthContext.Provider>
+  );
+}

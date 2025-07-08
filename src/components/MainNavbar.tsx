@@ -1,9 +1,32 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, User, FileText, CreditCard, Building2, Calendar, Users as UsersIcon, Info } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import {
+  Menu,
+  X,
+  ChevronDown,
+  User,
+  FileText,
+  CreditCard,
+  Building2,
+  Calendar,
+  Users as UsersIcon,
+  Info,
+  Settings,
+  LogOut,
+  UserCircle,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import Logo from './Logo';
-import { motion, AnimatePresence } from 'framer-motion';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import Logo from "./Logo";
+import { motion, AnimatePresence } from "framer-motion";
+import { useAuth } from "@/hooks/useAuth";
 
 // Define breakpoints for better control
 const TABLET_BREAKPOINT = 1024; // Changed from 768 (md) to 1024 (lg) to include iPad mini
@@ -12,15 +35,15 @@ const MOBILE_BREAKPOINT = 768;
 // Function to detect iPad
 const isIPad = () => {
   const userAgent = navigator.userAgent;
-  return /iPad|Macintosh/i.test(userAgent) && 'ontouchend' in document;
+  return /iPad|Macintosh/i.test(userAgent) && "ontouchend" in document;
 };
 
 // Function to detect iPad 9th generation
 const isIPad9thGen = () => {
   // Check for iPad 9th generation screen dimensions (1024x768 or 768x1024)
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     return (
-      (window.innerWidth === 768 && window.innerHeight === 1024) || 
+      (window.innerWidth === 768 && window.innerHeight === 1024) ||
       (window.innerWidth === 1024 && window.innerHeight === 768)
     );
   }
@@ -40,7 +63,7 @@ const shimmerAnimation = {
     duration: 3,
     repeat: Infinity,
     ease: "easeInOut",
-  }
+  },
 };
 
 // Floating animation for Events menu item
@@ -49,8 +72,8 @@ const floatAnimation = {
   transition: {
     duration: 2.5,
     repeat: Infinity,
-    ease: "easeInOut"
-  }
+    ease: "easeInOut",
+  },
 };
 
 // Attention pulse animation for the Events icon
@@ -59,16 +82,17 @@ const iconPulseAnimation = {
   filter: [
     "drop-shadow(0 0 0 rgba(78, 180, 167, 0))",
     "drop-shadow(0 0 3px rgba(78, 180, 167, 0.7))",
-    "drop-shadow(0 0 0 rgba(78, 180, 167, 0))"
+    "drop-shadow(0 0 0 rgba(78, 180, 167, 0))",
   ],
   transition: {
     duration: 2,
     repeat: Infinity,
-    ease: "easeInOut"
-  }
+    ease: "easeInOut",
+  },
 };
 
 const MainNavbar = () => {
+  const { currentUser, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -78,12 +102,33 @@ const MainNavbar = () => {
   const [isIpad9th, setIsIpad9th] = useState(false);
   const location = useLocation();
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setIsMenuOpen(false);
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
+  // Simple role detection based on email or display name
+  const getUserRole = () => {
+    if (!currentUser) return "user";
+    // You can implement more sophisticated role detection here
+    // For now, we'll use a simple approach
+    const email = currentUser.email?.toLowerCase() || "";
+    if (email.includes("admin") || email.includes("prince")) {
+      return "admin";
+    }
+    return "user";
+  };
+
   useEffect(() => {
     const handleResize = () => {
       const isTablet = window.innerWidth < TABLET_BREAKPOINT;
       const ipadDetected = isIPad();
       const iPad9thGenDetected = isIPad9thGen();
-      
+
       setIsIpad(ipadDetected);
       setIsIpad9th(iPad9thGenDetected);
       setIsMobileOrTablet(isTablet || ipadDetected);
@@ -99,12 +144,12 @@ const MainNavbar = () => {
     // Initial check
     handleResize();
 
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('scroll', handleScroll);
-    
+    window.addEventListener("resize", handleResize);
+    window.addEventListener("scroll", handleScroll);
+
     return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, [scrolled]);
 
@@ -130,46 +175,62 @@ const MainNavbar = () => {
       description: "Quick & reliable document processing",
       icon: <FileText className="w-8 h-8" />,
       stats: "33500+ Documents Processed",
-      path: "/documentation-services"
+      path: "/documentation-services",
     },
     loans: {
-      title: "Loan Services", 
+      title: "Loan Services",
       description: "Flexible loans with competitive rates",
       icon: <CreditCard className="w-8 h-8" />,
       stats: "40crore + Loans Disbursed",
-      path: "/loan-services"
-    }
+      path: "/loan-services",
+    },
   };
 
   const navItems = [
-    { name: 'Home', path: '/', icon: <Building2 className="w-4 h-4" /> },
-    { 
-      name: 'Services', 
-      path: '/services',
+    { name: "Home", path: "/", icon: <Building2 className="w-4 h-4" /> },
+    {
+      name: "Services",
+      path: "/services",
       icon: <FileText className="w-4 h-4" />,
       hasDropdown: true,
       dropdown: [
-        { name: 'Documentation Services', path: '/documentation-services', icon: <FileText className="w-4 h-4" /> },
-        { name: 'Loan Services', path: '/loan-services', icon: <CreditCard className="w-4 h-4" /> },
-      ]
+        {
+          name: "Documentation Services",
+          path: "/documentation-services",
+          icon: <FileText className="w-4 h-4" />,
+        },
+        {
+          name: "Loan Services",
+          path: "/loan-services",
+          icon: <CreditCard className="w-4 h-4" />,
+        },
+      ],
     },
-    { name: 'Branches', path: '/branches', icon: <Building2 className="w-4 h-4" /> },
-    { 
-      name: 'Events', 
-      path: '/events', 
+    {
+      name: "Branches",
+      path: "/branches",
+      icon: <Building2 className="w-4 h-4" />,
+    },
+    {
+      name: "Events",
+      path: "https://events.princegroupofcompanies.in",
       icon: <Calendar className="w-4 h-4 text-[#4eb4a7]" />,
       highlight: true,
-      isNew: true
+      isNew: true,
     },
-    { name: 'Membership', path: '/membership', icon: <UsersIcon className="w-4 h-4" /> },
-    { name: 'About', path: '/about', icon: <Info className="w-4 h-4" /> },
+    {
+      name: "Membership",
+      path: "/membership",
+      icon: <UsersIcon className="w-4 h-4" />,
+    },
+    { name: "About", path: "/about", icon: <Info className="w-4 h-4" /> },
   ];
 
   // If it's an iPad, always use mobile layout
   const shouldUseMobileLayout = isMobileOrTablet || isIpad;
 
   // Additional classes for iPad 9th generation
-  const iPad9thClasses = isIpad9th ? 'ipad-9th-navbar' : '';
+  const iPad9thClasses = isIpad9th ? "ipad-9th-navbar" : "";
 
   // Special rendering for the Events menu item - elegant shimmer effect
   const renderNavItem = (item) => {
@@ -189,26 +250,24 @@ const MainNavbar = () => {
             <Link
               to={item.path}
               className={`relative z-10 px-4 py-2 rounded-full flex items-center gap-2 transition-all ${
-                isActive(item.path) 
-                  ? 'bg-[#4eb4a7] text-white shadow-md' 
-                  : 'bg-white/50 backdrop-blur-sm text-[#4eb4a7] border border-[#4eb4a7]/20 hover:border-[#4eb4a7]/50 shadow-sm'
+                isActive(item.path)
+                  ? "bg-[#4eb4a7] text-white shadow-md"
+                  : "bg-white/50 backdrop-blur-sm text-[#4eb4a7] border border-[#4eb4a7]/20 hover:border-[#4eb4a7]/50 shadow-sm"
               }`}
             >
-              <motion.div animate={iconPulseAnimation}>
-                {item.icon}
-              </motion.div>
+              <motion.div animate={iconPulseAnimation}>{item.icon}</motion.div>
               <span className="font-medium relative">
                 {item.name}
-                <motion.span 
+                <motion.span
                   className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#4eb4a7]/60 rounded-full"
                   initial={{ scaleX: 0, opacity: 0 }}
                   animate={{ scaleX: 1, opacity: 1 }}
-                  transition={{ 
-                    duration: 0.8, 
-                    repeat: Infinity, 
-                    repeatType: "reverse", 
+                  transition={{
+                    duration: 0.8,
+                    repeat: Infinity,
+                    repeatType: "reverse",
                     ease: "easeInOut",
-                    delay: 0.5
+                    delay: 0.5,
                   }}
                 />
               </span>
@@ -225,9 +284,9 @@ const MainNavbar = () => {
       <Link
         to={item.path}
         className={`px-4 py-2 rounded-full flex items-center gap-2 transition-all ${
-          isActive(item.path) 
-            ? 'bg-[#4eb4a7] text-white' 
-            : 'text-gray-700 hover:bg-[#85cbc3]/20'
+          isActive(item.path)
+            ? "bg-[#4eb4a7] text-white"
+            : "text-gray-700 hover:bg-[#85cbc3]/20"
         }`}
       >
         {item.icon}
@@ -254,15 +313,13 @@ const MainNavbar = () => {
             <Link
               to={item.path}
               className={`relative z-10 flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                isActive(item.path) 
-                  ? 'bg-[#4eb4a7] text-white shadow-md' 
-                  : 'text-[#4eb4a7] bg-white border border-[#4eb4a7]/20 shadow-md hover:border-[#4eb4a7]/50'
+                isActive(item.path)
+                  ? "bg-[#4eb4a7] text-white shadow-md"
+                  : "text-[#4eb4a7] bg-white border border-[#4eb4a7]/20 shadow-md hover:border-[#4eb4a7]/50"
               }`}
               onClick={() => setIsMenuOpen(false)}
             >
-              <motion.div animate={iconPulseAnimation}>
-                {item.icon}
-              </motion.div>
+              <motion.div animate={iconPulseAnimation}>{item.icon}</motion.div>
               <span className="font-medium">{item.name}</span>
               {item.isNew && (
                 <div className="relative ml-2 flex items-center">
@@ -280,9 +337,9 @@ const MainNavbar = () => {
       <Link
         to={item.path}
         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-          isActive(item.path) 
-            ? 'bg-[#4eb4a7] text-white shadow-md' 
-            : 'text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5'
+          isActive(item.path)
+            ? "bg-[#4eb4a7] text-white shadow-md"
+            : "text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5"
         }`}
         onClick={() => setIsMenuOpen(false)}
       >
@@ -294,35 +351,35 @@ const MainNavbar = () => {
 
   return (
     <>
-    <nav 
+      <nav
         className={`fixed top-[50px] left-0 right-0 z-[999] transform translate-z-0 will-change-transform transition-all duration-500 ${
-          scrolled 
-            ? 'bg-white/80 backdrop-blur-xl shadow-xl py-2' 
-            : 'bg-white/70 backdrop-blur-md shadow-md py-4'
+          scrolled
+            ? "bg-white/80 backdrop-blur-xl shadow-xl py-2"
+            : "bg-white/70 backdrop-blur-md shadow-md py-4"
         } ${iPad9thClasses}`}
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center relative">
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center relative">
             {/* Logo with animated underline */}
-            <div 
+            <div
               className="flex-shrink-0 z-[999]"
-              style={{ 
-                position: 'relative', 
-                display: 'block',
-                visibility: 'visible',
-                opacity: 1
+              style={{
+                position: "relative",
+                display: "block",
+                visibility: "visible",
+                opacity: 1,
               }}
             >
-            <Logo />
-          </div>
+              <Logo />
+            </div>
 
             {/* Desktop Navigation - Only shown on large screens and NOT on iPads */}
-          <div className={`hidden ${!isIpad ? "lg:block" : ""}`}>
-              <motion.div 
+            <div className={`hidden ${!isIpad ? "lg:block" : ""}`}>
+              <motion.div
                 className={`flex items-center gap-2 ${
-                  scrolled 
-                    ? 'bg-gray-100/50 backdrop-blur-md' 
-                    : 'bg-white/80 backdrop-blur-md'
+                  scrolled
+                    ? "bg-gray-100/50 backdrop-blur-md"
+                    : "bg-white/80 backdrop-blur-md"
                 } rounded-full px-4 py-2 shadow-lg`}
                 initial={{ y: -20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -337,24 +394,26 @@ const MainNavbar = () => {
                       >
                         <motion.button
                           className={`px-4 py-2 flex items-center gap-2 rounded-full transition-all ${
-                          isActive(item.path) 
-                              ? 'bg-[#4eb4a7] text-white' 
-                              : 'text-gray-700 hover:bg-[#85cbc3]/20'
-                        }`}
+                            isActive(item.path)
+                              ? "bg-[#4eb4a7] text-white"
+                              : "text-gray-700 hover:bg-[#85cbc3]/20"
+                          }`}
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
-                      >
+                        >
                           {item.icon}
-                        {item.name}
-                          <ChevronDown className={`ml-1 h-4 w-4 transition-transform duration-200 ${
-                            activeDropdown === item.name ? 'rotate-180' : ''
-                          }`} />
+                          {item.name}
+                          <ChevronDown
+                            className={`ml-1 h-4 w-4 transition-transform duration-200 ${
+                              activeDropdown === item.name ? "rotate-180" : ""
+                            }`}
+                          />
                         </motion.button>
 
                         {/* Service Preview Dropdown */}
                         <AnimatePresence>
-                      {activeDropdown === item.name && (
-                            <motion.div 
+                          {activeDropdown === item.name && (
+                            <motion.div
                               className="absolute top-full mt-4 left-1/2 transform -translate-x-1/2 w-[600px] bg-white rounded-2xl shadow-2xl overflow-hidden"
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
@@ -362,52 +421,71 @@ const MainNavbar = () => {
                               transition={{ duration: 0.2 }}
                             >
                               <div className="grid grid-cols-2 p-4 gap-4">
-                                {Object.entries(servicePreview).map(([key, service]) => (
-                            <Link
-                                    key={key}
-                                    to={service.path}
-                                    className="group relative p-6 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 hover:from-[#4eb4a7]/10 hover:to-[#85cbc3]/10 transition-all duration-300"
-                                    onMouseEnter={() => setHoveredService(key)}
-                                    onMouseLeave={() => setHoveredService(null)}
-                                  >
-                                    <div className="flex items-start gap-4">
-                                      <div className={`p-3 rounded-lg transition-all duration-300 ${
-                                        hoveredService === key 
-                                          ? 'bg-[#4eb4a7] text-white' 
-                                          : 'bg-white text-[#4eb4a7]'
-                                      }`}>
-                                        {service.icon}
-                                      </div>
-                                      <div className="flex-1">
-                                        <h3 className="font-bold text-gray-800 mb-2">{service.title}</h3>
-                                        <p className="text-sm text-gray-600 mb-3">{service.description}</p>
-                                        <div className="flex items-center justify-between">
-                                          <span className="text-xs text-[#60afb4] font-medium">{service.stats}</span>
-                                          <motion.span 
-                                            className="text-[#4eb4a7] text-sm font-medium"
-                                            initial={{ x: 0 }}
-                                            animate={{ x: hoveredService === key ? 5 : 0 }}
-                                          >
-                                            Learn More →
-                                          </motion.span>
+                                {Object.entries(servicePreview).map(
+                                  ([key, service]) => (
+                                    <Link
+                                      key={key}
+                                      to={service.path}
+                                      className="group relative p-6 rounded-xl bg-gradient-to-br from-gray-50 to-gray-100 hover:from-[#4eb4a7]/10 hover:to-[#85cbc3]/10 transition-all duration-300"
+                                      onMouseEnter={() =>
+                                        setHoveredService(key)
+                                      }
+                                      onMouseLeave={() =>
+                                        setHoveredService(null)
+                                      }
+                                    >
+                                      <div className="flex items-start gap-4">
+                                        <div
+                                          className={`p-3 rounded-lg transition-all duration-300 ${
+                                            hoveredService === key
+                                              ? "bg-[#4eb4a7] text-white"
+                                              : "bg-white text-[#4eb4a7]"
+                                          }`}
+                                        >
+                                          {service.icon}
+                                        </div>
+                                        <div className="flex-1">
+                                          <h3 className="font-bold text-gray-800 mb-2">
+                                            {service.title}
+                                          </h3>
+                                          <p className="text-sm text-gray-600 mb-3">
+                                            {service.description}
+                                          </p>
+                                          <div className="flex items-center justify-between">
+                                            <span className="text-xs text-[#60afb4] font-medium">
+                                              {service.stats}
+                                            </span>
+                                            <motion.span
+                                              className="text-[#4eb4a7] text-sm font-medium"
+                                              initial={{ x: 0 }}
+                                              animate={{
+                                                x:
+                                                  hoveredService === key
+                                                    ? 5
+                                                    : 0,
+                                              }}
+                                            >
+                                              Learn More →
+                                            </motion.span>
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                            </Link>
-                          ))}
-                        </div>
+                                    </Link>
+                                  )
+                                )}
+                              </div>
                             </motion.div>
-                      )}
+                          )}
                         </AnimatePresence>
-                    </div>
-                  ) : (
-                    renderNavItem(item)
-                  )}
-                </div>
-              ))}
+                      </div>
+                    ) : (
+                      renderNavItem(item)
+                    )}
+                  </div>
+                ))}
 
                 {/* Animated divider */}
-                <motion.div 
+                <motion.div
                   className="w-px h-6 bg-gray-300/50 mx-2"
                   initial={{ height: 0 }}
                   animate={{ height: 24 }}
@@ -415,64 +493,137 @@ const MainNavbar = () => {
                 />
 
                 {/* Action buttons with hover effects */}
-                <motion.div 
+                <motion.div
                   className="flex items-center gap-2"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
                 >
-                  <Button 
-                    asChild 
-                    variant="ghost" 
-                    className={`rounded-full hover:bg-[#85cbc3]/20 text-gray-700`}
-                  >
-                    <Link to="/login">
-                      <User className="mr-2 h-4 w-4" /> 
-                      <span className="hidden lg:inline">Login</span>
-                    </Link>
-                </Button>
-                  <Button 
-                    asChild 
-                    className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300"
-                  >
-                  <Link to="/contact">Contact Us</Link>
-                </Button>
+                  {currentUser ? (
+                    // User is logged in - show user dropdown menu
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          className="rounded-full hover:bg-[#85cbc3]/20 text-gray-700"
+                        >
+                          <User className="mr-2 h-4 w-4" />
+                          <span className="hidden lg:inline">
+                            {currentUser.displayName ||
+                              currentUser.email?.split("@")[0] ||
+                              "User"}
+                          </span>
+                          <ChevronDown className="ml-1 h-3 w-3" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-56 z-[999]">
+                        <DropdownMenuLabel className="font-normal">
+                          <div className="flex flex-col space-y-1">
+                            <p className="text-sm font-medium leading-none">
+                              {currentUser.displayName || "User"}
+                            </p>
+                            <p className="text-xs leading-none text-muted-foreground">
+                              {currentUser.email}
+                            </p>
+                          </div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <Link
+                            to={
+                              getUserRole() === "admin"
+                                ? "/admin"
+                                : "/member/dashboard"
+                            }
+                          >
+                            <UserCircle className="mr-2 h-4 w-4" />
+                            <span>Dashboard</span>
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to="/profile">
+                            <User className="mr-2 h-4 w-4" />
+                            <span>Profile</span>
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to="/settings">
+                            <Settings className="mr-2 h-4 w-4" />
+                            <span>Settings</span>
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={handleLogout}
+                          className="text-red-600"
+                        >
+                          <LogOut className="mr-2 h-4 w-4" />
+                          <span>Logout</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  ) : (
+                    // User is not logged in - show login button
+                    <Button
+                      asChild
+                      variant="ghost"
+                      className="rounded-full hover:bg-[#85cbc3]/20 text-gray-700"
+                    >
+                      <Link to="/login">
+                        <User className="mr-2 h-4 w-4" />
+                        <span className="hidden lg:inline">Login</span>
+                      </Link>
+                    </Button>
+                  )}
+                  {
+                    <Button
+                      asChild
+                      className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white rounded-full hover:shadow-lg transform hover:scale-105 transition-all duration-300"
+                    >
+                      <Link to="/contact">Contact Us</Link>
+                    </Button>
+                  }
                 </motion.div>
               </motion.div>
-          </div>
+            </div>
 
-          {/* Mobile and Tablet menu button - Shown on all iPads regardless of orientation */}
-            <div 
-              className={`${!isIpad ? "lg:hidden" : ""} z-[999] mobile-menu-safari`}
-              style={{ 
+            {/* Mobile and Tablet menu button - Shown on all iPads regardless of orientation */}
+            <div
+              className={`${
+                !isIpad ? "lg:hidden" : ""
+              } z-[999] mobile-menu-safari`}
+              style={{
                 position: "relative",
               }}
             >
-            <button
-              onClick={toggleMenu}
+              <button
+                onClick={toggleMenu}
                 className="p-2 rounded-full bg-white/80 shadow-md"
                 aria-label="Toggle menu"
-            >
-                {isMenuOpen ? 
-                  <X className="h-6 w-6 text-[#4eb4a7]" /> : 
+              >
+                {isMenuOpen ? (
+                  <X className="h-6 w-6 text-[#4eb4a7]" />
+                ) : (
                   <Menu className="h-6 w-6 text-[#4eb4a7]" />
-                }
-            </button>
+                )}
+              </button>
             </div>
           </div>
         </div>
 
         {/* Mobile Menu - Slide from right - Also used for iPad mini */}
         <AnimatePresence>
-        {isMenuOpen && (
-            <motion.div 
-              className={`fixed inset-0 top-16 bg-black/70 ${!isIpad ? "lg:hidden" : ""} z-50`}
+          {isMenuOpen && (
+            <motion.div
+              className={`fixed inset-0 top-16 bg-black/70 ${
+                !isIpad ? "lg:hidden" : ""
+              } z-50`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMenuOpen(false)}
             >
-              <motion.div 
+              <motion.div
                 className="absolute right-0 top-0 h-full w-full max-w-xs bg-white shadow-xl border-l border-[#4eb4a7]/20"
                 style={{ background: "#ffffff" }}
                 initial={{ x: "100%" }}
@@ -483,11 +634,13 @@ const MainNavbar = () => {
               >
                 <div className="p-6 space-y-4 bg-white">
                   <div className="flex items-center justify-between pb-4 mb-2 border-b border-gray-200 bg-white rounded-lg p-2">
-                    <h3 className="font-bold text-[#4eb4a7] text-xl">Prince Group</h3>
+                    <h3 className="font-bold text-[#4eb4a7] text-xl">
+                      Prince Group
+                    </h3>
                   </div>
-                  
-              {navItems.map((item) => (
-                    <motion.div 
+
+                  {navItems.map((item) => (
+                    <motion.div
                       key={item.name}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -495,69 +648,136 @@ const MainNavbar = () => {
                       className="mb-2"
                     >
                       {item.hasDropdown ? (
-                    <div>
-                      <button
-                        onClick={() => toggleDropdown(item.name)}
+                        <div>
+                          <button
+                            onClick={() => toggleDropdown(item.name)}
                             className={`flex w-full items-center justify-between gap-3 px-4 py-3 rounded-lg transition-all ${
-                              isActive(item.path) 
-                                ? 'bg-[#4eb4a7] text-white shadow-md' 
-                                : 'text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5'
-                        }`}
-                      >
+                              isActive(item.path)
+                                ? "bg-[#4eb4a7] text-white shadow-md"
+                                : "text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5"
+                            }`}
+                          >
                             <div className="flex items-center gap-3">
                               {item.icon}
                               <span className="font-medium">{item.name}</span>
                             </div>
-                            <ChevronDown className={`h-4 w-4 transition-transform ${activeDropdown === item.name ? 'rotate-180' : ''}`} />
-                      </button>
+                            <ChevronDown
+                              className={`h-4 w-4 transition-transform ${
+                                activeDropdown === item.name ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
 
-                      {activeDropdown === item.name && (
+                          {activeDropdown === item.name && (
                             <div className="pl-4 mt-2 space-y-2 border-l-2 border-[#4eb4a7]/30">
-                          {item.dropdown.map((dropdownItem) => (
-                            <Link
-                              key={dropdownItem.name}
-                              to={dropdownItem.path}
+                              {item.dropdown.map((dropdownItem) => (
+                                <Link
+                                  key={dropdownItem.name}
+                                  to={dropdownItem.path}
                                   className="flex items-center gap-2 px-4 py-2 rounded-lg text-gray-700 hover:bg-[#4eb4a7]/5"
-                              onClick={() => {
-                                setActiveDropdown(null);
-                                setIsMenuOpen(false);
-                              }}
-                            >
+                                  onClick={() => {
+                                    setActiveDropdown(null);
+                                    setIsMenuOpen(false);
+                                  }}
+                                >
                                   {dropdownItem.icon}
                                   <span>{dropdownItem.name}</span>
-                            </Link>
-                          ))}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  ) : (
+                      ) : (
                         renderMobileNavItem(item)
-                  )}
+                      )}
                     </motion.div>
-              ))}
-                  
+                  ))}
+
                   <div className="pt-6 mt-2 border-t border-gray-200 space-y-4 bg-white">
-                    <Button 
-                      asChild 
-                      variant="outline" 
-                      className="w-full rounded-full border-[#4eb4a7] hover:bg-[#4eb4a7]/5 hover:border-[#4eb4a7] bg-white text-[#4eb4a7]"
-                    >
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                        <User className="mr-2 h-4 w-4" /> 
-                        <span className="font-medium">Login</span>
-                  </Link>
-                </Button>
-                    
-                    <Button 
-                      asChild 
+                    {currentUser ? (
+                      // User is logged in - show user info and menu items
+                      <>
+                        <div className="px-4 py-3 bg-gray-50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-[#4eb4a7] rounded-full flex items-center justify-center">
+                              <User className="w-4 h-4 text-white" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-gray-800">
+                                {currentUser.displayName ||
+                                  currentUser.email?.split("@")[0] ||
+                                  "User"}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                {currentUser.email}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <Link
+                          to={
+                            getUserRole() === "admin"
+                              ? "/admin"
+                              : "/member/dashboard"
+                          }
+                          onClick={() => setIsMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5"
+                        >
+                          <UserCircle className="w-4 h-4" />
+                          <span className="font-medium">Dashboard</span>
+                        </Link>
+
+                        <Link
+                          to="/profile"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5"
+                        >
+                          <User className="w-4 h-4" />
+                          <span className="font-medium">Profile</span>
+                        </Link>
+
+                        <Link
+                          to="/settings"
+                          onClick={() => setIsMenuOpen(false)}
+                          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5"
+                        >
+                          <Settings className="w-4 h-4" />
+                          <span className="font-medium">Settings</span>
+                        </Link>
+
+                        <button
+                          onClick={handleLogout}
+                          className="flex items-center gap-3 px-4 py-3 rounded-lg text-red-500 bg-white border border-red-200 shadow-sm hover:bg-red-50 w-full text-left"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          <span className="font-medium">Logout</span>
+                        </button>
+                      </>
+                    ) : (
+                      // User is not logged in - show login button
+                      <Button
+                        asChild
+                        variant="outline"
+                        className="w-full rounded-full border-[#4eb4a7] hover:bg- hover:border-[#4eb4a7] bg-white text-[#4eb4a7]"
+                      >
+                        <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                          <User className="mr-2 h-4 w-4" />
+                          <span className="font-medium">Login</span>
+                        </Link>
+                      </Button>
+                    )}
+
+                    <Button
+                      asChild
                       className="w-full bg-[#4eb4a7] hover:bg-[#3da296] text-white rounded-full shadow-md hover:shadow-lg transition-all"
                     >
                       <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
                         <span className="font-medium">Contact Us</span>
                       </Link>
-                </Button>
-              </div>
-            </div>
+                    </Button>
+                  </div>
+                </div>
               </motion.div>
             </motion.div>
           )}
@@ -567,7 +787,7 @@ const MainNavbar = () => {
       {/* Service Quick Access Bar - Shows on scroll, but not on iPads */}
       <AnimatePresence>
         {scrolled && !isIpad && (
-          <motion.div 
+          <motion.div
             className="fixed top-20 left-1/2 transform -translate-x-1/2 z-40 hidden lg:block"
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -576,15 +796,24 @@ const MainNavbar = () => {
           >
             <div className="bg-white/90 backdrop-blur-md rounded-full shadow-lg px-6 py-2 flex items-center gap-4">
               <span className="text-sm text-gray-600">Quick Access:</span>
-              <Link to="/documentation-services" className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1">
+              <Link
+                to="/documentation-services"
+                className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1"
+              >
                 <FileText className="w-3 h-3" /> Documents
               </Link>
               <span className="text-gray-300">|</span>
-              <Link to="/loan-services" className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1">
+              <Link
+                to="/loan-services"
+                className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1"
+              >
                 <CreditCard className="w-3 h-3" /> Loans
               </Link>
               <span className="text-gray-300">|</span>
-              <Link to="/branches" className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1">
+              <Link
+                to="/branches"
+                className="text-sm text-[#4eb4a7] hover:underline flex items-center gap-1"
+              >
                 <Building2 className="w-3 h-3" /> Find Branch
               </Link>
               <span className="text-gray-300">|</span>
@@ -593,29 +822,32 @@ const MainNavbar = () => {
                 animate={floatAnimation}
                 whileHover={{ y: 0 }}
               >
-                <Link to="/events" className="text-sm text-[#4eb4a7] font-medium hover:underline flex items-center gap-1">
+                <Link
+                  to="https://events.princegroupofcompanies.in"
+                  className="text-sm text-[#4eb4a7] font-medium hover:underline flex items-center gap-1"
+                >
                   <motion.div animate={iconPulseAnimation}>
                     <Calendar className="w-3 h-3" />
                   </motion.div>
                   <span className="relative">
                     Events
-                    <motion.span 
+                    <motion.span
                       className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#4eb4a7]/60 rounded-full"
                       initial={{ scaleX: 0, opacity: 0 }}
                       animate={{ scaleX: 1, opacity: 1 }}
-                      transition={{ 
-                        duration: 0.8, 
-                        repeat: Infinity, 
-                        repeatType: "reverse", 
+                      transition={{
+                        duration: 0.8,
+                        repeat: Infinity,
+                        repeatType: "reverse",
                         ease: "easeInOut",
-                        delay: 0.5
+                        delay: 0.5,
                       }}
                     />
                   </span>
                   <span className="ml-1 h-1.5 w-1.5 rounded-full bg-[#4eb4a7] animate-ping-slow" />
                 </Link>
               </motion.div>
-          </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

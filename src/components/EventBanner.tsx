@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Ticket, Calendar, ArrowRight, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { isIOS } from "@/lib/utils";
 
 // Event messages for typing animation
 const EVENT_MESSAGES = [
   "Rhythm Of Kumari",
   "Sri Nisha, Aditya Rkay & Aparnaa Pratheep",
   "3 PM, 20 September 2025",
-  "Concordia High School Ground",
-  "Kanyakumari",
+  "Concordia High School Ground, Kanyakumari",
 ];
 
 // Target date for countdown: December 21, 2025
@@ -267,7 +267,7 @@ const EventBanner = ({
           )}
 
           {/* CTA Button */}
-          <Link to="/events">
+          <Link to="/events" className={isIOS() ? "hidden" : ""}>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 size="sm"

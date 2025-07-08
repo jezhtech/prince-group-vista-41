@@ -1,3 +1,5 @@
+import { SpeedInsights } from "@vercel/speed-insights/react";
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,105 +7,133 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "./components/ScrollToTop";
-import EventPromoPopup from "./components/EventPromoPopup";
 import EventBanner from "./components/EventBanner";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import Services from "./pages/Services";
-import DocumentationServices from "./pages/DocumentationServices";
-import LoanServices from "./pages/LoanServices";
-import NewLoanServices from "./pages/NewLoanServices";
-import Branches from "./pages/Branches";
-import TariffComparison from "./pages/TariffComparison";
-import Events from "./pages/Events";
-import EventTickets from "./pages/EventTickets";
-import EventAttractions from "./pages/EventAttractions";
-import Membership from "./pages/Membership";
-import About from "./pages/About";
-import Terms from "./pages/Terms";
-import Privacy from "./pages/Privacy";
-import Contact from "./pages/Contact";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ForgotPassword from "./pages/ForgotPassword";
-import PasswordResetSent from "./pages/PasswordResetSent";
-import ResetPassword from "./pages/ResetPassword";
-import AdminLayout from "./layouts/AdminLayout";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminEventAnalytics from "./pages/admin/event-analytics";
-import AdminTickets from "./pages/admin/tickets";
-import AdminMembership from "./pages/admin/Membership";
-import AdminUsers from "./pages/admin/Users";
-import AdminRevenue from "./pages/admin/revenue";
-import AdminReferrals from "./pages/admin/Referrals";
-import AdminAccounts from "./pages/admin/Accounts";
-import AdminTicketDesigner from "./pages/admin/TicketDesigner";
-import AdminMembershipCardDesigner from "./pages/admin/MembershipCardDesigner";
-import MemberDashboard from "./pages/member/Dashboard";
-import MemberTickets from "./pages/member/Tickets";
-import MemberEvents from "./pages/member/Events";
-import ReferralLandingPage from "./pages/ReferralLandingPage";
+import { AuthProvider } from "./hooks/useAuth";
+import NotFound from "./pages/public/NotFound";
+
+import Home from "@/pages/public/Home";
+import Services from "@/pages/public/Services";
+import DocumentationServices from "@/pages/public/DocumentationServices";
+import NewLoanServices from "@/pages/public/NewLoanServices";
+import Branches from "@/pages/public/Branches";
+import TariffComparison from "@/pages/public/TariffComparison";
+import Events from "@/pages/public/Events";
+import EventTickets from "@/pages/public/EventTickets";
+import EventAttractions from "@/pages/public/EventAttractions";
+import Membership from "@/pages/public/Membership";
+import About from "@/pages/public/About";
+import Terms from "@/pages/public/Terms";
+import Privacy from "@/pages/public/Privacy";
+import Contact from "@/pages/public/Contact";
+import Login from "@/pages/public/auth/Login";
+import Register from "@/pages/public/auth/Register";
+import ForgotPassword from "@/pages/public/auth/ForgotPassword";
+import PasswordResetSent from "@/pages/public/auth/PasswordResetSent";
+import ResetPassword from "@/pages/public/auth/ResetPassword";
+import ReferralLandingPage from "@/pages/public/ReferralLandingPage";
+
+import MemberDashboard from "@/pages/user/Dashboard";
+import MemberTickets from "@/pages/user/Tickets";
+import MemberEvents from "@/pages/user/Events";
+import {
+  AdminProtectedRoute,
+  UserProtectedRoute,
+} from "./components/ProtectedRoute";
+
+import AdminDashboard from "@/pages/admin/Dashboard";
+import AdminEventAnalytics from "@/pages/admin/event-analytics";
+import AdminTickets from "@/pages/admin/tickets";
+import AdminMembership from "@/pages/admin/Membership";
+import AdminUsers from "@/pages/admin/Users";
+import AdminRevenue from "@/pages/admin/revenue";
+import AdminReferrals from "@/pages/admin/Referrals";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <HelmetProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <ScrollToTop />
-          
-          <EventBanner position="fixed" />
-          <Routes>
-            <Route path="/" element={<Events />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/services/documentation" element={<DocumentationServices />} />
-            <Route path="/documentation-services" element={<DocumentationServices />} />
-            <Route path="/services/loans" element={<NewLoanServices />} />
-            <Route path="/loan-services" element={<NewLoanServices />} />
-            <Route path="/branches" element={<Branches />} />
-            <Route path="/tariff-comparison" element={<TariffComparison />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/events/tickets" element={<EventTickets />} />
-            <Route path="/events/attractions" element={<EventAttractions />} />
-            <Route path="/membership" element={<Membership />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/password-reset-sent" element={<PasswordResetSent />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            
-            {/* Referral landing pages */}
-            <Route path="/events/concert/ref/:refCode" element={<ReferralLandingPage />} />
-            
-            {/* Member routes */}
-            <Route path="/member/dashboard" element={<MemberDashboard />} />
-            <Route path="/member/tickets" element={<MemberTickets />} />
-            <Route path="/member/events" element={<MemberEvents />} />
-            
-            {/* Admin routes */}
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="event-analytics" element={<AdminEventAnalytics />} />
-              <Route path="tickets" element={<AdminTickets />} />
-              <Route path="referrals" element={<AdminReferrals />} />
-              <Route path="membership" element={<AdminMembership />} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="revenue" element={<AdminRevenue />} />
-            </Route>
-            
-            {/* Catch-all route */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </HelmetProvider>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <HelmetProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <ScrollToTop />
+            <EventBanner position="fixed" />
+            <Routes>
+              <Route path="/">
+                <Route path="/" element={<Home />} />
+                <Route path="/services" element={<Services />} />
+                <Route
+                  path="/services/documentation"
+                  element={<DocumentationServices />}
+                />
+                <Route
+                  path="/documentation-services"
+                  element={<DocumentationServices />}
+                />
+                <Route path="/services/loans" element={<NewLoanServices />} />
+                <Route path="/loan-services" element={<NewLoanServices />} />
+                <Route path="/branches" element={<Branches />} />
+                <Route
+                  path="/tariff-comparison"
+                  element={<TariffComparison />}
+                />
+                <Route path="/events" element={<Events />} />,
+                <Route path="/events/tickets" element={<EventTickets />} />
+                <Route
+                  path="/events/attractions"
+                  element={<EventAttractions />}
+                />
+                <Route path="/membership" element={<Membership />} />
+                <Route path="/about" element={<About />} />,
+                <Route path="/terms" element={<Terms />} />,
+                <Route path="/privacy" element={<Privacy />} />,
+                <Route path="/contact" element={<Contact />} />, // Auth routes
+                - prevent logged-in users from accessing
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route
+                  path="/password-reset-sent"
+                  element={<PasswordResetSent />}
+                />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route
+                  path="/events/concert/ref/:refCode"
+                  element={<ReferralLandingPage />}
+                />
+              </Route>
+
+              {/* User Routes - require authentication */}
+              <Route path="/member" element={<UserProtectedRoute />}>
+                <Route path="/member/dashboard" element={<MemberDashboard />} />
+                <Route path="/member/tickets" element={<MemberTickets />} />
+                <Route path="/member/events" element={<MemberEvents />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+
+              <Route path="/admin" element={<AdminProtectedRoute />}>
+                <Route index element={<AdminDashboard />} />
+                <Route
+                  path="event-analytics"
+                  element={<AdminEventAnalytics />}
+                />
+                <Route path="tickets" element={<AdminTickets />} />
+                <Route path="referrals" element={<AdminReferrals />} />
+                <Route path="membership" element={<AdminMembership />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="revenue" element={<AdminRevenue />} />
+                <Route path="*" element={<NotFound />} />
+              </Route>
+
+              {/* Catch-all route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </HelmetProvider>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

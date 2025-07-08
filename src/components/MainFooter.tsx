@@ -20,7 +20,7 @@ import Logo from "./Logo";
 import FooterLogo from "./footer-logo";
 import { cn } from "@/lib/utils";
 
-const MainFooter = () => {
+const MainFooter = ({ theme = "default" }: { theme?: "default" | "dark" }) => {
   const path = useLocation().pathname.split("/").pop();
 
   const year = new Date().getFullYear();
@@ -58,7 +58,7 @@ const MainFooter = () => {
           >
             <path
               d="M0,192L60,170.7C120,149,240,107,360,122.7C480,139,600,213,720,229.3C840,245,960,203,1080,181.3C1200,160,1320,160,1380,160L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
-              fill="#0b1e3c"
+              fill={theme === "dark" ? "#0b1e3c" : "#4eb4a7"}
               fillOpacity="0.95"
             ></path>
           </svg>
@@ -86,7 +86,7 @@ const MainFooter = () => {
           >
             <path
               d="M0,256L48,266.7C96,277,192,299,288,277.3C384,256,480,192,576,186.7C672,181,768,235,864,234.7C960,235,1056,181,1152,170.7C1248,160,1344,192,1392,208L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
-              fill="#0b1e3c"
+              fill={theme === "dark" ? "#0b1e3c" : "#4eb4a7"}
               fillOpacity="0.9"
             ></path>
           </svg>
@@ -123,7 +123,7 @@ const MainFooter = () => {
         <div
           className={cn(
             "absolute bottom-0 left-0 right-0 h-4",
-            "bg-[#0b1e3c]"
+            theme === "dark" ? "bg-[#0b1e3c]" : "bg-primary"
           )}
         ></div>
       </div>
@@ -132,12 +132,12 @@ const MainFooter = () => {
       <div
         className={cn(
           "pt-6 pb-8",
-          "bg-[#0b1e3c]"
+          theme === "default" ? "bg-primary" : "bg-[#0b1e3c]"
         )}
       >
         <div className="container mx-auto px-4">
           {/* Upper Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-10 mb-8">
             {/* Company Info */}
             <div className="lg:col-span-2">
               <motion.div
@@ -210,54 +210,12 @@ const MainFooter = () => {
                     key={idx}
                     href={social.href}
                     whileHover={{ scale: 1.1, y: -5 }}
-                    className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white hover:bg-white hover:text-[#4eb4a7] transition-all duration-300"
+                    className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white hover:bg-white hover:text-primary transition-all duration-300"
                   >
                     {social.icon}
                   </motion.a>
                 ))}
               </motion.div>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <motion.h3
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="text-lg font-semibold mb-6 flex items-center gap-2 text-white"
-              >
-                <div className="w-1.5 h-6 bg-white rounded-full"></div>
-                Quick Links
-              </motion.h3>
-              <motion.ul
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="space-y-3"
-              >
-                {[
-                  { name: "Home", path: "/" },
-                  { name: "Our Services", path: "/services" },
-                  { name: "Branches", path: "/branches" },
-                  { name: "Events", path: "/events" },
-                  { name: "Membership", path: "/membership" },
-                ].map((link, idx) => (
-                  <li key={idx}>
-                    <Link
-                      to={link.path}
-                      className="text-white/80 hover:text-white transition-colors flex items-center gap-2 group"
-                    >
-                      <ArrowRight
-                        size={14}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity"
-                      />
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </motion.ul>
             </div>
 
             {/* Our Services */}
@@ -280,21 +238,6 @@ const MainFooter = () => {
                 className="space-y-3"
               >
                 {[
-                  {
-                    name: "Documentation",
-                    path: "/services",
-                    icon: <FileText size={14} />,
-                  },
-                  {
-                    name: "Loan Services",
-                    path: "/services#loans",
-                    icon: <CreditCard size={14} />,
-                  },
-                  {
-                    name: "About Us",
-                    path: "/about",
-                    icon: <Sparkles size={14} />,
-                  },
                   {
                     name: "Privacy Policy",
                     path: "/privacy",
@@ -343,16 +286,15 @@ const MainFooter = () => {
                     <MapPin size={14} className="text-white" />
                   </div>
                   <span className="text-white/80 text-sm">
-                    Anbu Complex, Opposite to Bharathi Hospital, Thingal Nagar
+                    Building No. 5/41/2, Azghanparai, Pillavillai, Mandaikadu,
+                    Kaniyakumari, Tamil Nadu - 629252
                   </span>
                 </li>
                 <li className="flex items-center">
                   <div className="mr-3 p-2 bg-white/20 rounded-full">
                     <Phone size={14} className="text-white" />
                   </div>
-                  <span className="text-white/80 text-sm">
-                    9150537718, 9385722102
-                  </span>
+                  <span className="text-white/80 text-sm">9489359755</span>
                 </li>
                 <li className="flex items-center">
                   <div className="mr-3 p-2 bg-white/20 rounded-full">
