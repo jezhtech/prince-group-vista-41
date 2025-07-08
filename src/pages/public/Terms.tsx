@@ -477,11 +477,8 @@ const Terms = () => {
                             Address
                           </h4>
                           <p className="text-sm text-muted-foreground">
-                            Thingal Nager
-                            <br />
-                            Vepamoodu Junction, Nagercoil
-                            <br />
-                            Tamil Nadu, India - 629001
+                            Building No. 5/41/2, Azghanparai, Pillavillai,
+                            Mandaikadu, Kaniyakumari, Tamil Nadu - 629252
                           </p>
                         </div>
                       </div>
@@ -492,7 +489,7 @@ const Terms = () => {
                             Phone
                           </h4>
                           <p className="text-sm text-muted-foreground">
-                            9150537718, 9385722102
+                            9489359755
                           </p>
                         </div>
                       </div>
@@ -505,7 +502,7 @@ const Terms = () => {
                           href="mailto:info@jeztechnologies.com"
                           className="text-sm text-primary hover:underline"
                         >
-                          info@jeztechnologies.com
+                          jp@princegroup.net
                         </a>
                       </div>
                     </div>

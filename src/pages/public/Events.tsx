@@ -111,28 +111,20 @@ const Events = () => {
   // Three main performers
   const performers = [
     {
-      id: "sri-nisha",
-      name: "Sri Nisha",
-      title: "Main Performer & Singer",
-      image: "/images/sri-nisha.jpg",
-      textColor: "text-pink-600",
-      buttonColor: "bg-gradient-to-r from-pink-600 to-red-600",
-    },
-    {
       id: "aditya-rkay",
       name: "Aditya Rkay",
-      title: "Main Performer & Singer",
+      title: "Live Music Concert",
       image: "/images/aditya-rkay.jpg",
       textColor: "text-purple-600",
       buttonColor: "bg-gradient-to-r from-purple-600 to-indigo-600",
     },
     {
-      id: "aparna-pratheep",
-      name: "Aparnaa Pratheep",
-      title: "Violin - Chendamellam Fusion",
-      image: "/images/aparnaa.jpg",
-      textColor: "text-blue-600",
-      buttonColor: "bg-gradient-to-r from-blue-600 to-cyan-600",
+      id: "sri-nisha",
+      name: "Sri Nisha",
+      title: "Featuring",
+      image: "/images/sri-nisha.jpg",
+      textColor: "text-pink-600",
+      buttonColor: "bg-gradient-to-r from-pink-600 to-red-600",
     },
   ];
 
@@ -190,7 +182,7 @@ const Events = () => {
       {/* Custom Event Navbar */}
       <nav
         style={{
-          marginTop: isIOS ? "48px" : 0,
+          marginTop: isIOS() ? "48px" : 0,
         }}
         className="sticky top-12 bg-black/20 left-0 right-0 z-[999] backdrop-blur-sm py-3"
       >
@@ -543,98 +535,27 @@ const Events = () => {
       <section className="py-20 relative z-10">
         <div className="container mx-auto px-3 sm:px-4">
           <motion.div
-            className="text-center mb-16"
+            className="text-center mb-8"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <Badge className="bg-[#4eb4a7]/20 text-[#4eb4a7] border-none backdrop-blur-sm py-2 px-4 mb-6 text-sm">
-              PARTNERS
+            <Badge className="bg-[#4eb4a7]/20 text-[#4eb4a7] border-none backdrop-blur-sm py-2 px-4 mb-4 text-sm">
+              Oraganizer
             </Badge>
-            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-              Event Partners
+            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-3">
+              Event Organizer
             </h2>
-            <p className="text-white/70 text-lg max-w-2xl mx-auto">
+            <p className="text-white/70 text-lg max-w-2xl mx-auto mb-4 md:mb-12">
               Brought to you by the best in the industry
             </p>
+            <img
+              src="/teal-cg-logo.png"
+              alt="Prince Group"
+              className="h-16 mx-auto"
+            />
           </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            {/* Prince Group */}
-            <motion.div
-              className="text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              viewport={{ once: true }}
-            >
-              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-8 border border-white/10">
-                <h3 className="text-white font-semibold mb-4">
-                  Event Organized By
-                </h3>
-                <img
-                  src="/teal-cg-logo.png"
-                  alt="Prince Group"
-                  className="h-16 mx-auto mb-4"
-                />
-                <h4 className="text-[#4eb4a7] font-bold text-xl">
-                  Prince Group
-                </h4>
-                <p className="text-white/70 text-sm mt-2">
-                  Trusted Documents, Loan & Revenue Services
-                </p>
-              </div>
-            </motion.div>
-
-            {/* JezX */}
-            <motion.div
-              className="text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              viewport={{ once: true }}
-            >
-              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-8 border border-white/10">
-                <h3 className="text-white font-semibold mb-4">
-                  Ticket & Booking Partner
-                </h3>
-                <img
-                  src="/logos/jezx-logo.jpg"
-                  alt="JezX"
-                  className="h-16 mx-auto mb-4 rounded-xl"
-                />
-                <h4 className="text-[#30d2ff] font-bold text-xl">
-                  Code the Future
-                </h4>
-                <p className="text-white/70 text-sm mt-2">
-                  World Class Software Development Excellence
-                </p>
-              </div>
-            </motion.div>
-
-            {/* iyal */}
-            <motion.div
-              className="text-center"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              viewport={{ once: true }}
-            >
-              <div className="bg-white/5 backdrop-blur-sm rounded-lg p-8 border border-white/10">
-                <h3 className="text-white font-semibold mb-4">Powered By</h3>
-                <img
-                  src="/logos/eyal-logo.png"
-                  alt="iyal"
-                  className="h-16 mx-auto mb-4 rounded-xl"
-                />
-                <h4 className="text-[#30d2ff] font-bold text-xl">Eyal Media</h4>
-                <p className="text-white/70 text-sm mt-2">
-                  Creating a elevated marketing experience
-                </p>
-              </div>
-            </motion.div>
-          </div>
         </div>
       </section>
 

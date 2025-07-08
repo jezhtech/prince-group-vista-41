@@ -145,22 +145,10 @@ const MainFooter = ({ theme = "default" }: { theme?: "default" | "dark" }) => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5 }}
-                className="mb-8"
+                className="mb-4"
               >
                 <FooterLogo />
               </motion.div>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-white/90 mb-6 max-w-md"
-              >
-                We provide the most reliable documentation and loan services
-                with 20+ branches throughout Kanyakumari District, ensuring
-                convenient access for all our customers.
-              </motion.p>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -304,7 +292,7 @@ const MainFooter = ({ theme = "default" }: { theme?: "default" | "dark" }) => {
                     href="mailto:info@princegroup.com"
                     className="text-white/80 text-sm hover:text-white transition-colors"
                   >
-                    info@princegroup.com
+                    jp@princegroup.net{" "}
                   </a>
                 </li>
               </motion.ul>
