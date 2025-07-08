@@ -282,7 +282,9 @@ const MainFooter = ({ theme = "default" }: { theme?: "default" | "dark" }) => {
                   <div className="mr-3 p-2 bg-white/20 rounded-full">
                     <Phone size={14} className="text-white" />
                   </div>
-                  <span className="text-white/80 text-sm">9489359755</span>
+                  <span className="text-white/80 text-sm">
+                    9489359755, 9559155535
+                  </span>
                 </li>
                 <li className="flex items-center">
                   <div className="mr-3 p-2 bg-white/20 rounded-full">

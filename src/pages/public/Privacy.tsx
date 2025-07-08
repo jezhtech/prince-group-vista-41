@@ -443,7 +443,7 @@ const Privacy = () => {
                             Phone
                           </h4>
                           <p className="text-sm text-muted-foreground">
-                            9489359755
+                            9489359755, 9559155535
                           </p>
                         </div>
                       </div>

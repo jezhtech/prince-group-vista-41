@@ -215,7 +215,7 @@ const Events = () => {
       {/* Hero Section with Performers Carousel */}
       <section
         className={cn(
-          "relative w-full overflow-hidden pt-4",
+          "relative w-full overflow-hidden pt-20 md:pt-4",
           isIOS() && "pt-40"
         )}
       >

@@ -1,11 +1,10 @@
-import { motion } from "framer-motion";
 import { Button } from "./ui/button";
 import { X } from "lucide-react";
 import { Label } from "./ui/label";
 import { CheckCircle } from "lucide-react";
 import { Minus, Plus, Ticket, CalendarDays, MusicIcon } from "lucide-react";
 import { Dialog, DialogContent } from "./ui/dialog";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, memo } from "react";
 import { cn, isIOS } from "@/lib/utils";
 import { Input } from "./ui/input";
 
@@ -115,12 +114,19 @@ const GENERAL_BENEFITS = [
   "Exclusive entry to after-party (Elite & VVIP only)",
 ];
 
+// Memoized price formatter to avoid creating new instances
+const priceFormatter = new Intl.NumberFormat("en-IN", {
+  style: "currency",
+  currency: "INR",
+  maximumFractionDigits: 0,
+});
+
 interface EventBookingProps {
   isBookingOpen: boolean;
   setIsBookingOpen: (open: boolean) => void;
 }
 
-export const EventBooking = ({
+export const EventBooking = memo(({
   isBookingOpen,
   setIsBookingOpen,
 }: EventBookingProps) => {
@@ -143,13 +149,22 @@ export const EventBooking = ({
     [ticketCategory, ticketQuantity]
   );
 
+  // Memoized price calculations
+  const priceBreakdown = useMemo(() => {
+    if (totalPrice === 0) return { discount: 0, gst: 0, final: 0 };
+    const discount = totalPrice * 0.05;
+    const gst = totalPrice * 0.18;
+    const final = totalPrice - discount + gst;
+    return { discount, gst, final };
+  }, [totalPrice]);
+
   // Optimized handlers
   const handleTicketSelect = useCallback((ticketId: string) => {
     setTicketCategory(ticketId);
   }, []);
 
   const handleQuantityChange = useCallback((newQuantity: number) => {
-    if (newQuantity >= 1 && newQuantity <= 8) {
+    if (newQuantity >= 1 && newQuantity <= 4) {
       setTicketQuantity(newQuantity);
     }
   }, []);
@@ -171,16 +186,51 @@ export const EventBooking = ({
   }, [isBookingValid, ticketCategory, ticketQuantity, totalPrice, handleClose]);
 
   const formatPrice = useCallback((price: number) => {
-    const discount = price * 0.05;
-    const gst = price * 0.18;
-    const total = price - discount + gst;
-
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(price);
+    return priceFormatter.format(price);
   }, []);
+
+  // Memoized ticket cards to prevent unnecessary re-renders
+  const ticketCards = useMemo(() => {
+    return TICKET_CLASSES.map((ticket) => (
+      <div
+        key={ticket.id}
+        className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
+          ticketCategory === ticket.id
+            ? "border-pink-500 bg-pink-500/10"
+            : "border-white/10 hover:border-pink-500/50 bg-white/5"
+        }`}
+        onClick={() => handleTicketSelect(ticket.id)}
+      >
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <h4 className="font-medium text-white text-sm sm:text-base">
+              {ticket.name}
+            </h4>
+            <p className="text-xs sm:text-sm text-white/60 mt-1">
+              {ticket.description}
+            </p>
+            {/* Show benefits for selected ticket */}
+            {ticketCategory === ticket.id && ticket.benefits && (
+              <div className="mt-2 space-y-1">
+                {ticket.benefits.slice(0, 2).map((benefit, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-start gap-1.5 text-xs text-white/70"
+                  >
+                    <CheckCircle className="h-3 w-3 text-pink-400 mt-0.5 flex-shrink-0" />
+                    <span>{benefit}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="font-bold text-white text-base sm:text-lg ml-3">
+            {formatPrice(ticket.price)}
+          </div>
+        </div>
+      </div>
+    ));
+  }, [ticketCategory, handleTicketSelect, formatPrice]);
 
   return (
     <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
@@ -218,47 +268,7 @@ export const EventBooking = ({
                   isIOS ? "mb-3" : "max-h-96"
                 )}
               >
-                {TICKET_CLASSES.map((ticket) => (
-                  <motion.div
-                    key={ticket.id}
-                    className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all ${
-                      ticketCategory === ticket.id
-                        ? "border-pink-500 bg-pink-500/10"
-                        : "border-white/10 hover:border-pink-500/50 bg-white/5"
-                    }`}
-                    onClick={() => handleTicketSelect(ticket.id)}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div className="flex-1">
-                        <h4 className="font-medium text-white text-sm sm:text-base">
-                          {ticket.name}
-                        </h4>
-                        <p className="text-xs sm:text-sm text-white/60 mt-1">
-                          {ticket.description}
-                        </p>
-                        {/* Show benefits for selected ticket */}
-                        {ticketCategory === ticket.id && ticket.benefits && (
-                          <div className="mt-2 space-y-1">
-                            {ticket.benefits.slice(0, 2).map((benefit, idx) => (
-                              <div
-                                key={idx}
-                                className="flex items-start gap-1.5 text-xs text-white/70"
-                              >
-                                <CheckCircle className="h-3 w-3 text-pink-400 mt-0.5 flex-shrink-0" />
-                                <span>{benefit}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <div className="font-bold text-white text-base sm:text-lg ml-3">
-                        {formatPrice(ticket.price)}
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
+                {ticketCards}
               </div>
 
               {/* General Benefits */}
@@ -409,13 +419,13 @@ export const EventBooking = ({
                     <p className="pt-2 border-t border-white/20 flex justify-between">
                       <span className="font-medium text-white">Discount</span>
                       <span className="font-bold text-pink-400 text-lg">
-                        {totalPrice > 0 ? totalPrice * 0.05 : "---"}
+                        {totalPrice > 0 ? formatPrice(priceBreakdown.discount) : "---"}
                       </span>
                     </p>
                     <p className="pt-2 border-t border-white/20 flex justify-between">
                       <span className="font-medium text-white">GST (18%)</span>
                       <span className="font-bold text-pink-400 text-lg">
-                        {totalPrice > 0 ? totalPrice * 0.18 : "---"}
+                        {totalPrice > 0 ? formatPrice(priceBreakdown.gst) : "---"}
                       </span>
                     </p>
                   </div>
@@ -473,4 +483,4 @@ export const EventBooking = ({
       </DialogContent>
     </Dialog>
   );
-};
+});
