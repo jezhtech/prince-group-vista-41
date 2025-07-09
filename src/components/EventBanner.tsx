@@ -8,13 +8,13 @@ import { isIOS } from "@/lib/utils";
 // Event messages for typing animation
 const EVENT_MESSAGES = [
   "Rhythm Of Kumari",
-  "Sri Nisha, Aditya Rkay & Aparnaa Pratheep",
-  "3 PM, 20 September 2025",
+  "Aditya Rkay, Sri Nisha & Aparnaa Pratheep",
+  "5 PM, 20 September 2025",
   "Concordia High School Ground, Kanyakumari",
 ];
 
 // Target date for countdown: December 21, 2025
-const TARGET_DATE = new Date("2025-09-20T15:00:00");
+const TARGET_DATE = new Date("2025-09-20T17:00:00");
 
 interface EventBannerProps {
   position?: "fixed" | "relative" | "absolute" | "sticky"; // Allow positioning to be customized

@@ -511,7 +511,7 @@ const Events = () => {
               {
                 icon: CalendarDays,
                 title: "Event Date",
-                value: "3 PM, 20 September 2025",
+                value: "5 PM, 20 September 2025",
                 color: "text-blue-400",
               },
               {

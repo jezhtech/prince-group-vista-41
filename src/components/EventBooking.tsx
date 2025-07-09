@@ -42,7 +42,7 @@ const TICKET_CLASSES = [
     name: "VVIP",
     price: 4999,
     offerPriceWithReferral: 3999,
-    offerPriceWithReferralAndYoutube: 3499,
+    offerPriceWithReferralAndYoutube: 2999,
     description: "Very exclusive access with premium services and seating",
     benefits: [
       "Premium seating",
@@ -56,7 +56,7 @@ const TICKET_CLASSES = [
     name: "Ultra Luxury",
     price: 3999,
     offerPriceWithReferral: 3499,
-    offerPriceWithReferralAndYoutube: 2999,
+    offerPriceWithReferralAndYoutube: 2499,
     description: "Ultra-premium comfort with excellent views",
     benefits: [
       "Excellent view",
@@ -88,7 +88,7 @@ const TICKET_CLASSES = [
     name: "Eco",
     price: 1999,
     offerPriceWithReferral: 1499,
-    offerPriceWithReferralAndYoutube: 499,
+    offerPriceWithReferralAndYoutube: 999,
     description: "Standard admission with good experience",
     benefits: [
       "Standard admission",
@@ -113,7 +113,7 @@ const EVENT_DETAILS = {
   location: "Concordia High School Ground, Nagercoil",
   performers: ["Aditya Rkay", "Sri Nisha", "Aparnaa Pratheep"],
   features: [
-    "ADITHYA RK LIVE FT SRINISHA",
+    "Main Performer - Singers: Aditya Rkay | Sri Nisha",
     "Violin - Chendamellan Fusion by Aparnaa Pratheep",
     "World-class Sound and Lighting System",
   ],
@@ -178,7 +178,7 @@ export const EventBooking = memo(
     }, []);
 
     const handleQuantityChange = useCallback((newQuantity: number) => {
-      if (newQuantity >= 1 && newQuantity <= 4) {
+      if (newQuantity >= 1 && newQuantity <= 15) {
         setTicketQuantity(newQuantity);
       }
     }, []);
@@ -209,59 +209,59 @@ export const EventBooking = memo(
       return priceFormatter.format(price);
     }, []);
 
-      // Memoized ticket cards to prevent unnecessary re-renders
-  const ticketCards = useMemo(() => {
-    return TICKET_CLASSES.map((ticket) => (
-      <div
-        key={ticket.id}
-        className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
-          ticketCategory === ticket.id
-            ? "border-pink-500 bg-pink-500/10"
-            : "border-white/10 hover:border-pink-500/50 bg-white/5"
-        }`}
-        onClick={() => handleTicketSelect(ticket.id)}
-      >
-        <div className="flex justify-between items-start">
-          <div className="flex-1">
-            <h4 className="font-medium text-white text-sm sm:text-base">
-              {ticket.name}
-            </h4>
-            <p className="text-xs sm:text-sm text-white/60 mt-1">
-              {ticket.description}
-            </p>
-            {/* Show benefits for selected ticket */}
-            {ticketCategory === ticket.id && ticket.benefits && (
-              <div className="mt-2 space-y-1">
-                {ticket.benefits.slice(0, 2).map((benefit, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-start gap-1.5 text-xs text-white/70"
-                  >
-                    <CheckCircle className="h-3 w-3 text-pink-400 mt-0.5 flex-shrink-0" />
-                    <span>{benefit}</span>
-                  </div>
-                ))}
+    // Memoized ticket cards to prevent unnecessary re-renders
+    const ticketCards = useMemo(() => {
+      return TICKET_CLASSES.map((ticket) => (
+        <div
+          key={ticket.id}
+          className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
+            ticketCategory === ticket.id
+              ? "border-pink-500 bg-pink-500/10"
+              : "border-white/10 hover:border-pink-500/50 bg-white/5"
+          }`}
+          onClick={() => handleTicketSelect(ticket.id)}
+        >
+          <div className="flex justify-between items-start">
+            <div className="flex-1">
+              <h4 className="font-medium text-white text-sm sm:text-base">
+                {ticket.name}
+              </h4>
+              <p className="text-xs sm:text-sm text-white/60 mt-1">
+                {ticket.description}
+              </p>
+              {/* Show benefits for selected ticket */}
+              {ticketCategory === ticket.id && ticket.benefits && (
+                <div className="mt-2 space-y-1">
+                  {ticket.benefits.slice(0, 2).map((benefit, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-start gap-1.5 text-xs text-white/70"
+                    >
+                      <CheckCircle className="h-3 w-3 text-pink-400 mt-0.5 flex-shrink-0" />
+                      <span>{benefit}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="text-right ml-3">
+              {/* Original Price */}
+              <div className="font-bold text-white text-base sm:text-lg">
+                {formatPrice(ticket.price)}
               </div>
-            )}
-          </div>
-          <div className="text-right ml-3">
-            {/* Original Price */}
-            <div className="font-bold text-white text-base sm:text-lg">
-              {formatPrice(ticket.price)}
-            </div>
-            {/* Referral Price */}
-            <div className="text-xs sm:text-sm text-pink-400 font-medium">
-              {formatPrice(ticket.offerPriceWithReferral)} with referral
-            </div>
-            {/* YouTube + Referral Price */}
-            <div className="text-xs sm:text-sm text-green-400 font-medium">
-              {formatPrice(ticket.offerPriceWithReferralAndYoutube)} with both
+              {/* Referral Price */}
+              <div className="text-xs sm:text-sm text-pink-400 font-medium">
+                {formatPrice(ticket.offerPriceWithReferral)} with referral
+              </div>
+              {/* YouTube + Referral Price */}
+              <div className="text-xs sm:text-sm text-green-400 font-medium">
+                {formatPrice(ticket.offerPriceWithReferralAndYoutube)} with both
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    ));
-  }, [ticketCategory, handleTicketSelect, formatPrice]);
+      ));
+    }, [ticketCategory, handleTicketSelect, formatPrice]);
 
     return (
       <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
