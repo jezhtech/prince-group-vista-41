@@ -34,7 +34,7 @@ const Privacy = () => {
       </Helmet>
       <MainNavbar />
 
-      <main className="flex-grow pt-[60px] sm:pt-[50px]">
+      <main className="flex-grow pt-[60px] sm:pt-20">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-r from-primary to-primary/80 py-20 overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
@@ -304,55 +304,6 @@ const Privacy = () => {
                             Lawyers and accountants
                           </span>
                         </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Data Security */}
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-primary/5 to-primary/10">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-2xl text-primary">
-                    <Lock className="w-6 h-6" />
-                    Data Security
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <p className="text-muted-foreground leading-relaxed">
-                      We implement appropriate technical and organizational
-                      measures to protect your personal information against
-                      unauthorized access, alteration, disclosure, or
-                      destruction.
-                    </p>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <div className="text-center p-4 bg-white/50 rounded-lg">
-                        <Lock className="w-8 h-8 text-primary mx-auto mb-2" />
-                        <h4 className="font-semibold text-foreground">
-                          Encryption
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          End-to-end data encryption
-                        </p>
-                      </div>
-                      <div className="text-center p-4 bg-white/50 rounded-lg">
-                        <Shield className="w-8 h-8 text-primary mx-auto mb-2" />
-                        <h4 className="font-semibold text-foreground">
-                          Access Control
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          Strict access controls
-                        </p>
-                      </div>
-                      <div className="text-center p-4 bg-white/50 rounded-lg">
-                        <AlertCircle className="w-8 h-8 text-primary mx-auto mb-2" />
-                        <h4 className="font-semibold text-foreground">
-                          Monitoring
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          24/7 security monitoring
-                        </p>
                       </div>
                     </div>
                   </div>

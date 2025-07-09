@@ -126,6 +126,22 @@ const Events = () => {
       textColor: "text-pink-600",
       buttonColor: "bg-gradient-to-r from-pink-600 to-red-600",
     },
+    {
+      id: "aparnaa-pratheep",
+      name: "Aparnaa Pratheep",
+      title: "Violin Fusion",
+      image: "/images/aparnaa.jpg",
+      textColor: "text-orange-600",
+      buttonColor: "bg-gradient-to-r from-orange-600 to-red-600",
+    },
+    {
+      id: "hendamellam",
+      name: "Chendamellam Fusion",
+      title: "Chendamella - Violin Fusion",
+      image: "/images/chendamellam.jpg",
+      textColor: "text-orange-600",
+      buttonColor: "bg-gradient-to-r from-orange-600 to-red-600",
+    },
   ];
 
   // Auto-scrolling performers
@@ -321,6 +337,15 @@ const Events = () => {
                   </motion.span>
                 </motion.h1>
 
+                {/* Subtitle */}
+                <motion.p
+                  className="text-lg sm:text-xl md:text-2xl text-white/80 font-bold mb-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  ADITHYA RK LIVE FT SRINISHA
+                </motion.p>
                 {/* Subtitle */}
                 <motion.p
                   className="text-lg sm:text-xl md:text-2xl text-white/80 mb-8"

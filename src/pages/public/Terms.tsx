@@ -113,54 +113,6 @@ const Terms = () => {
                 </CardContent>
               </Card>
 
-              {/* Services Description */}
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-2xl text-primary">
-                    <FileText className="w-6 h-6" />
-                    Description of Services
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <p className="text-muted-foreground leading-relaxed">
-                      Prince Group provides comprehensive documentation
-                      services, loan services, and membership programs as
-                      described on our website and in our promotional materials.
-                    </p>
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <div className="text-center p-4 bg-muted/30 rounded-lg">
-                        <FileText className="w-8 h-8 text-primary mx-auto mb-2" />
-                        <h4 className="font-semibold text-foreground">
-                          Documentation
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          Legal document processing
-                        </p>
-                      </div>
-                      <div className="text-center p-4 bg-muted/30 rounded-lg">
-                        <CreditCard className="w-8 h-8 text-primary mx-auto mb-2" />
-                        <h4 className="font-semibold text-foreground">
-                          Loan Services
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          Financial assistance
-                        </p>
-                      </div>
-                      <div className="text-center p-4 bg-muted/30 rounded-lg">
-                        <Users className="w-8 h-8 text-primary mx-auto mb-2" />
-                        <h4 className="font-semibold text-foreground">
-                          Membership
-                        </h4>
-                        <p className="text-sm text-muted-foreground">
-                          Exclusive benefits
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
               {/* User Responsibilities */}
               <Card className="border-0 shadow-lg">
                 <CardHeader>
