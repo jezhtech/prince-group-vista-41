@@ -129,7 +129,7 @@ const Events = () => {
     {
       id: "aparnaa-pratheep",
       name: "Aparnaa Pratheep",
-      title: "Violin Fusion",
+      title: "Violin",
       image: "/images/aparnaa.jpg",
       textColor: "text-orange-600",
       buttonColor: "bg-gradient-to-r from-orange-600 to-red-600",
@@ -137,7 +137,7 @@ const Events = () => {
     {
       id: "hendamellam",
       name: "Chendamellam Fusion",
-      title: "Chendamella - Violin Fusion",
+      title: "Chendamelam Fusion",
       image: "/images/chendamellam.jpg",
       textColor: "text-orange-600",
       buttonColor: "bg-gradient-to-r from-orange-600 to-red-600",
@@ -301,7 +301,7 @@ const Events = () => {
                 >
                   <Badge className="bg-white/10 text-white border-none backdrop-blur-sm py-2 px-4 text-sm mb-6 inline-flex items-center gap-2">
                     <CalendarIcon className="w-4 h-4" />
-                    <span className="font-medium">3 PM, 20 September 2025</span>
+                    <span className="font-medium">5 PM, 20 September 2025</span>
                   </Badge>
                 </motion.div>
 
