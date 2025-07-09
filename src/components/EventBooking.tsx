@@ -459,16 +459,6 @@ export const EventBooking = memo(
                             : "---"}
                         </span>
                       </p>
-                      <p className="pt-2 border-t border-white/20 flex justify-between">
-                        <span className="font-medium text-white">
-                          GST (18%)
-                        </span>
-                        <span className="font-bold text-pink-400 text-lg">
-                          {totalPrice > 0
-                            ? formatPrice(priceBreakdown.gst)
-                            : "---"}
-                        </span>
-                      </p>
                     </div>
                   </div>
                   <div>

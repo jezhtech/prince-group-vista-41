@@ -8,7 +8,7 @@ import { isIOS } from "@/lib/utils";
 // Event messages for typing animation
 const EVENT_MESSAGES = [
   "Rhythm Of Kumari",
-  "Aditya Rkay, Sri Nisha & Aparnaa Pratheep",
+  "ADITHYA RK LIVE FT SRINISHA",
   "5 PM, 20 September 2025",
   "Concordia High School Ground, Kanyakumari",
 ];
