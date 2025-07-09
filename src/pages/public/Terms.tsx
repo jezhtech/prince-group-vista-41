@@ -217,62 +217,6 @@ const Terms = () => {
                 </CardContent>
               </Card>
 
-              {/* Refund Policy */}
-              <Card className="border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-3 text-2xl text-primary">
-                    <RefreshCw className="w-6 h-6" />
-                    Refund Policy
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <p className="text-muted-foreground leading-relaxed">
-                      Our refund policy varies by service and is designed to be
-                      fair to both parties.
-                    </p>
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-4">
-                        <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
-                          <h4 className="font-semibold text-green-800 mb-2">
-                            Membership Fees
-                          </h4>
-                          <p className="text-sm text-green-700">
-                            30-day money-back guarantee if not satisfied
-                          </p>
-                        </div>
-                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                          <h4 className="font-semibold text-blue-800 mb-2">
-                            Service Fees
-                          </h4>
-                          <p className="text-sm text-blue-700">
-                            Refunds at our discretion based on completion stage
-                          </p>
-                        </div>
-                      </div>
-                      <div className="space-y-4">
-                        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                          <h4 className="font-semibold text-yellow-800 mb-2">
-                            Processing Fees
-                          </h4>
-                          <p className="text-sm text-yellow-700">
-                            Typically non-refundable
-                          </p>
-                        </div>
-                        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                          <h4 className="font-semibold text-red-800 mb-2">
-                            Government Charges
-                          </h4>
-                          <p className="text-sm text-red-700">
-                            Non-refundable as per regulations
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
               {/* Intellectual Property */}
               <Card className="border-0 shadow-lg">
                 <CardHeader>
