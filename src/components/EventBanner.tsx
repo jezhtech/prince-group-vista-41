@@ -267,7 +267,10 @@ const EventBanner = ({
           )}
 
           {/* CTA Button */}
-          <Link to="/events" className={isIOS() ? "hidden" : ""}>
+          <Link
+            to="https://events.princegroupofcompanies.in"
+            className={isIOS() ? "hidden" : ""}
+          >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 size="sm"
