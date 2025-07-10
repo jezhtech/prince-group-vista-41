@@ -120,7 +120,7 @@ const EVENT_DETAILS = {
 };
 
 const EVENT_OFFERS = [
-  "Subscribe our youtube channel to get Rs 2000 discount on all tickets",
+  "Subscribe our youtube channel to unlock exclusive offers",
 ];
 
 const GENERAL_BENEFITS = [
@@ -244,20 +244,16 @@ export const EventBooking = memo(
                 </div>
               )}
             </div>
-            <div className="text-right ml-3">
-              {/* Original Price */}
-              <div className="font-bold text-white text-base sm:text-lg">
-                {formatPrice(ticket.price)}
-              </div>
-              {/* Referral Price */}
-              <div className="text-xs sm:text-sm text-pink-400 font-medium">
-                {formatPrice(ticket.offerPriceWithReferral)} with referral
-              </div>
-              {/* YouTube + Referral Price */}
-              <div className="text-xs sm:text-sm text-green-400 font-medium">
-                {formatPrice(ticket.offerPriceWithReferralAndYoutube)} with both
-              </div>
+                      <div className="text-right ml-3">
+            {/* Original Price */}
+            <div className="font-bold text-white text-base sm:text-lg">
+              {formatPrice(ticket.price)}
             </div>
+            {/* Offer Price */}
+            <div className="text-xs sm:text-sm text-green-400 font-medium">
+              {formatPrice(ticket.offerPriceWithReferralAndYoutube)} with offers
+            </div>
+          </div>
           </div>
         </div>
       ));
