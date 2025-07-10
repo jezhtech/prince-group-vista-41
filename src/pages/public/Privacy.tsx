@@ -282,12 +282,6 @@ const Privacy = () => {
                             Who perform services on our behalf
                           </span>
                         </div>
-                        <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                          <Badge variant="secondary">
-                            Financial Institutions
-                          </Badge>
-                          <span className="text-sm">For loan processing</span>
-                        </div>
                       </div>
                       <div className="space-y-3">
                         <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
