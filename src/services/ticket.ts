@@ -2,14 +2,8 @@ import { Ticket, CreateTicketRequest, UpdateTicketRequest } from "@/types/ticket
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
-export const getAllTickets = async (token: string): Promise<Ticket[]> => {
-    const response = await fetch(`${API_BASE_URL}/ticket/all`, {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-    });
+export const getAllTickets = async (): Promise<Ticket[]> => {
+    const response = await fetch(`${API_BASE_URL}/ticket/`);
 
     if (!response.ok) {
         throw new Error("Failed to fetch tickets");
@@ -37,7 +31,7 @@ export const getTicketById = async (token: string, id: number): Promise<Ticket> 
 };
 
 export const createTicket = async (token: string, ticket: CreateTicketRequest): Promise<Ticket> => {
-    const response = await fetch(`${API_BASE_URL}/ticket`, {
+    const response = await fetch(`${API_BASE_URL}/ticket/`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -47,6 +41,7 @@ export const createTicket = async (token: string, ticket: CreateTicketRequest): 
     });
 
     if (!response.ok) {
+        console.log(await response.json());
         throw new Error("Failed to create ticket");
     }
 

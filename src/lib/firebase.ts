@@ -1,6 +1,6 @@
 // firebase.ts
 import { initializeApp } from "firebase/app";
-import { getAuth, PhoneAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, PhoneAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -14,3 +14,4 @@ export const auth = getAuth(app);
 
 // Initialize Phone Auth Provider
 export const phoneAuthProvider = new PhoneAuthProvider(auth);
+export const googleAuthProvider = new GoogleAuthProvider();

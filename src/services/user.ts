@@ -1,4 +1,4 @@
-import { User, CreateUserRequest, UpdateUserRequest } from "@/types/user";
+import { User, CreateUserRequest } from "@/types/user";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
@@ -52,14 +52,14 @@ export const getUserById = async (token: string, id: string): Promise<User> => {
     return data.user;
 };
 
-export const updateUser = async (token: string, user: UpdateUserRequest): Promise<User> => {
-    const response = await fetch(`${API_BASE_URL}/user/${user.id}/`, {
+export const updateUser = async (token: string, userData: Partial<User>): Promise<User> => {
+    const response = await fetch(`${API_BASE_URL}/user/`, {
         method: "PUT",
         headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify(userData),
     });
 
     if (!response.ok) {

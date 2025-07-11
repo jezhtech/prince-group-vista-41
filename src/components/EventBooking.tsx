@@ -1,12 +1,22 @@
 import { Button } from "./ui/button";
-import { X } from "lucide-react";
+import { X, ArrowLeft, ArrowRight, CheckCircle, Youtube } from "lucide-react";
 import { Label } from "./ui/label";
-import { CheckCircle } from "lucide-react";
-import { Minus, Plus, Ticket, CalendarDays, MusicIcon } from "lucide-react";
+import {
+  Minus,
+  Plus,
+  Ticket as TicketIcon,
+  CalendarDays,
+  MusicIcon,
+  Gift,
+} from "lucide-react";
 import { Dialog, DialogContent } from "./ui/dialog";
-import { useState, useCallback, useMemo, memo } from "react";
+import { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { cn, isIOS } from "@/lib/utils";
 import { Input } from "./ui/input";
+import { Ticket } from "@/types";
+import { getAllTickets } from "@/services";
+import { useAuth } from "@/hooks/useAuth";
+import { useYouTubeSubscription } from "@/services/youtube";
 
 const TICKET_CLASSES = [
   {
@@ -119,8 +129,23 @@ const EVENT_DETAILS = {
   ],
 };
 
-const EVENT_OFFERS = [
-  "Subscribe our youtube channel to unlock exclusive offers",
+const AVAILABLE_OFFERS = [
+  {
+    id: "referral",
+    name: "Referral Discount",
+    description: "Get 20% off with a valid referral code",
+    discount: 0.2,
+    type: "referral",
+    icon: Gift,
+  },
+  {
+    id: "youtube",
+    name: "YouTube Subscription",
+    description: "Subscribe to our channel for additional 30% off",
+    discount: 0.3,
+    type: "youtube",
+    icon: Youtube,
+  },
 ];
 
 const GENERAL_BENEFITS = [
@@ -142,10 +167,23 @@ interface EventBookingProps {
   setIsBookingOpen: (open: boolean) => void;
 }
 
+type BookingStep = "tickets" | "offers" | "payment";
+
 export const EventBooking = memo(
   ({ isBookingOpen, setIsBookingOpen }: EventBookingProps) => {
+    const { currentUser } = useAuth();
+    const { checkSubscription } = useYouTubeSubscription();
+    const [currentStep, setCurrentStep] = useState<BookingStep>("tickets");
     const [ticketQuantity, setTicketQuantity] = useState(1);
     const [ticketCategory, setTicketCategory] = useState("");
+    const [isTicketClassesLoading, setIsTicketClassesLoading] = useState(false);
+    const [ticketClasses, setTicketClasses] = useState<Ticket[]>([]);
+
+    // Offer states
+    const [referralCode, setReferralCode] = useState("");
+    const [isYoutubeSubscribed, setIsYoutubeSubscribed] = useState(false);
+    const [isCheckingYoutube, setIsCheckingYoutube] = useState(false);
+    const [youtubeChannelId] = useState("UCkIdOa88R8uDR_B3afbtyjg"); // Replace with your channel ID
 
     // Memoized calculations
     const selectedTicket = useMemo(
@@ -153,28 +191,51 @@ export const EventBooking = memo(
       [ticketCategory]
     );
 
-    const totalPrice = useMemo(
+    const basePrice = useMemo(
       () => (selectedTicket ? selectedTicket.price * ticketQuantity : 0),
       [selectedTicket, ticketQuantity]
     );
+
+    const finalPrice = useMemo(() => {
+      if (!selectedTicket) return 0;
+
+      let price = selectedTicket.price;
+
+      // Apply referral discount if code is provided
+      if (referralCode.trim()) {
+        price = selectedTicket.offerPriceWithReferral;
+      }
+
+      // Apply YouTube discount if subscribed
+      if (isYoutubeSubscribed) {
+        price = selectedTicket.offerPriceWithReferralAndYoutube;
+      }
+
+      return price * ticketQuantity;
+    }, [selectedTicket, ticketQuantity, referralCode, isYoutubeSubscribed]);
+
+    const totalSavings = useMemo(() => {
+      return basePrice - finalPrice;
+    }, [basePrice, finalPrice]);
 
     const isBookingValid = useMemo(
       () => ticketCategory && ticketQuantity > 0,
       [ticketCategory, ticketQuantity]
     );
 
-    // Memoized price calculations
-    const priceBreakdown = useMemo(() => {
-      if (totalPrice === 0) return { discount: 0, gst: 0, final: 0 };
-      const discount = totalPrice * 0.05;
-      const gst = totalPrice * 0.18;
-      const final = totalPrice - discount + gst;
-      return { discount, gst, final };
-    }, [totalPrice]);
+    const canProceedToOffers = useMemo(
+      () => ticketCategory && ticketQuantity > 0,
+      [ticketCategory, ticketQuantity]
+    );
+
+    const canProceedToPayment = useMemo(
+      () => ticketCategory && ticketQuantity > 0,
+      [ticketCategory, ticketQuantity]
+    );
 
     // Optimized handlers
-    const handleTicketSelect = useCallback((ticketId: string) => {
-      setTicketCategory(ticketId);
+    const handleTicketSelect = useCallback((ticketType: string) => {
+      setTicketCategory(ticketType);
     }, []);
 
     const handleQuantityChange = useCallback((newQuantity: number) => {
@@ -188,12 +249,39 @@ export const EventBooking = memo(
       // Reset form when closing
       setTicketCategory("");
       setTicketQuantity(1);
+      setCurrentStep("tickets");
+      setReferralCode("");
+      setIsYoutubeSubscribed(false);
     }, [setIsBookingOpen]);
+
+    const handleNextStep = useCallback(() => {
+      if (currentStep === "tickets" && canProceedToOffers) {
+        setCurrentStep("offers");
+      } else if (currentStep === "offers" && canProceedToPayment) {
+        setCurrentStep("payment");
+      }
+    }, [currentStep, canProceedToOffers, canProceedToPayment]);
+
+    const handlePreviousStep = useCallback(() => {
+      if (currentStep === "offers") {
+        setCurrentStep("tickets");
+      } else if (currentStep === "payment") {
+        setCurrentStep("offers");
+      }
+    }, [currentStep]);
 
     const handleProceedToPayment = useCallback(() => {
       if (isBookingValid) {
         // Handle booking logic here
-        console.log("Booking:", { ticketCategory, ticketQuantity, totalPrice });
+        console.log("Booking:", {
+          ticketCategory,
+          ticketQuantity,
+          basePrice,
+          finalPrice,
+          referralCode,
+          isYoutubeSubscribed,
+          totalSavings,
+        });
         handleClose();
         // Show success message or redirect to payment
       }
@@ -201,7 +289,11 @@ export const EventBooking = memo(
       isBookingValid,
       ticketCategory,
       ticketQuantity,
-      totalPrice,
+      basePrice,
+      finalPrice,
+      referralCode,
+      isYoutubeSubscribed,
+      totalSavings,
       handleClose,
     ]);
 
@@ -209,17 +301,50 @@ export const EventBooking = memo(
       return priceFormatter.format(price);
     }, []);
 
+    // YouTube subscription check
+    const checkYoutubeSubscription = useCallback(async () => {
+      if (!currentUser) return;
+
+      setIsCheckingYoutube(true);
+      try {
+        const isSubscribed = await checkSubscription(youtubeChannelId);
+        setIsYoutubeSubscribed(isSubscribed);
+      } catch (error) {
+        console.error("Error checking YouTube subscription:", error);
+        // Show user-friendly error message
+        if (
+          error instanceof Error &&
+          error.message.includes("Google access token")
+        ) {
+          // User needs to sign in with Google
+          console.log(
+            "User needs to sign in with Google to check YouTube subscription"
+          );
+        }
+      } finally {
+        setIsCheckingYoutube(false);
+      }
+    }, [currentUser, youtubeChannelId, checkSubscription]);
+
+    // Check if user is already signed in with Google
+    const isGoogleUser = useMemo(() => {
+      if (!currentUser) return false;
+      return currentUser.providerData.some(
+        (provider) => provider.providerId === "google.com"
+      );
+    }, [currentUser]);
+
     // Memoized ticket cards to prevent unnecessary re-renders
     const ticketCards = useMemo(() => {
-      return TICKET_CLASSES.map((ticket) => (
+      return ticketClasses.map((ticket) => (
         <div
           key={ticket.id}
           className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
-            ticketCategory === ticket.id
+            ticketCategory === ticket.type
               ? "border-pink-500 bg-pink-500/10"
               : "border-white/10 hover:border-pink-500/50 bg-white/5"
           }`}
-          onClick={() => handleTicketSelect(ticket.id)}
+          onClick={() => handleTicketSelect(ticket.type)}
         >
           <div className="flex justify-between items-start">
             <div className="flex-1">
@@ -227,10 +352,10 @@ export const EventBooking = memo(
                 {ticket.name}
               </h4>
               <p className="text-xs sm:text-sm text-white/60 mt-1">
-                {ticket.description}
+                {ticket.type}
               </p>
               {/* Show benefits for selected ticket */}
-              {ticketCategory === ticket.id && ticket.benefits && (
+              {ticketCategory === ticket.type && ticket.type && (
                 <div className="mt-2 space-y-1">
                   {ticket.benefits.slice(0, 2).map((benefit, idx) => (
                     <div
@@ -244,45 +369,40 @@ export const EventBooking = memo(
                 </div>
               )}
             </div>
-                      <div className="text-right ml-3">
-            {/* Original Price */}
-            <div className="font-bold text-white text-base sm:text-lg">
-              {formatPrice(ticket.price)}
+            <div className="text-right ml-3">
+              {/* Original Price */}
+              <div className="font-bold text-white text-base sm:text-lg">
+                {formatPrice(ticket.price)}
+              </div>
+              {/* Offer Price */}
+              <div className="text-xs sm:text-sm text-green-400 font-medium">
+                {formatPrice(ticket.price)} with offers
+              </div>
             </div>
-            {/* Offer Price */}
-            <div className="text-xs sm:text-sm text-green-400 font-medium">
-              {formatPrice(ticket.offerPriceWithReferralAndYoutube)} with offers
-            </div>
-          </div>
           </div>
         </div>
       ));
-    }, [ticketCategory, handleTicketSelect, formatPrice]);
+    }, [ticketCategory, handleTicketSelect, formatPrice, ticketClasses]);
 
-    return (
-      <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-        <DialogContent className="booking-form-section concert z-[9999] p-0 sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-prince border-none">
-          {/* Header */}
-          <div className="booking-form-header">
-            <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-pink-600 to-red-600 flex items-center justify-center">
-                <MusicIcon className="h-5 w-5 text-white" />
-              </div>
-              <h3 className="text-lg sm:text-xl font-bold text-pink-500">
-                Book Concert Tickets
-              </h3>
-            </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleClose}
-              className="text-white hover:bg-white/10"
-            >
-              <X className="h-5 w-5" />
-            </Button>
-          </div>
+    useEffect(() => {
+      setIsTicketClassesLoading(true);
+      getAllTickets().then((tickets) => {
+        setTicketClasses(tickets);
+        setIsTicketClassesLoading(false);
+      });
+    }, []);
 
-          <div className={cn("booking-form-content open", isIOS && "mb-0")}>
+    // Check YouTube subscription when offers step is reached
+    // useEffect(() => {
+    //   if (currentStep === "offers" && currentUser) {
+    //     checkYoutubeSubscription();
+    //   }
+    // }, [currentStep, currentUser, checkYoutubeSubscription]);
+
+    const renderStepContent = () => {
+      switch (currentStep) {
+        case "tickets":
+          return (
             <div className="booking-form-grid">
               {/* Left Column - Ticket Selection */}
               <div>
@@ -444,72 +564,330 @@ export const EventBooking = memo(
                       <p className="pt-2 border-t border-white/20 flex justify-between">
                         <span className="font-medium text-white">Subtotal</span>
                         <span className="font-bold text-pink-400 text-lg">
-                          {totalPrice > 0 ? formatPrice(totalPrice) : "---"}
+                          {basePrice > 0 ? formatPrice(basePrice) : "---"}
                         </span>
                       </p>
-                      <p className="pt-2 border-t border-white/20 flex justify-between">
-                        <span className="font-medium text-white">Discount</span>
-                        <span className="font-bold text-pink-400 text-lg">
-                          {totalPrice > 0
-                            ? formatPrice(priceBreakdown.discount)
-                            : "---"}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                  <div>
-                    <Label className="text-white/90">Referral Code</Label>
-                    <Input
-                      className="bg-white/5 border-white/20 text-white"
-                      type="text"
-                      placeholder="Enter referral code"
-                    />
-                  </div>
-                  {/* Event Offers */}
-                  <div>
-                    <Label className="text-white/90">Event Offers</Label>
-                    <div
-                      className={cn(
-                        "p-4 border border-white/20 rounded-lg bg-white/5 space-y-2",
-                        !isIOS && "mt-2"
-                      )}
-                    >
-                      {EVENT_OFFERS.map((feature, idx) => (
-                        <div key={idx} className="flex items-start gap-2">
-                          <CheckCircle className="h-4 w-4 text-pink-500 mt-0.5 flex-shrink-0" />
-                          <span className="text-white/70 text-sm">
-                            {feature}
-                          </span>
-                        </div>
-                      ))}
-                      <Button
-                        size="sm"
-                        className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
-                      >
-                        Subscribe Now
-                      </Button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          );
+
+        case "offers":
+          return (
+            <div className="space-y-6">
+              <div>
+                <h4 className="text-lg font-semibold mb-4 text-white/90">
+                  Available Offers
+                </h4>
+                <p className="text-white/60 mb-6">
+                  Unlock additional discounts to save more on your tickets!
+                </p>
+              </div>
+
+              {/* Referral Code */}
+              <div className="bg-white/5 p-4 rounded-lg border border-white/20">
+                <div className="flex items-center gap-3 mb-3">
+                  <Gift className="h-5 w-5 text-pink-500" />
+                  <div>
+                    <h5 className="font-medium text-white">Referral Code</h5>
+                    <p className="text-sm text-white/60">
+                      Get 20% off with a valid referral code
+                    </p>
+                  </div>
+                </div>
+                <Input
+                  className="bg-white/10 border-white/20 text-white"
+                  type="text"
+                  placeholder="Enter referral code"
+                  value={referralCode}
+                  onChange={(e) => setReferralCode(e.target.value)}
+                />
+              </div>
+
+              {/* YouTube Subscription */}
+              <div className="bg-white/5 p-4 rounded-lg border border-white/20">
+                <div className="flex items-center gap-3 mb-3">
+                  <Youtube className="h-5 w-5 text-red-500" />
+                  <div>
+                    <h5 className="font-medium text-white">
+                      YouTube Subscription
+                    </h5>
+                    <p className="text-sm text-white/60">
+                      Subscribe to our channel for additional 30% off
+                    </p>
+                  </div>
+                </div>
+
+                {isCheckingYoutube ? (
+                  <div className="flex items-center gap-2 text-white/70">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-500"></div>
+                    Checking subscription status...
+                  </div>
+                ) : isYoutubeSubscribed ? (
+                  <div className="flex items-center gap-2 text-green-400">
+                    <CheckCircle className="h-4 w-4" />
+                    <span>You're subscribed! Additional discount applied.</span>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {isGoogleUser ? (
+                      <>
+                        <p className="text-sm text-white/60">
+                          You're signed in with Google. Click below to check
+                          your subscription status.
+                        </p>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() =>
+                              window.open(
+                                "https://www.youtube.com/@Princegroupofcompanies",
+                                "_blank"
+                              )
+                            }
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                          >
+                            <Youtube className="mr-2 h-4 w-4" />
+                            Subscribe to YouTube Channel
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              // User is already signed in with Google, just check subscription
+                              checkYoutubeSubscription();
+                            }}
+                            className="border-white/20 hover:bg-white/10"
+                          >
+                            Check Subscription
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p className="text-sm text-white/60">
+                          To check your subscription status, you need to sign in
+                          with Google.
+                        </p>
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={() =>
+                              window.open(
+                                "https://www.youtube.com/@Princegroupofcompanies",
+                                "_blank"
+                              )
+                            }
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                          >
+                            <Youtube className="mr-2 h-4 w-4" />
+                            Subscribe to YouTube Channel
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              // This will trigger a re-authentication with Google
+                              checkYoutubeSubscription();
+                            }}
+                            className="border-white/20 hover:bg-white/10"
+                          >
+                            Sign in with Google & Check
+                          </Button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Price Summary */}
+              <div className="bg-pink-900/20 p-4 rounded-lg border border-pink-500/20">
+                <h5 className="font-medium text-pink-300 mb-3">
+                  Price Summary
+                </h5>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Original Price:</span>
+                    <span className="text-white">{formatPrice(basePrice)}</span>
+                  </div>
+                  {totalSavings > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-green-400">Total Savings:</span>
+                      <span className="text-green-400 font-medium">
+                        -{formatPrice(totalSavings)}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex justify-between pt-2 border-t border-white/20">
+                    <span className="font-medium text-white">Final Price:</span>
+                    <span className="font-bold text-pink-400 text-lg">
+                      {formatPrice(finalPrice)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+
+        case "payment":
+          return (
+            <div className="space-y-6">
+              <div>
+                <h4 className="text-lg font-semibold mb-4 text-white/90">
+                  Payment Details
+                </h4>
+                <p className="text-white/60 mb-6">
+                  Review your booking and proceed to payment
+                </p>
+              </div>
+
+              {/* Final Summary */}
+              <div className="bg-white/5 p-4 rounded-lg border border-white/20">
+                <h5 className="font-medium text-white mb-3">Booking Summary</h5>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Ticket:</span>
+                    <span className="text-white">
+                      {selectedTicket?.name} x {ticketQuantity}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Event:</span>
+                    <span className="text-white">{EVENT_DETAILS.date}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-white/70">Location:</span>
+                    <span className="text-white">{EVENT_DETAILS.location}</span>
+                  </div>
+                  {referralCode && (
+                    <div className="flex justify-between">
+                      <span className="text-white/70">Referral Code:</span>
+                      <span className="text-green-400">{referralCode}</span>
+                    </div>
+                  )}
+                  {isYoutubeSubscribed && (
+                    <div className="flex justify-between">
+                      <span className="text-white/70">YouTube Subscriber:</span>
+                      <span className="text-green-400">Yes</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between pt-2 border-t border-white/20">
+                    <span className="font-medium text-white">
+                      Total Amount:
+                    </span>
+                    <span className="font-bold text-pink-400 text-lg">
+                      {formatPrice(finalPrice)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Methods */}
+              <div className="bg-white/5 p-4 rounded-lg border border-white/20">
+                <h5 className="font-medium text-white mb-3">Payment Method</h5>
+                <p className="text-white/60 text-sm">
+                  Payment gateway integration will be added here. For now, this
+                  is a demo.
+                </p>
+              </div>
+            </div>
+          );
+
+        default:
+          return null;
+      }
+    };
+
+    return (
+      <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
+        <DialogContent className="booking-form-section concert z-[9999] p-0 sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-prince border-none">
+          {/* Header */}
+          <div className="booking-form-header">
+            <div className="flex items-center gap-2">
+              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-pink-600 to-red-600 flex items-center justify-center">
+                <MusicIcon className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg sm:text-xl font-bold text-pink-500">
+                  Book Concert Tickets
+                </h3>
+                <p className="text-xs text-white/60">
+                  Step{" "}
+                  {currentStep === "tickets"
+                    ? "1"
+                    : currentStep === "offers"
+                    ? "2"
+                    : "3"}{" "}
+                  of 3
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleClose}
+              className="text-white hover:bg-white/10"
+            >
+              <X className="h-5 w-5" />
+            </Button>
+          </div>
+
+          <div className={cn("booking-form-content open", isIOS && "mb-0")}>
+            {renderStepContent()}
+
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row justify-end gap-2 mt-6">
-              <Button
-                variant="outline"
-                onClick={handleClose}
-                className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
-              >
-                Cancel
-              </Button>
-              <Button
-                className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
-                disabled={!isBookingValid}
-                onClick={handleProceedToPayment}
-              >
-                <Ticket className="mr-1.5 h-3.5 w-3.5" />
-                Proceed to Payment
-              </Button>
+            <div className="flex flex-col sm:flex-row justify-between gap-2 mt-6">
+              <div className="flex gap-2">
+                {currentStep !== "tickets" && (
+                  <Button
+                    variant="outline"
+                    onClick={handlePreviousStep}
+                    className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                  >
+                    <ArrowLeft className="mr-1.5 h-3.5 w-3.5" />
+                    Previous
+                  </Button>
+                )}
+                <Button
+                  variant="outline"
+                  onClick={handleClose}
+                  className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                >
+                  Cancel
+                </Button>
+              </div>
+
+              <div className="flex gap-2">
+                {currentStep === "tickets" && (
+                  <Button
+                    className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
+                    disabled={!canProceedToOffers}
+                    onClick={handleNextStep}
+                  >
+                    Next
+                    <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                  </Button>
+                )}
+                {currentStep === "offers" && (
+                  <Button
+                    className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
+                    disabled={!canProceedToPayment}
+                    onClick={handleNextStep}
+                  >
+                    Next
+                    <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                  </Button>
+                )}
+                {currentStep === "payment" && (
+                  <Button
+                    className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
+                    disabled={!isBookingValid}
+                    onClick={handleProceedToPayment}
+                  >
+                    <TicketIcon className="mr-1.5 h-3.5 w-3.5" />
+                    Proceed to Payment
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </DialogContent>

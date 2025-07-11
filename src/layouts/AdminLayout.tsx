@@ -70,7 +70,7 @@ const AdminLayout = () => {
       {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transition-all duration-300 transform md:relative md:translate-x-0 shadow-md",
+          "fixed inset-y-0 left-0 z-50 w-64 bg-white border-r md:mt-0 mt-12 border-gray-200 transition-all duration-300 transform md:relative md:translate-x-0 shadow-md",
           isSidebarOpen ? "translate-x-0 md:w-64" : "-translate-x-full md:w-20"
         )}
       >

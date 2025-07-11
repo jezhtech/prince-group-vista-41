@@ -3,9 +3,12 @@ export interface Ticket {
   name: string;
   price: number;
   type: string;
+  description: string;
+  benefits: string[];
   status: string;
-  amount: number;
   totalTickets: number;
+  offerPriceWithReferral: number;
+  offerPriceWithReferralAndYoutube: number;
   availableTickets: number;
   createdAt: string;
   updatedAt: string;
@@ -15,9 +18,12 @@ export interface CreateTicketRequest {
   name: string;
   price: number;
   type: string;
+  description: string;
+  benefits: string[];
   status: string;
-  amount: number;
   totalTickets: number;
+  offerPriceWithReferral: number;
+  offerPriceWithReferralAndYoutube: number;
   availableTickets: number;
 }
 

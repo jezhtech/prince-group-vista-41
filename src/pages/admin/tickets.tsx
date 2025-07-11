@@ -24,6 +24,7 @@ import {
   Tag,
   Users,
   Loader2,
+  X,
 } from "lucide-react";
 import {
   Select,
@@ -35,6 +36,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogClose,
@@ -217,103 +219,197 @@ const TicketTypeForm = ({
 }: {
   formData: CreateTicketRequest;
   setFormData: (data: CreateTicketRequest) => void;
-}) => (
-  <div className="space-y-4">
-    <div className="grid grid-cols-2 gap-4">
-      <div className="space-y-2">
-        <Label htmlFor="name">Ticket Name</Label>
-        <Input
-          id="name"
-          placeholder="e.g. Early Bird, VIP, etc."
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="price">Price (₹)</Label>
-        <Input
-          id="price"
-          type="number"
-          value={formData.price}
-          onChange={(e) =>
-            setFormData({ ...formData, price: parseInt(e.target.value) || 0 })
-          }
-        />
-      </div>
-    </div>
+}) => {
+  const [newBenefit, setNewBenefit] = useState("");
 
-    <div className="grid grid-cols-2 gap-4">
-      <div className="space-y-2">
-        <Label htmlFor="type">Ticket Type</Label>
-        <Input
-          id="type"
-          placeholder="e.g. vip, regular, early-bird"
-          value={formData.type}
-          onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="status">Status</Label>
-        <Select
-          value={formData.status}
-          onValueChange={(value) => setFormData({ ...formData, status: value })}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="inactive">Inactive</SelectItem>
-            <SelectItem value="sold-out">Sold Out</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
+  const addBenefit = () => {
+    if (newBenefit.trim()) {
+      setFormData({
+        ...formData,
+        benefits: [...formData.benefits, newBenefit.trim()],
+      });
+      setNewBenefit("");
+    }
+  };
 
-    <div className="grid grid-cols-2 gap-4">
-      <div className="space-y-2">
-        <Label htmlFor="totalTickets">Total Tickets</Label>
-        <Input
-          id="totalTickets"
-          type="number"
-          value={formData.totalTickets}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              totalTickets: parseInt(e.target.value) || 0,
-            })
-          }
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="availableTickets">Available Tickets</Label>
-        <Input
-          id="availableTickets"
-          type="number"
-          value={formData.availableTickets}
-          onChange={(e) =>
-            setFormData({
-              ...formData,
-              availableTickets: parseInt(e.target.value) || 0,
-            })
-          }
-        />
-      </div>
-    </div>
+  const removeBenefit = (index: number) => {
+    setFormData({
+      ...formData,
+      benefits: formData.benefits.filter((_, i) => i !== index),
+    });
+  };
 
-    <div className="space-y-2">
-      <Label htmlFor="amount">Amount (₹)</Label>
-      <Input
-        id="amount"
-        type="number"
-        value={formData.amount}
-        onChange={(e) =>
-          setFormData({ ...formData, amount: parseInt(e.target.value) || 0 })
-        }
-      />
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addBenefit();
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="name">Ticket Name</Label>
+          <Input
+            id="name"
+            placeholder="e.g. Early Bird, VIP, etc."
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="price">Price (₹)</Label>
+          <Input
+            id="price"
+            type="number"
+            value={formData.price}
+            onChange={(e) =>
+              setFormData({ ...formData, price: parseInt(e.target.value) || 0 })
+            }
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="type">Ticket Type</Label>
+          <Input
+            id="type"
+            placeholder="e.g. vip, regular, early-bird"
+            value={formData.type}
+            onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="status">Status</Label>
+          <Select
+            value={formData.status}
+            onValueChange={(value) => setFormData({ ...formData, status: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent className="z-[9999]">
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="inactive">Inactive</SelectItem>
+              <SelectItem value="sold-out">Sold Out</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          placeholder="Describe the ticket and what it includes..."
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          rows={3}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="benefits">Benefits</Label>
+        <div className="space-y-2">
+          <div className="flex gap-2">
+            <Input
+              id="benefits"
+              placeholder="Add a benefit (e.g. Access to all sessions)"
+              value={newBenefit}
+              onChange={(e) => setNewBenefit(e.target.value)}
+              onKeyPress={handleKeyPress}
+            />
+            <Button type="button" onClick={addBenefit} variant="outline">
+              Add
+            </Button>
+          </div>
+          {formData.benefits.length > 0 && (
+            <div className="space-y-2">
+              {formData.benefits.map((benefit, index) => (
+                <div key={index} className="flex items-center gap-2 p-2 bg-muted rounded-md">
+                  <span className="flex-1 text-sm">{benefit}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => removeBenefit(index)}
+                    className="h-6 w-6 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="totalTickets">Total Tickets</Label>
+          <Input
+            id="totalTickets"
+            type="number"
+            value={formData.totalTickets}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                totalTickets: parseInt(e.target.value) || 0,
+              })
+            }
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="availableTickets">Available Tickets</Label>
+          <Input
+            id="availableTickets"
+            type="number"
+            value={formData.availableTickets}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                availableTickets: parseInt(e.target.value) || 0,
+              })
+            }
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="offerPriceWithReferral">Offer Price with Referral (₹)</Label>
+          <Input
+            id="offerPriceWithReferral"
+            type="number"
+            value={formData.offerPriceWithReferral}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                offerPriceWithReferral: parseInt(e.target.value) || 0,
+              })
+            }
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="offerPriceWithReferralAndYoutube">Offer Price with Referral & YouTube (₹)</Label>
+          <Input
+            id="offerPriceWithReferralAndYoutube"
+            type="number"
+            value={formData.offerPriceWithReferralAndYoutube}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                offerPriceWithReferralAndYoutube: parseInt(e.target.value) || 0,
+              })
+            }
+          />
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const AdminTickets = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -322,14 +418,18 @@ const AdminTickets = () => {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingTicket, setEditingTicket] = useState<TicketType | null>(null);
+  const [formError, setFormError] = useState<string>("");
   const [formData, setFormData] = useState<CreateTicketRequest>({
     name: "",
     price: 0,
     type: "",
+    description: "",
     status: "",
-    amount: 0,
     totalTickets: 0,
     availableTickets: 0,
+    benefits: [],
+    offerPriceWithReferral: 0,
+    offerPriceWithReferralAndYoutube: 0,
   });
 
   const { toast } = useToast();
@@ -353,7 +453,7 @@ const AdminTickets = () => {
         return;
       }
 
-      const fetchedTickets = await getAllTickets(token);
+      const fetchedTickets = await getAllTickets();
       setTickets(fetchedTickets);
     } catch (error) {
       toast({
@@ -368,6 +468,7 @@ const AdminTickets = () => {
 
   const handleCreateTicket = async () => {
     try {
+      setFormError(""); // Clear previous errors
       const token = await currentUser?.getIdToken();
       if (!token) return;
 
@@ -381,16 +482,23 @@ const AdminTickets = () => {
         name: "",
         price: 0,
         type: "",
+        description: "",
         status: "",
-        amount: 0,
         totalTickets: 0,
         availableTickets: 0,
+        benefits: [],
+        offerPriceWithReferral: 0,
+        offerPriceWithReferralAndYoutube: 0,
       });
       fetchTickets();
-    } catch (error) {
+    } catch (error: any) {
+      // Extract error message from backend response
+      const errorMessage = error?.response?.data?.error || error?.message || "Failed to create ticket. Please try again.";
+      setFormError(errorMessage);
+      console.log(error);
       toast({
         title: "Error",
-        description: "Failed to create ticket. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -400,6 +508,7 @@ const AdminTickets = () => {
     if (!editingTicket) return;
 
     try {
+      setFormError(""); // Clear previous errors
       const token = await currentUser?.getIdToken();
       if (!token) return;
 
@@ -419,16 +528,22 @@ const AdminTickets = () => {
         name: "",
         price: 0,
         type: "",
+        description: "",
         status: "",
-        amount: 0,
         totalTickets: 0,
         availableTickets: 0,
+        benefits: [],
+        offerPriceWithReferral: 0,
+        offerPriceWithReferralAndYoutube: 0,
       });
       fetchTickets();
-    } catch (error) {
+    } catch (error: any) {
+      // Extract error message from backend response
+      const errorMessage = error?.response?.data?.error || error?.message || "Failed to update ticket. Please try again.";
+      setFormError(errorMessage);
       toast({
         title: "Error",
-        description: "Failed to update ticket. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -447,10 +562,11 @@ const AdminTickets = () => {
         description: "Ticket deleted successfully!",
       });
       fetchTickets();
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.error || error?.message || "Failed to delete ticket. Please try again.";
       toast({
         title: "Error",
-        description: "Failed to delete ticket. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     }
@@ -458,30 +574,43 @@ const AdminTickets = () => {
 
   const openEditDialog = (ticket: TicketType) => {
     setEditingTicket(ticket);
+    setFormError(""); // Clear errors when opening dialog
     setFormData({
       name: ticket.name,
       price: ticket.price,
       type: ticket.type,
       status: ticket.status,
-      amount: ticket.amount,
+      description: ticket.description,
       totalTickets: ticket.totalTickets,
       availableTickets: ticket.availableTickets,
+      benefits: ticket.benefits,
+      offerPriceWithReferral: ticket.offerPriceWithReferral,
+      offerPriceWithReferralAndYoutube: ticket.offerPriceWithReferralAndYoutube,
     });
     setDialogOpen(true);
   };
 
   const openCreateDialog = () => {
     setEditingTicket(null);
+    setFormError(""); // Clear errors when opening dialog
     setFormData({
       name: "",
       price: 0,
       type: "",
+      description: "",
       status: "",
-      amount: 0,
       totalTickets: 0,
       availableTickets: 0,
+      benefits: [],
+      offerPriceWithReferral: 0,
+      offerPriceWithReferralAndYoutube: 0,
     });
     setDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setFormError(""); // Clear errors when closing dialog
   };
 
   const filteredTickets = tickets.filter((ticket) => {
@@ -521,18 +650,46 @@ const AdminTickets = () => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[600px]">
             <DialogHeader>
-              <DialogTitle>Create New Ticket Type</DialogTitle>
+              <DialogTitle>
+                {editingTicket ? "Edit Ticket Type" : "Create New Ticket Type"}
+              </DialogTitle>
               <DialogDescription>
-                Add a new ticket type for your event. Configure pricing,
-                availability, and features.
+                {editingTicket 
+                  ? "Modify this ticket type for your event."
+                  : "Add a new ticket type for your event. Configure pricing, availability, and features."
+                }
               </DialogDescription>
             </DialogHeader>
+            
+            {/* Error Display */}
+            {formError && (
+              <div className="bg-red-50 border border-red-200 rounded-md p-4 mb-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800">
+                      Error
+                    </h3>
+                    <div className="mt-2 text-sm text-red-700">
+                      {formError}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <TicketTypeForm formData={formData} setFormData={setFormData} />
             <DialogFooter className="mt-6">
-              <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              <Button variant="outline" onClick={closeDialog}>
                 Cancel
               </Button>
-              <Button onClick={handleCreateTicket}>Save Ticket Type</Button>
+              <Button onClick={editingTicket ? handleUpdateTicket : handleCreateTicket}>
+                {editingTicket ? "Save Changes" : "Save Ticket Type"}
+              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -586,42 +743,13 @@ const AdminTickets = () => {
                         </CardDescription>
                       </div>
                       <div className="flex space-x-2">
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => openEditDialog(ticket)}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-[600px]">
-                            <DialogHeader>
-                              <DialogTitle>Edit Ticket Type</DialogTitle>
-                              <DialogDescription>
-                                Modify this ticket type for your event.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <TicketTypeForm
-                              formData={formData}
-                              setFormData={setFormData}
-                            />
-                            <DialogFooter className="mt-6">
-                              <DialogClose asChild>
-                                <Button
-                                  variant="outline"
-                                  onClick={() => setDialogOpen(false)}
-                                >
-                                  Cancel
-                                </Button>
-                              </DialogClose>
-                              <Button onClick={handleUpdateTicket}>
-                                Save Changes
-                              </Button>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => openEditDialog(ticket)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
                         <Button
                           variant="outline"
                           size="sm"
@@ -698,9 +826,9 @@ const AdminTickets = () => {
                             <span className="font-medium">₹{ticket.price}</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span>Amount:</span>
+                            <span>Description:</span>
                             <span className="font-medium">
-                              ₹{ticket.amount}
+                              {ticket.description}
                             </span>
                           </div>
                           <div className="flex justify-between text-sm">
@@ -768,7 +896,7 @@ const AdminTickets = () => {
                     <SelectTrigger className="w-full sm:w-[150px]">
                       <SelectValue placeholder="Filter status" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[9999]">
                       <SelectItem value="all">All Statuses</SelectItem>
                       <SelectItem value="confirmed">Confirmed</SelectItem>
                       <SelectItem value="pending">Pending</SelectItem>

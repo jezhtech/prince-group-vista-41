@@ -93,6 +93,7 @@ const App = () => (
                 - prevent logged-in users from accessing
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/register/complete" element={<Register />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route
                   path="/password-reset-sent"

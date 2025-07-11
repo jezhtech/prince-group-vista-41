@@ -60,6 +60,9 @@ interface MemberInfo {
   memberSince: string;
   membershipType: string;
   profileImage: string;
+  city: string;
+  state: string;
+  pincode: string;
 }
 
 const TICKETS = [
@@ -94,7 +97,10 @@ const MemberDashboard = () => {
     name: "",
     email: "",
     phone: "",
-    address: "Address not provided",
+    address: "",
+    city: "",
+    state: "",
+    pincode: "",
     membershipId: "PG-2023-0000",
     memberSince: "Jan 2023",
     membershipType: "Premium",
@@ -146,7 +152,6 @@ const MemberDashboard = () => {
   };
 
   useEffect(() => {
-    console.log("hello");
     async function fetchUser() {
       try {
         setLoading(true);
@@ -159,7 +164,7 @@ const MemberDashboard = () => {
             name: user.fullName || "Member",
             email: user.email || "",
             phone: user.mobile || "Phone not provided",
-            address: "Address not provided", // Default since not in User type
+            address: user.address, // Default since not in User type
             membershipId: user.userId,
             memberSince: new Date(user.createdAt).toLocaleDateString("en-US", {
               year: "numeric",
@@ -167,6 +172,9 @@ const MemberDashboard = () => {
             }),
             membershipType: "Premium", // Default membership type
             profileImage: "https://placehold.co/80x80/ffffff/4eb4a7?text=PG",
+            city: user.city || "",
+            state: user.state || "",
+            pincode: user.pincode || "",
           });
 
           // Also update the edited profile
@@ -174,7 +182,7 @@ const MemberDashboard = () => {
             name: user.fullName || "Member",
             email: user.email || "",
             phone: user.mobile || "Phone not provided",
-            address: "Address not provided",
+            address: user.address,
             membershipId: user.userId,
             memberSince: new Date(user.createdAt).toLocaleDateString("en-US", {
               year: "numeric",
@@ -182,6 +190,9 @@ const MemberDashboard = () => {
             }),
             membershipType: "Premium",
             profileImage: "https://placehold.co/80x80/ffffff/4eb4a7?text=PG",
+            city: user.city || "",
+            state: user.state || "",
+            pincode: user.pincode || "",
           });
         }
       } catch (error) {
@@ -403,16 +414,43 @@ const MemberDashboard = () => {
                             {memberInfo.membershipId}
                           </p>
                         </div>
-                      </div>
 
-                      <div className="pt-2">
-                        <p className="text-sm font-medium text-gray-500 mb-2">
-                          Address
-                        </p>
-                        <p className="flex items-start text-gray-800 font-medium">
-                          <MapPin className="h-4 w-4 mr-2 text-[#4eb4a7] mt-1 flex-shrink-0" />
-                          <span>{memberInfo.address}</span>
-                        </p>
+                        <div className="pt-2">
+                          <p className="text-sm font-medium text-gray-500 mb-2">
+                            Address
+                          </p>
+                          <p className="flex items-start text-gray-800 font-medium">
+                            <MapPin className="h-4 w-4 mr-2 text-[#4eb4a7] mt-1 flex-shrink-0" />
+                            <span>{memberInfo.address}</span>
+                          </p>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium text-gray-500 mb-2">
+                            City
+                          </p>
+                          <p className="flex items-start text-gray-800 font-medium">
+                            <MapPin className="h-4 w-4 mr-2 text-[#4eb4a7] mt-1 flex-shrink-0" />
+                            <span>{memberInfo.city}</span>
+                          </p>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium text-gray-500 mb-2">
+                            State
+                          </p>
+                          <p className="flex items-start text-gray-800 font-medium">
+                            <MapPin className="h-4 w-4 mr-2 text-[#4eb4a7] mt-1 flex-shrink-0" />
+                            <span>{memberInfo.state}</span>
+                          </p>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium text-gray-500 mb-2">
+                            Pincode
+                          </p>
+                          <p className="flex items-start text-gray-800 font-medium">
+                            <MapPin className="h-4 w-4 mr-2 text-[#4eb4a7] mt-1 flex-shrink-0" />
+                            <span>{memberInfo.pincode}</span>
+                          </p>
+                        </div>
                       </div>
                     </CardContent>
                     <CardFooter className="bg-gray-50 border-t border-gray-100 p-4">
@@ -791,7 +829,7 @@ const MemberDashboard = () => {
 
       {/* Profile Edit Dialog */}
       <Dialog open={isEditMode} onOpenChange={setIsEditMode}>
-        <DialogContent className="sm:max-w-[600px]">
+        <DialogContent className="md:max-w-xl">
           <DialogHeader>
             <DialogTitle>Edit Profile Information</DialogTitle>
             <DialogDescription>

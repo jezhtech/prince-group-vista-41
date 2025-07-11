@@ -17,8 +17,10 @@ import {
   signInWithPhoneNumber,
   PhoneAuthProvider,
   signInWithCredential,
+  signInWithPopup,
+  GoogleAuthProvider,
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth, googleAuthProvider } from "@/lib/firebase";
 import { createUser } from "@/services/user";
 import { User as UserType } from "@/types/user";
 
@@ -27,6 +29,7 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (user: Partial<UserType>, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updateUserProfile: (displayName: string) => Promise<void>;
@@ -83,6 +86,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
     await updateProfile(result.user, { displayName: user.fullName });
   };
 
+  const signInWithGoogle = async () => {
+    const result = await signInWithPopup(auth, googleAuthProvider);
+    const token = await result.user.getIdToken();
+    
+    // Check if user already exists in our database
+    try {
+      await createUser(token, { 
+        userId: result.user.uid,
+        firebaseId: result.user.uid,
+        email: result.user.email || '',
+        fullName: result.user.displayName || '',
+        mobile: '', // Will be filled in the next step
+        role: 'user' as const,
+      });
+    } catch (error: any) {
+      // User might already exist, which is fine
+      console.log('User might already exist:', error.message);
+    }
+  };
+
   const logout = async () => {
     setCurrentUser(null);
     await signOut(auth);
@@ -115,6 +138,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     loading,
     signIn,
     signUp,
+    signInWithGoogle,
     logout,
     resetPassword,
     updateUserProfile,
