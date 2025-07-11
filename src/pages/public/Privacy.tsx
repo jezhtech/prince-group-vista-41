@@ -17,6 +17,8 @@ import {
   AlertCircle,
   CheckCircle,
   Info,
+  XCircle,
+  RotateCcw,
 } from "lucide-react";
 import MainFooter from "@/components/MainFooter";
 
@@ -348,6 +350,125 @@ const Privacy = () => {
                       <div className="flex items-center gap-3">
                         <div className="w-2 h-2 bg-primary rounded-full"></div>
                         <span className="text-sm">Data portability</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Cancellation Policy */}
+              <Card className="border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3 text-2xl text-primary">
+                    <XCircle className="w-6 h-6" />
+                    Cancellation Policy
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                      <div>
+                        <h4 className="font-semibold text-red-800 mb-2">
+                          No Cancellations Allowed
+                        </h4>
+                        <p className="text-sm text-red-700">
+                          Once a ticket is successfully booked through our platform, it cannot be cancelled, exchanged, or modified under any circumstances.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <p className="text-muted-foreground">
+                      We urge users to verify all event details and ticket selections before completing the booking process.
+                    </p>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <XCircle className="w-4 h-4 text-red-500" />
+                        <span className="text-sm">No cancellation requests will be entertained</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <XCircle className="w-4 h-4 text-red-500" />
+                        <span className="text-sm">Personal reasons, scheduling conflicts, or change of plans are not valid grounds for cancellation</span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Refund Policy */}
+              <Card className="border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-3 text-2xl text-primary">
+                    <RotateCcw className="w-6 h-6" />
+                    Refund Policy
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3 text-foreground">
+                      When Refunds Are Processed
+                    </h3>
+                    <p className="text-muted-foreground mb-4">
+                      Refunds will be processed only in the case of transaction failures, such as:
+                    </p>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-yellow-800">Amount debited but ticket not generated</h4>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <AlertCircle className="w-4 h-4 text-yellow-600 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-yellow-800">Payment gateway failure resulting in no booking confirmation</h4>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3 text-foreground">
+                      Refund Processing Time
+                    </h3>
+                    <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
+                        <div>
+                          <p className="text-sm text-green-800">
+                            In such cases, if the amount is debited from your account but no ticket is issued, the transaction will be automatically refunded to your original payment method within <strong>5–7 working days</strong>, depending on your bank or payment provider.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3 text-foreground">
+                      Important Notes
+                    </h3>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <XCircle className="w-4 h-4 text-red-500 mt-0.5" />
+                        <span className="text-sm">No refunds will be provided for successfully booked tickets</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <XCircle className="w-4 h-4 text-red-500 mt-0.5" />
+                        <span className="text-sm">No refunds will be processed due to personal inability to attend the event</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Info className="w-4 h-4 text-blue-500 mt-0.5" />
+                        <span className="text-sm">In case of event cancellation or rescheduling by the organizers, refund or reschedule details (if applicable) will be communicated separately</span>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <Mail className="w-4 h-4 text-primary mt-0.5" />
+                        <span className="text-sm">If you have faced a payment issue, please reach out to our support team at <a href="mailto:info@jezhtechnologies.com" className="text-primary hover:underline">info@jezhtechnologies.com</a> with the payment details and transaction reference number</span>
                       </div>
                     </div>
                   </div>
