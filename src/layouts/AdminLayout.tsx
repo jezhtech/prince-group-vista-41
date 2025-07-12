@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet, NavLink, Link } from "react-router-dom";
+import { Outlet, NavLink, Link, useNavigate } from "react-router-dom";
 import {
   Home,
   BarChart2,
@@ -29,21 +29,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 
 const AdminLayout = () => {
   const { currentUser, logout } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const navigate = useNavigate();
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
   const handleLogout = async () => {
     try {
       await logout();
+      navigate("/login");
     } catch (error) {
-      console.error("Logout failed:", error);
+      toast.error("Failed to logout");
     }
-  };
-
-  const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
   };
 
   const sidebarItems = [
@@ -226,15 +229,9 @@ const AdminLayout = () => {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/profile">
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/settings">
-                        <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
+                      <Link to="/admin/tickets">
+                        <Ticket className="mr-2 h-4 w-4" />
+                        <span>Tickets</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />

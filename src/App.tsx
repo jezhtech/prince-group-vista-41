@@ -86,11 +86,10 @@ const App = () => (
                   element={<EventAttractions />}
                 />
                 <Route path="/membership" element={<Membership />} />
-                <Route path="/about" element={<About />} />,
-                <Route path="/terms" element={<Terms />} />,
-                <Route path="/privacy" element={<Privacy />} />,
-                <Route path="/contact" element={<Contact />} />, // Auth routes
-                - prevent logged-in users from accessing
+                <Route path="/about" element={<About />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/contact" element={<Contact />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/register/complete" element={<Register />} />

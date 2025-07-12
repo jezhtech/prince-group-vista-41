@@ -70,7 +70,7 @@ export const updateUser = async (token: string, userData: Partial<User>): Promis
 };
 
 export const getAllUsers = async (token: string): Promise<User[]> => {
-    const response = await fetch(`${API_BASE_URL}/user/all/`, {
+    const response = await fetch(`${API_BASE_URL}/user/all`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`,
@@ -79,7 +79,8 @@ export const getAllUsers = async (token: string): Promise<User[]> => {
     });
 
     if (!response.ok) {
-        throw new Error("Failed to get users");
+        console.error(response);
+        return [];
     }
     const data = await response.json();
     return data.users;

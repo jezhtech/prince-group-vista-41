@@ -40,38 +40,64 @@ const Login = () => {
   );
   const [error, setError] = useState("");
 
-  const handleSendOtp = (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    // For now, we'll simulate OTP sending since Firebase doesn't have built-in OTP
-    // In a real implementation, you'd integrate with a service like Twilio
-    setTimeout(() => {
-      setOtpSent(true);
-      setIsLoading(false);
+    try {
+      // For now, we'll simulate OTP sending since Firebase doesn't have built-in email OTP
+      // In a real implementation, you'd integrate with a service like Twilio or your backend
+      setTimeout(() => {
+        setOtpSent(true);
+        setIsLoading(false);
+        toast({
+          title: "OTP Sent",
+          description: `A verification code has been sent to ${email}. For demo purposes, use code: 123456`,
+        });
+      }, 1500);
+    } catch (error: any) {
+      setError(error.message);
       toast({
-        title: "OTP Sent",
-        description: `A verification code has been sent to ${email}`,
+        title: "Failed to Send OTP",
+        description: error.message,
+        variant: "destructive",
       });
-    }, 1500);
+      setIsLoading(false);
+    }
   };
 
-  const handleVerifyOtp = (e: React.FormEvent) => {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
 
-    // Simulate OTP verification
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // For demo purposes, accept 123456 as the OTP
+      if (otp === "123456") {
+        toast({
+          title: "Login Successful",
+          description: "You have been logged in successfully.",
+        });
+        navigate(from, { replace: true });
+      } else {
+        setError("Invalid OTP code");
+        toast({
+          title: "Invalid OTP",
+          description: "Please enter the correct verification code.",
+          variant: "destructive",
+        });
+      }
+    } catch (error: any) {
+      setError(error.message);
       toast({
-        title: "Login Successful",
-        description: "You have been logged in successfully.",
+        title: "OTP Verification Failed",
+        description: error.message,
+        variant: "destructive",
       });
-
-      navigate(from, { replace: true });
-    }, 1500);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handlePasswordLogin = async (e: React.FormEvent) => {

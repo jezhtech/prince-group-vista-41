@@ -24,18 +24,27 @@ const ForgotPassword = () => {
       await resetPassword(email);
       toast({
         title: "Reset Link Sent",
-        description: "A password reset link has been sent to your email.",
+        description: "A password reset link has been sent to your email. Please check your inbox and spam folder.",
       });
 
       // Navigate to confirmation page with email param
       navigate(`/password-reset-sent?email=${encodeURIComponent(email)}`);
     } catch (error: any) {
-      setError(error.message);
-      toast({
-        title: "Failed to Send Reset Link",
-        description: error.message,
-        variant: "destructive",
-      });
+      if (error.message.includes("auth/user-not-found")) {
+        setError("No account found with this email address");
+        toast({
+          title: "Email Not Found",
+          description: "No account found with this email address. Please check the email or create a new account.",
+          variant: "destructive",
+        });
+      } else {
+        setError(error.message);
+        toast({
+          title: "Failed to Send Reset Link",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }

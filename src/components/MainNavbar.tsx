@@ -14,6 +14,7 @@ import {
   Settings,
   LogOut,
   UserCircle,
+  Ticket,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -92,7 +93,7 @@ const iconPulseAnimation = {
 };
 
 const MainNavbar = () => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, userData } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
@@ -109,18 +110,6 @@ const MainNavbar = () => {
     } catch (error) {
       console.error("Logout failed:", error);
     }
-  };
-
-  // Simple role detection based on email or display name
-  const getUserRole = () => {
-    if (!currentUser) return "user";
-    // You can implement more sophisticated role detection here
-    // For now, we'll use a simple approach
-    const email = currentUser.email?.toLowerCase() || "";
-    if (email.includes("admin") || email.includes("prince")) {
-      return "admin";
-    }
-    return "user";
   };
 
   useEffect(() => {
@@ -491,7 +480,6 @@ const MainNavbar = () => {
                   animate={{ height: 24 }}
                   transition={{ delay: 0.5 }}
                 />
-
                 {/* Action buttons with hover effects */}
                 <motion.div
                   className="flex items-center gap-2"
@@ -531,7 +519,7 @@ const MainNavbar = () => {
                         <DropdownMenuItem asChild>
                           <Link
                             to={
-                              getUserRole() === "admin"
+                              userData?.role === "admin"
                                 ? "/admin"
                                 : "/member/dashboard"
                             }
@@ -541,15 +529,15 @@ const MainNavbar = () => {
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
-                          <Link to="/profile">
-                            <User className="mr-2 h-4 w-4" />
-                            <span>Profile</span>
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link to="/settings">
-                            <Settings className="mr-2 h-4 w-4" />
-                            <span>Settings</span>
+                          <Link
+                            to={
+                              userData?.role === "admin"
+                                ? "/admin/tickets"
+                                : "/member/tickets"
+                            }
+                          >
+                            <Ticket className="mr-2 h-4 w-4" />
+                            <span>Tickets</span>
                           </Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
@@ -717,7 +705,7 @@ const MainNavbar = () => {
 
                         <Link
                           to={
-                            getUserRole() === "admin"
+                            userData?.role === "admin"
                               ? "/admin"
                               : "/member/dashboard"
                           }
@@ -729,21 +717,16 @@ const MainNavbar = () => {
                         </Link>
 
                         <Link
-                          to="/profile"
+                          to={
+                            userData?.role === "admin"
+                              ? "/admin/tickets"
+                              : "/member/tickets"
+                          }
                           onClick={() => setIsMenuOpen(false)}
                           className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5"
                         >
                           <User className="w-4 h-4" />
-                          <span className="font-medium">Profile</span>
-                        </Link>
-
-                        <Link
-                          to="/settings"
-                          onClick={() => setIsMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 bg-white border border-gray-200 shadow-sm hover:bg-[#4eb4a7]/5"
-                        >
-                          <Settings className="w-4 h-4" />
-                          <span className="font-medium">Settings</span>
+                          <span className="font-medium">Tickets</span>
                         </Link>
 
                         <button

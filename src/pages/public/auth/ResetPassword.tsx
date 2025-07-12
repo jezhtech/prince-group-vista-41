@@ -4,16 +4,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { Lock, ShieldCheck } from 'lucide-react';
+import { Lock, ShieldCheck, AlertCircle } from 'lucide-react';
 import Logo from '@/components/Logo';
+import { useAuth } from '@/hooks/useAuth';
 
 const ResetPassword = () => {
+  const { currentUser } = useAuth();
   const [formData, setFormData] = useState({
     password: '',
     confirmPassword: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [passwordError, setPasswordError] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   
@@ -32,7 +35,7 @@ const ResetPassword = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate passwords
@@ -47,18 +50,28 @@ const ResetPassword = () => {
     }
     
     setIsLoading(true);
+    setError('');
 
-    // Simulate password reset API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // For now, we'll show a message that this feature needs backend implementation
+      // In a real implementation, you would send the token and new password to your backend
       toast({
-        title: "Password Reset Successful",
-        description: "Your password has been reset successfully. You can now log in with your new password.",
+        title: "Password Reset Feature",
+        description: "This feature requires backend implementation to handle password reset tokens.",
       });
       
       // Redirect to login page
       navigate('/login');
-    }, 1500);
+    } catch (error: any) {
+      setError(error.message);
+      toast({
+        title: "Password Reset Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -90,6 +103,12 @@ const ResetPassword = () => {
         </p>
         
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <AlertCircle className="h-4 w-4 text-red-500" />
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
           <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium text-gray-700">
               New Password

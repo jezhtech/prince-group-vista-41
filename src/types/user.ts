@@ -12,6 +12,7 @@ export interface User {
   city: string;
   state: string;
   pincode: string;
+  aadhaar: string;
 }
 
 export interface CreateUserRequest extends Partial<User> {

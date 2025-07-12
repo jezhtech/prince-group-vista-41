@@ -17,6 +17,7 @@ import {
   AlertCircle,
   MapPin,
   Home,
+  IdCard,
 } from "lucide-react";
 import Logo from "@/components/Logo";
 import { useAuth } from "@/hooks/useAuth";
@@ -41,6 +42,7 @@ const Register = () => {
     city: "",
     state: "",
     pincode: "",
+    aadhaar: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -55,12 +57,22 @@ const Register = () => {
         fullName: currentUser.displayName || "",
         email: currentUser.email || "",
       }));
+    } else {
+      navigate("/register");
     }
   }, [currentUser, isCompleteStep]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "aadhaar" || name === "mobile" || name === "pincode") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value.replace(/\D/g, ""),
+      }));
+      return;
+    }
 
     // Clear password error when updating password fields
     if (name === "password" || name === "confirmPassword") {
@@ -475,6 +487,28 @@ const Register = () => {
               required
               minLength={6}
               maxLength={6}
+            />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <label
+            htmlFor="pincode"
+            className="text-sm font-medium text-gray-700"
+          >
+            Aadhaar Number
+          </label>
+          <div className="relative">
+            <IdCard className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 h-5 w-5" />
+            <Input
+              id="aadhaar"
+              name="aadhaar"
+              placeholder="Enter aadhaar number"
+              className="pl-10 border-gray-200"
+              value={formData.aadhaar}
+              onChange={handleInputChange}
+              required
+              minLength={12}
+              maxLength={12}
             />
           </div>
         </div>

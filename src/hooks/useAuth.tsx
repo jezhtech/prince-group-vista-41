@@ -21,7 +21,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { auth, googleAuthProvider } from "@/lib/firebase";
-import { createUser } from "@/services/user";
+import { createUser, getUser } from "@/services/user";
 import { User as UserType } from "@/types/user";
 
 interface AuthContextType {
@@ -38,11 +38,13 @@ interface AuthContextType {
     recaptchaVerifier: RecaptchaVerifier
   ) => Promise<any>;
   verifyPhoneOTP: (verificationId: string, otp: string) => Promise<any>;
+  userData: UserType | null;
+  userToken: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function useAuth() {
+function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
@@ -50,18 +52,34 @@ export function useAuth() {
   return context;
 }
 
+export { useAuth };
+
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-export function AuthProvider({ children }: AuthProviderProps) {
+function AuthProvider({ children }: AuthProviderProps) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [userToken, setUserToken] = useState<string | null>(null);
+  const [userData, setUserData] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         setCurrentUser(user);
+        try {
+          const token = await user.getIdToken();
+          setUserToken(token);
+          const userData = await getUser(token);
+          setUserData(userData);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      } else {
+        setCurrentUser(null);
+        setUserToken(null);
+        setUserData(null);
       }
       setLoading(false);
     });
@@ -82,27 +100,27 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const token = await result.user.getIdToken();
     await createUser(token, { ...user, firebaseId: result.user.uid });
-    
+
     await updateProfile(result.user, { displayName: user.fullName });
   };
 
   const signInWithGoogle = async () => {
     const result = await signInWithPopup(auth, googleAuthProvider);
     const token = await result.user.getIdToken();
-    
+
     // Check if user already exists in our database
     try {
-      await createUser(token, { 
+      await createUser(token, {
         userId: result.user.uid,
         firebaseId: result.user.uid,
-        email: result.user.email || '',
-        fullName: result.user.displayName || '',
-        mobile: '', // Will be filled in the next step
-        role: 'user' as const,
+        email: result.user.email || "",
+        fullName: result.user.displayName || "",
+        mobile: "", // Will be filled in the next step
+        role: "user" as const,
       });
     } catch (error: any) {
       // User might already exist, which is fine
-      console.log('User might already exist:', error.message);
+      console.log("User might already exist:", error.message);
     }
   };
 
@@ -144,11 +162,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     updateUserProfile,
     sendPhoneOTP,
     verifyPhoneOTP,
+    userData,
+    userToken,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
+
+export { AuthProvider };
