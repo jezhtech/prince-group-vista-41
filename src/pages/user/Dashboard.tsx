@@ -63,6 +63,7 @@ interface MemberInfo {
   city: string;
   state: string;
   pincode: string;
+  aadhaar: string;
 }
 
 const TICKETS = [
@@ -105,6 +106,7 @@ const MemberDashboard = () => {
     memberSince: "Jan 2023",
     membershipType: "Premium",
     profileImage: "https://placehold.co/80x80/ffffff/4eb4a7?text=PG",
+    aadhaar: "",
   });
 
   // State for profile edit mode
@@ -175,6 +177,7 @@ const MemberDashboard = () => {
             city: user.city || "",
             state: user.state || "",
             pincode: user.pincode || "",
+            aadhaar: user.aadhaar || "",
           });
 
           // Also update the edited profile
@@ -193,6 +196,7 @@ const MemberDashboard = () => {
             city: user.city || "",
             state: user.state || "",
             pincode: user.pincode || "",
+            aadhaar: user.aadhaar || "",
           });
         }
       } catch (error) {
@@ -449,6 +453,15 @@ const MemberDashboard = () => {
                           <p className="flex items-start text-gray-800 font-medium">
                             <MapPin className="h-4 w-4 mr-2 text-[#4eb4a7] mt-1 flex-shrink-0" />
                             <span>{memberInfo.pincode}</span>
+                          </p>
+                        </div>
+                        <div className="space-y-2">
+                          <p className="text-sm font-medium text-gray-500 mb-2">
+                            Aadhaar Number
+                          </p>
+                          <p className="flex items-start text-gray-800 font-medium">
+                            <MapPin className="h-4 w-4 mr-2 text-[#4eb4a7] mt-1 flex-shrink-0" />
+                            <span>{memberInfo.aadhaar}</span>
                           </p>
                         </div>
                       </div>
@@ -886,6 +899,18 @@ const MemberDashboard = () => {
                 id="address"
                 name="address"
                 value={editedProfile.address}
+                onChange={handleProfileChange}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="address" className="text-right">
+                Aadhaar Number
+              </Label>
+              <Input
+                id="aadhaar"
+                name="aadhaar"
+                value={editedProfile.aadhaar}
                 onChange={handleProfileChange}
                 className="col-span-3"
               />

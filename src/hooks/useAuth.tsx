@@ -29,7 +29,7 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (user: Partial<UserType>, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: () => Promise<{ isNewUser: boolean; needsProfileCompletion?: boolean }>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updateUserProfile: (displayName: string) => Promise<void>;
@@ -118,9 +118,23 @@ function AuthProvider({ children }: AuthProviderProps) {
         mobile: "", // Will be filled in the next step
         role: "user" as const,
       });
+      // New user created, will need to complete profile
+      return { isNewUser: true };
     } catch (error: any) {
-      // User might already exist, which is fine
-      console.log("User might already exist:", error.message);
+      // User already exists, check if profile is complete
+      try {
+        const existingUser = await getUser(token);
+        if (!existingUser.mobile || !existingUser.address) {
+          // Profile incomplete, needs completion
+          return { isNewUser: false, needsProfileCompletion: true };
+        }
+        // Profile complete
+        return { isNewUser: false, needsProfileCompletion: false };
+      } catch (getUserError: any) {
+        console.log("Error checking user data:", getUserError.message);
+        // Assume profile needs completion if we can't fetch user data
+        return { isNewUser: false, needsProfileCompletion: true };
+      }
     }
   };
 

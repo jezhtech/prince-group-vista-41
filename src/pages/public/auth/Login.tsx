@@ -138,12 +138,21 @@ const Login = () => {
     setError("");
 
     try {
-      await signInWithGoogle();
-      toast({
-        title: "Login Successful",
-        description: "You have been logged in successfully with Google.",
-      });
-      navigate(from, { replace: true });
+      const result = await signInWithGoogle();
+      
+      if (result.isNewUser || result.needsProfileCompletion) {
+        toast({
+          title: "Google Sign-in Successful",
+          description: "Please complete your profile with additional details.",
+        });
+        navigate("/register/complete?source=google", { replace: true });
+      } else {
+        toast({
+          title: "Login Successful",
+          description: "You have been logged in successfully with Google.",
+        });
+        navigate(from, { replace: true });
+      }
     } catch (error: any) {
       setError(error.message);
       toast({
