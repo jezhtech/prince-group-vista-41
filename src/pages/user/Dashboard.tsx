@@ -49,7 +49,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import LogoutButton from "@/components/LogoutButton";
 import { User as UserType } from "@/types/user";
-import { getUser } from "@/services/user";
+import { getUser, updateUser } from "@/services/user";
+import { toast } from "@/hooks/use-toast";
 
 interface MemberInfo {
   name: string;
@@ -92,7 +93,7 @@ const TICKETS = [
 ];
 
 const MemberDashboard = () => {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, userData } = useAuth();
   const [loading, setLoading] = useState(true);
   const [memberInfo, setMemberInfo] = useState<MemberInfo>({
     name: "",
@@ -111,6 +112,7 @@ const MemberDashboard = () => {
 
   // State for profile edit mode
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [editedProfile, setEditedProfile] = useState<MemberInfo>({
     ...memberInfo,
   });
@@ -124,10 +126,147 @@ const MemberDashboard = () => {
     }));
   };
 
-  const saveProfileChanges = () => {
-    // In a real app, you would save to API here
-    setMemberInfo(editedProfile);
-    setIsEditMode(false);
+  // Reset edited profile when dialog opens/closes
+  const handleEditDialogChange = (open: boolean) => {
+    setIsEditMode(open);
+    if (open) {
+      // Reset to current member info when opening
+      setEditedProfile({
+        ...memberInfo,
+        // Ensure we have the latest data from the backend
+        name: memberInfo.name || userData?.fullName || "",
+        email: memberInfo.email || userData?.email || "",
+        phone: memberInfo.phone || userData?.mobile || "",
+        address: memberInfo.address || userData?.address || "",
+        city: memberInfo.city || userData?.city || "",
+        state: memberInfo.state || userData?.state || "",
+        pincode: memberInfo.pincode || userData?.pincode || "",
+        aadhaar: memberInfo.aadhaar || userData?.aadhaar || "",
+      });
+    }
+  };
+
+  const saveProfileChanges = async () => {
+    if (!currentUser) {
+      toast({
+        title: "Error",
+        description: "User not authenticated",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Basic validation
+    if (!editedProfile.name.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Name is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!editedProfile.email.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Email is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!editedProfile.phone.trim()) {
+      toast({
+        title: "Validation Error",
+        description: "Phone number is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const token = await currentUser.getIdToken();
+
+      // Map the edited profile to the User type expected by the API
+      const userUpdateData = {
+        fullName: editedProfile.name,
+        email: editedProfile.email,
+        mobile: editedProfile.phone,
+        address: editedProfile.address,
+        city: editedProfile.city,
+        state: editedProfile.state,
+        pincode: editedProfile.pincode,
+        aadhaar: editedProfile.aadhaar,
+      };
+
+      // Call the update API
+      const updatedUser = await updateUser(token, userUpdateData);
+
+      // Update the local state with the response from the API
+      setMemberInfo({
+        name: updatedUser.fullName || "Member",
+        email: updatedUser.email || "",
+        phone: updatedUser.mobile || "Phone not provided",
+        address: updatedUser.address,
+        membershipId: updatedUser.userId,
+        memberSince: new Date(updatedUser.createdAt).toLocaleDateString(
+          "en-US",
+          {
+            year: "numeric",
+            month: "short",
+          }
+        ),
+        membershipType: "Premium",
+        profileImage: "https://placehold.co/80x80/ffffff/4eb4a7?text=PG",
+        city: updatedUser.city || "",
+        state: updatedUser.state || "",
+        pincode: updatedUser.pincode || "",
+        aadhaar: updatedUser.aadhaar || "",
+      });
+
+      // Also update the edited profile state
+      setEditedProfile({
+        name: updatedUser.fullName || "Member",
+        email: updatedUser.email || "",
+        phone: updatedUser.mobile || "Phone not provided",
+        address: updatedUser.address,
+        membershipId: updatedUser.userId,
+        memberSince: new Date(updatedUser.createdAt).toLocaleDateString(
+          "en-US",
+          {
+            year: "numeric",
+            month: "short",
+          }
+        ),
+        membershipType: "Premium",
+        profileImage: "https://placehold.co/80x80/ffffff/4eb4a7?text=PG",
+        city: updatedUser.city || "",
+        state: updatedUser.state || "",
+        pincode: updatedUser.pincode || "",
+        aadhaar: updatedUser.aadhaar || "",
+      });
+
+      setIsEditMode(false);
+
+      // Refresh user data to get the latest information
+      await fetchUserData();
+
+      toast({
+        title: "Success",
+        description: "Profile updated successfully",
+      });
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Failed to update profile",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Animation variants
@@ -153,66 +292,50 @@ const MemberDashboard = () => {
     },
   };
 
-  useEffect(() => {
-    async function fetchUser() {
-      try {
-        setLoading(true);
-        const token = await currentUser?.getIdToken();
-        if (currentUser && token) {
-          const user: UserType = await getUser(token);
+  const fetchUserData = async () => {
+    try {
+      setLoading(true);
+      const token = await currentUser?.getIdToken();
+      if (currentUser && token) {
+        const user: UserType = await getUser(token);
 
-          // Map the user data to memberInfo with defaults for missing fields
-          setMemberInfo({
-            name: user.fullName || "Member",
-            email: user.email || "",
-            phone: user.mobile || "Phone not provided",
-            address: user.address, // Default since not in User type
-            membershipId: user.userId,
-            memberSince: new Date(user.createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-            }),
-            membershipType: "Premium", // Default membership type
-            profileImage: "https://placehold.co/80x80/ffffff/4eb4a7?text=PG",
-            city: user.city || "",
-            state: user.state || "",
-            pincode: user.pincode || "",
-            aadhaar: user.aadhaar || "",
-          });
+        // Map the user data to memberInfo with defaults for missing fields
+        const memberData = {
+          name: user.fullName || "Member",
+          email: user.email || "",
+          phone: user.mobile || "Phone not provided",
+          address: user.address, // Default since not in User type
+          membershipId: user.userId,
+          memberSince: new Date(user.createdAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+          }),
+          membershipType: "Premium", // Default membership type
+          profileImage: "https://placehold.co/80x80/ffffff/4eb4a7?text=PG",
+          city: user.city || "",
+          state: user.state || "",
+          pincode: user.pincode || "",
+          aadhaar: user.aadhaar || "",
+        };
 
-          // Also update the edited profile
-          setEditedProfile({
-            name: user.fullName || "Member",
-            email: user.email || "",
-            phone: user.mobile || "Phone not provided",
-            address: user.address,
-            membershipId: user.userId,
-            memberSince: new Date(user.createdAt).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-            }),
-            membershipType: "Premium",
-            profileImage: "https://placehold.co/80x80/ffffff/4eb4a7?text=PG",
-            city: user.city || "",
-            state: user.state || "",
-            pincode: user.pincode || "",
-            aadhaar: user.aadhaar || "",
-          });
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        // Keep default values if fetch fails
-      } finally {
-        setLoading(false);
+        setMemberInfo(memberData);
+        setEditedProfile(memberData);
       }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      // Keep default values if fetch fails
+    } finally {
+      setLoading(false);
     }
+  };
 
+  useEffect(() => {
     if (currentUser) {
-      fetchUser();
+      fetchUserData();
     } else {
       setLoading(false);
     }
-  }, []);
+  }, [currentUser]);
 
   // Loading state
   if (loading) {
@@ -841,8 +964,8 @@ const MemberDashboard = () => {
       </main>
 
       {/* Profile Edit Dialog */}
-      <Dialog open={isEditMode} onOpenChange={setIsEditMode}>
-        <DialogContent className="md:max-w-xl">
+      <Dialog open={isEditMode} onOpenChange={handleEditDialogChange}>
+        <DialogContent className="md:max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Profile Information</DialogTitle>
             <DialogDescription>
@@ -851,8 +974,8 @@ const MemberDashboard = () => {
           </DialogHeader>
 
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
+            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="md:text-right">
                 Name
               </Label>
               <Input
@@ -860,12 +983,13 @@ const MemberDashboard = () => {
                 name="name"
                 value={editedProfile.name}
                 onChange={handleProfileChange}
-                className="col-span-3"
+                className="md:col-span-3"
+                placeholder="Enter your full name"
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="email" className="text-right">
+            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+              <Label htmlFor="email" className="md:text-right">
                 Email
               </Label>
               <Input
@@ -874,12 +998,14 @@ const MemberDashboard = () => {
                 type="email"
                 value={editedProfile.email}
                 onChange={handleProfileChange}
-                className="col-span-3"
+                className="md:col-span-3"
+                placeholder="Enter your email address"
+                readOnly
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="phone" className="text-right">
+            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+              <Label htmlFor="phone" className="md:text-right">
                 Phone
               </Label>
               <Input
@@ -887,12 +1013,13 @@ const MemberDashboard = () => {
                 name="phone"
                 value={editedProfile.phone}
                 onChange={handleProfileChange}
-                className="col-span-3"
+                className="md:col-span-3"
+                placeholder="Enter your phone number"
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="address" className="text-right">
+            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+              <Label htmlFor="address" className="md:text-right">
                 Address
               </Label>
               <Input
@@ -900,11 +1027,55 @@ const MemberDashboard = () => {
                 name="address"
                 value={editedProfile.address}
                 onChange={handleProfileChange}
-                className="col-span-3"
+                className="md:col-span-3"
+                placeholder="Enter your address"
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="address" className="text-right">
+
+            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+              <Label htmlFor="city" className="md:text-right">
+                City
+              </Label>
+              <Input
+                id="city"
+                name="city"
+                value={editedProfile.city}
+                onChange={handleProfileChange}
+                className="md:col-span-3"
+                placeholder="Enter your city"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+              <Label htmlFor="state" className="md:text-right">
+                State
+              </Label>
+              <Input
+                id="state"
+                name="state"
+                value={editedProfile.state}
+                onChange={handleProfileChange}
+                className="md:col-span-3"
+                placeholder="Enter your state"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+              <Label htmlFor="pincode" className="md:text-right">
+                Pincode
+              </Label>
+              <Input
+                id="pincode"
+                name="pincode"
+                value={editedProfile.pincode}
+                onChange={handleProfileChange}
+                className="md:col-span-3"
+                placeholder="Enter your pincode"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 items-center gap-4">
+              <Label htmlFor="aadhaar" className="md:text-right">
                 Aadhaar Number
               </Label>
               <Input
@@ -912,20 +1083,33 @@ const MemberDashboard = () => {
                 name="aadhaar"
                 value={editedProfile.aadhaar}
                 onChange={handleProfileChange}
-                className="col-span-3"
+                className="md:col-span-3"
+                placeholder="Enter your Aadhaar number"
               />
             </div>
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditMode(false)}>
+            <Button
+              variant="outline"
+              onClick={() => handleEditDialogChange(false)}
+              disabled={isSaving}
+            >
               Cancel
             </Button>
             <Button
               className="bg-[#4eb4a7] hover:bg-[#3da296]"
               onClick={saveProfileChanges}
+              disabled={isSaving}
             >
-              Save Changes
+              {isSaving ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save Changes"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
