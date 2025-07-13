@@ -247,7 +247,7 @@ export const EventBooking = memo(
         // Redirect to Cashfree payment page
         if (paymentResponse.paymentLink) {
           setPaymentUrl(paymentResponse.paymentLink);
-          window.open(paymentResponse.paymentLink, "_blank");
+          window.location.href = paymentResponse.paymentLink;
 
           toast({
             title: "Payment Initiated",
