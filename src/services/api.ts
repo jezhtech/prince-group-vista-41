@@ -42,10 +42,12 @@ export const apiRequest = async <T>(
         const response = await fetch(url, config);
 
         if (!response.ok) {
+            const errorText = await response.text();
+            console.log(errorText);
             throw new ApiError(
                 `HTTP error! status: ${response.status}`,
                 response.status,
-                response.statusText
+                errorText
             );
         }
 

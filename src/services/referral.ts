@@ -84,4 +84,21 @@ export const deleteReferral = async (token: string, id: number): Promise<void> =
     if (!response.ok) {
         throw new Error("Failed to delete referral");
     }
-}; 
+};
+
+export const checkReferralCode = async (token: string, referralCode: string): Promise<{ found: boolean, referral?: Referral }> => {
+    const response = await fetch(`${API_BASE_URL}/referral/check-referral?referralCode=${referralCode}`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to check referral code");
+    }
+
+    const data = await response.json();
+    return data;
+};

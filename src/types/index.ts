@@ -8,4 +8,7 @@ export * from './ticket';
 export * from './booking';
 
 // Referral types
-export * from './referral'; 
+export * from './referral';
+
+// Payment types
+export * from './payment'; 

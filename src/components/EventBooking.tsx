@@ -1,5 +1,13 @@
 import { Button } from "./ui/button";
-import { X, ArrowLeft, ArrowRight, CheckCircle, Youtube } from "lucide-react";
+import {
+  X,
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle,
+  Youtube,
+  CreditCard,
+  Loader2,
+} from "lucide-react";
 import { Label } from "./ui/label";
 import {
   Minus,
@@ -14,10 +22,13 @@ import { useState, useCallback, useMemo, memo, useEffect } from "react";
 import { cn, isIOS } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Ticket } from "@/types";
-import { getAllTickets } from "@/services";
+import { getAllTickets, createBooking } from "@/services";
 import { useAuth } from "@/hooks/useAuth";
 import { useYouTubeSubscription } from "@/services/youtube";
+import { createPaymentSession, generateLinkId } from "@/services/payment";
+import { checkReferralCode } from "@/services/referral";
 import { useNavigate } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
 
 const EVENT_DETAILS = {
   date: "5 PM, 20 September 2025",
@@ -73,7 +84,7 @@ type BookingStep = "tickets" | "offers" | "payment";
 
 export const EventBooking = memo(
   ({ isBookingOpen, setIsBookingOpen }: EventBookingProps) => {
-    const { currentUser } = useAuth();
+    const { currentUser, userToken, userData } = useAuth();
     const { checkSubscription } = useYouTubeSubscription();
     const [currentStep, setCurrentStep] = useState<BookingStep>("tickets");
     const [ticketQuantity, setTicketQuantity] = useState(1);
@@ -81,12 +92,21 @@ export const EventBooking = memo(
     const [isTicketClassesLoading, setIsTicketClassesLoading] = useState(false);
     const [ticketClasses, setTicketClasses] = useState<Ticket[]>([]);
     const navigate = useNavigate();
+    const [isCheckingReferral, setIsCheckingReferral] =
+      useState<boolean>(false);
+    const [referralFound, setReferralFound] = useState<boolean>(false);
 
     // Offer states
     const [referralCode, setReferralCode] = useState("");
+    const [isValidReferral, setIsValidReferral] = useState(false);
+    const [referralError, setReferralError] = useState("");
     const [isYoutubeSubscribed, setIsYoutubeSubscribed] = useState(false);
     const [isCheckingYoutube, setIsCheckingYoutube] = useState(false);
     const [youtubeChannelId] = useState("UCkIdOa88R8uDR_B3afbtyjg"); // Replace with your channel ID
+
+    // Payment states
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+    const [paymentUrl, setPaymentUrl] = useState<string | null>(null);
 
     // Memoized calculations
     const selectedTicket = useMemo(
@@ -104,8 +124,8 @@ export const EventBooking = memo(
 
       let price = selectedTicket.price;
 
-      // Apply referral discount if code is provided
-      if (referralCode.trim()) {
+      // Apply referral discount only if valid referral is found
+      if (isValidReferral) {
         price = selectedTicket.offerPriceWithReferral;
       }
 
@@ -115,7 +135,7 @@ export const EventBooking = memo(
       }
 
       return price * ticketQuantity;
-    }, [selectedTicket, ticketQuantity, referralCode, isYoutubeSubscribed]);
+    }, [selectedTicket, ticketQuantity, isValidReferral, isYoutubeSubscribed]);
 
     const totalSavings = useMemo(() => {
       return basePrice - finalPrice;
@@ -154,6 +174,8 @@ export const EventBooking = memo(
       setTicketQuantity(1);
       setCurrentStep("tickets");
       setReferralCode("");
+      setIsValidReferral(false);
+      setReferralError("");
       setIsYoutubeSubscribed(false);
     }, [setIsBookingOpen]);
 
@@ -173,19 +195,88 @@ export const EventBooking = memo(
       }
     }, [currentStep]);
 
-    const handleProceedToPayment = useCallback(() => {
-      if (isBookingValid) {
-        handleClose();
+    const handleProceedToPayment = useCallback(async () => {
+      if (!isBookingValid || !currentUser) {
+        toast({
+          title: "Error",
+          description: "Please select a ticket and ensure you're logged in.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setIsProcessingPayment(true);
+      try {
+        // Create booking first
+        const bookingData = {
+          userId: currentUser.uid,
+          referralId: isValidReferral ? referralCode : "",
+          ticketId: selectedTicket!.id,
+          status: "pending" as const,
+          paymentMethod: "cashfree",
+          paymentStatus: "pending" as const,
+          paymentDate: new Date().toISOString(),
+          paymentUrl: "",
+          paymentId: "",
+          transactionId: "",
+        };
+
+        const booking = await createBooking(
+          await currentUser.getIdToken(),
+          bookingData
+        );
+
+        // Create payment session with Cashfree
+        const paymentData = {
+          bookingId: booking.id,
+          amount: finalPrice,
+          currency: "INR",
+          customerName: currentUser.displayName || "Guest",
+          customerEmail: currentUser.email || "",
+          customerPhone: userData.mobile || "", // You might want to get this from user profile
+          orderNote: `Booking for ${
+            selectedTicket!.name
+          } x ${ticketQuantity} tickets`,
+        };
+
+        const paymentResponse = await createPaymentSession(
+          await currentUser.getIdToken(),
+          paymentData
+        );
+
+        // Redirect to Cashfree payment page
+        if (paymentResponse.paymentLink) {
+          setPaymentUrl(paymentResponse.paymentLink);
+          window.open(paymentResponse.paymentLink, "_blank");
+
+          toast({
+            title: "Payment Initiated",
+            description:
+              "Redirecting to payment gateway. Please complete your payment.",
+          });
+
+          // Close the booking dialog
+          handleClose();
+        } else {
+          throw new Error("Payment URL not received");
+        }
+      } catch (error) {
+        console.error("Payment error:", error);
+        toast({
+          title: "Payment Error",
+          description: "Failed to initiate payment. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsProcessingPayment(false);
       }
     }, [
       isBookingValid,
-      ticketCategory,
+      currentUser,
+      selectedTicket,
       ticketQuantity,
-      basePrice,
       finalPrice,
       referralCode,
-      isYoutubeSubscribed,
-      totalSavings,
       handleClose,
     ]);
 
@@ -217,6 +308,40 @@ export const EventBooking = memo(
         setIsCheckingYoutube(false);
       }
     }, [currentUser, youtubeChannelId, checkSubscription]);
+
+    const checkReferral = useCallback(async () => {
+      if (!referralCode.trim()) {
+        setReferralError("Please enter a referral code to check.");
+        return;
+      }
+
+      setIsCheckingReferral(true);
+      setReferralError("");
+      try {
+        const response = await checkReferralCode(userToken, referralCode);
+        if (response.found) {
+          setReferralCode(response.referral.referralId);
+          setIsValidReferral(true);
+          setReferralError("");
+        } else {
+          setReferralCode("");
+          setIsValidReferral(false);
+          setReferralError(
+            "Referral code not found. Please enter a valid code."
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Referral code not found. Please enter a valid code.",
+          error
+        );
+        setReferralCode("");
+        setIsValidReferral(false);
+        setReferralError("Referral code not found. Please enter a valid code.");
+      } finally {
+        setIsCheckingReferral(false);
+      }
+    }, [referralCode, userToken]);
 
     // Check if user is already signed in with Google
     const isGoogleUser = useMemo(() => {
@@ -284,13 +409,6 @@ export const EventBooking = memo(
         setIsTicketClassesLoading(false);
       });
     }, []);
-
-    // Check YouTube subscription when offers step is reached
-    // useEffect(() => {
-    //   if (currentStep === "offers" && currentUser) {
-    //     checkYoutubeSubscription();
-    //   }
-    // }, [currentStep, currentUser, checkYoutubeSubscription]);
 
     const renderStepContent = () => {
       switch (currentStep) {
@@ -491,12 +609,66 @@ export const EventBooking = memo(
                   </div>
                 </div>
                 <Input
-                  className="bg-white/10 border-white/20 text-white"
+                  className={`bg-white/10 border-white/20 text-white uppercase placeholder:normal-case ${
+                    isValidReferral
+                      ? "border-green-500"
+                      : referralError
+                      ? "border-red-500"
+                      : ""
+                  }`}
                   type="text"
                   placeholder="Enter referral code"
                   value={referralCode}
-                  onChange={(e) => setReferralCode(e.target.value)}
+                  onChange={(e) => {
+                    setReferralCode(e.target.value.toUpperCase());
+                    // Clear validation and errors when user starts typing
+                    if (isValidReferral) {
+                      setIsValidReferral(false);
+                    }
+                    if (referralError) {
+                      setReferralError("");
+                    }
+                  }}
                 />
+                <div className="flex gap-2 mt-3">
+                  <Button
+                    variant="outline"
+                    className="w-fit"
+                    disabled={isCheckingReferral || referralCode.length === 0}
+                    onClick={() => checkReferral()}
+                  >
+                    {isCheckingReferral
+                      ? "Checking Referral Code..."
+                      : "Check Referral Code"}
+                  </Button>
+                  {isValidReferral && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => {
+                        setReferralCode("");
+                        setIsValidReferral(false);
+                      }}
+                      className="border-red-500/50 text-red-400 hover:bg-red-500/10"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                {isValidReferral && (
+                  <div className="flex items-center gap-2 text-green-400 mt-2">
+                    <CheckCircle className="h-4 w-4" />
+                    <span className="text-sm">
+                      Valid referral code! Discount applied.
+                    </span>
+                  </div>
+                )}
+                {referralError && (
+                  <div className="flex items-center gap-2 text-red-400 mt-2">
+                    <X className="h-4 w-4" />
+                    <span className="text-sm">{referralError}</span>
+                  </div>
+                )}
               </div>
 
               {/* YouTube Subscription */}
@@ -651,7 +823,7 @@ export const EventBooking = memo(
                     <span className="text-white/70">Location:</span>
                     <span className="text-white">{EVENT_DETAILS.location}</span>
                   </div>
-                  {referralCode && (
+                  {isValidReferral && (
                     <div className="flex justify-between">
                       <span className="text-white/70">Referral Code:</span>
                       <span className="text-green-400">{referralCode}</span>
@@ -677,11 +849,45 @@ export const EventBooking = memo(
               {/* Payment Methods */}
               <div className="bg-white/5 p-4 rounded-lg border border-white/20">
                 <h5 className="font-medium text-white mb-3">Payment Method</h5>
-                <p className="text-white/60 text-sm">
-                  Payment gateway integration will be added here. For now, this
-                  is a demo.
-                </p>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 border border-pink-500/30 rounded-lg bg-pink-500/10">
+                    <CreditCard className="h-5 w-5 text-pink-500" />
+                    <div className="flex-1">
+                      <p className="font-medium text-white">
+                        Cashfree Payment Gateway
+                      </p>
+                      <p className="text-xs text-white/60">
+                        Secure payment via UPI, Cards, Net Banking & more
+                      </p>
+                    </div>
+                    <div className="w-4 h-4 rounded-full border-2 border-pink-500 bg-pink-500"></div>
+                  </div>
+
+                  <div className="text-xs text-white/50 space-y-1">
+                    <p>• Secure payment processing</p>
+                    <p>• Multiple payment options available</p>
+                    <p>• Instant confirmation</p>
+                    <p>• 24/7 customer support</p>
+                  </div>
+                </div>
               </div>
+
+              {/* Payment Processing State */}
+              {isProcessingPayment && (
+                <div className="bg-blue-900/20 p-4 rounded-lg border border-blue-500/20">
+                  <div className="flex items-center gap-3">
+                    <Loader2 className="h-5 w-5 text-blue-400 animate-spin" />
+                    <div>
+                      <p className="font-medium text-blue-300">
+                        Processing Payment...
+                      </p>
+                      <p className="text-xs text-blue-200/70">
+                        Please wait while we redirect you to the payment gateway
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           );
 
@@ -776,11 +982,20 @@ export const EventBooking = memo(
                 {currentStep === "payment" && (
                   <Button
                     className="w-full sm:w-fit bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
-                    disabled={!isBookingValid}
+                    disabled={!isBookingValid || isProcessingPayment}
                     onClick={handleProceedToPayment}
                   >
-                    <TicketIcon className="mr-1.5 h-3.5 w-3.5" />
-                    Proceed to Payment
+                    {isProcessingPayment ? (
+                      <>
+                        <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      <>
+                        <TicketIcon className="mr-1.5 h-3.5 w-3.5" />
+                        Proceed to Payment
+                      </>
+                    )}
                   </Button>
                 )}
               </div>

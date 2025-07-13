@@ -10,6 +10,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import EventBanner from "./components/EventBanner";
 import { AuthProvider } from "./hooks/useAuth";
 import NotFound from "./pages/public/NotFound";
+import { PaymentResult } from "./components/PaymentResult";
 
 import Home from "@/pages/public/Home";
 import Services from "@/pages/public/Services";
@@ -104,6 +105,7 @@ const App = () => (
                   element={<ReferralLandingPage />}
                 />
               </Route>
+              <Route path="/payment/result" element={<PaymentResult />} />
 
               {/* User Routes - require authentication */}
               <Route path="/member" element={<UserProtectedRoute />}>
