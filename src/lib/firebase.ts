@@ -6,7 +6,7 @@ const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
@@ -14,4 +14,7 @@ export const auth = getAuth(app);
 
 // Initialize Phone Auth Provider
 export const phoneAuthProvider = new PhoneAuthProvider(auth);
+// export const googleAuthProvider = (new GoogleAuthProvider()).addScope(
+//   "https://www.googleapis.com/auth/youtube.readonly"
+// );
 export const googleAuthProvider = new GoogleAuthProvider();

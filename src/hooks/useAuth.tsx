@@ -29,7 +29,10 @@ interface AuthContextType {
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (user: Partial<UserType>, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<{ isNewUser: boolean; needsProfileCompletion?: boolean }>;
+  signInWithGoogle: () => Promise<{
+    isNewUser: boolean;
+    needsProfileCompletion?: boolean;
+  }>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   updateUserProfile: (displayName: string) => Promise<void>;
@@ -108,32 +111,32 @@ function AuthProvider({ children }: AuthProviderProps) {
     const result = await signInWithPopup(auth, googleAuthProvider);
     const token = await result.user.getIdToken();
 
-    // Check if user already exists in our database
+    // First, try to get existing user
     try {
-      await createUser(token, {
-        userId: result.user.uid,
-        firebaseId: result.user.uid,
-        email: result.user.email || "",
-        fullName: result.user.displayName || "",
-        mobile: "", // Will be filled in the next step
-        role: "user" as const,
-      });
-      // New user created, will need to complete profile
-      return { isNewUser: true };
-    } catch (error: any) {
-      // User already exists, check if profile is complete
-      try {
-        const existingUser = await getUser(token);
-        if (!existingUser.mobile || !existingUser.address) {
-          // Profile incomplete, needs completion
-          return { isNewUser: false, needsProfileCompletion: true };
-        }
-        // Profile complete
-        return { isNewUser: false, needsProfileCompletion: false };
-      } catch (getUserError: any) {
-        console.log("Error checking user data:", getUserError.message);
-        // Assume profile needs completion if we can't fetch user data
+      const existingUser = await getUser(token);
+      // User exists, check if profile is complete
+      if (!existingUser.mobile || !existingUser.address) {
+        // Profile incomplete, needs completion
         return { isNewUser: false, needsProfileCompletion: true };
+      }
+      // Profile complete
+      return { isNewUser: false, needsProfileCompletion: false };
+    } catch (error: any) {
+      // User doesn't exist, create new user
+      try {
+        await createUser(token, {
+          userId: result.user.uid,
+          firebaseId: result.user.uid,
+          email: result.user.email || "",
+          fullName: result.user.displayName || "",
+          mobile: "", // Will be filled in the next step
+          role: "user" as const,
+        });
+        // New user created, will need to complete profile
+        return { isNewUser: true };
+      } catch (createError: any) {
+        console.error("Error creating user:", createError);
+        throw createError;
       }
     }
   };

@@ -19,6 +19,7 @@ const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect");
 
   const loginType = searchParams.get("type") || "password";
 
@@ -111,7 +112,7 @@ const Login = () => {
         title: "Login Successful",
         description: "You have been logged in successfully.",
       });
-      navigate(from, { replace: true });
+      navigate(redirect || from, { replace: true });
     } catch (error: any) {
       if (error.message.includes("auth/invalid-credential")) {
         setError("Invalid email or password");
@@ -139,7 +140,7 @@ const Login = () => {
 
     try {
       const result = await signInWithGoogle();
-      
+
       if (result.isNewUser || result.needsProfileCompletion) {
         toast({
           title: "Google Sign-in Successful",
@@ -151,7 +152,7 @@ const Login = () => {
           title: "Login Successful",
           description: "You have been logged in successfully with Google.",
         });
-        navigate(from, { replace: true });
+        navigate(redirect || from, { replace: true });
       }
     } catch (error: any) {
       setError(error.message);

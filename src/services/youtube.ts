@@ -12,45 +12,57 @@ export const checkYouTubeSubscription = async (channelId: string): Promise<boole
         // Get the current user
         const currentUser = auth.currentUser;
         if (!currentUser) {
-            throw new Error('User not authenticated');
+            throw new Error('User not authenticated. Please sign in to continue.');
         }
 
         let accessToken: string | null = null;
+        const isGoogleProvider = currentUser.providerData.some(
+            provider => provider.providerId === 'google.com'
+        );
 
-        // Try to get the access token from the user's provider data
-        if (currentUser.providerData.length > 0) {
-            // Check if user is already signed in with Google
-            const googleProvider = currentUser.providerData.find(provider => provider.providerId === 'google.com');
-
-            if (googleProvider) {
-                // User is already signed in with Google, try to get a fresh credential
+        if (isGoogleProvider) {
+            // Try to re-authenticate first
+            try {
+                const result = await reauthenticateWithPopup(currentUser, googleAuthProvider);
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                accessToken = credential?.accessToken || null;
+            } catch (reauthError) {
+                console.warn('Re-authentication failed, attempting sign-in with Google:', reauthError);
+                // If re-auth fails (popup closed, etc.), try sign-in
                 try {
-                    // Use reauthenticateWithPopup instead of signInWithPopup
-                    const result = await reauthenticateWithPopup(currentUser, googleAuthProvider);
+                    const result = await signInWithPopup(auth, googleAuthProvider);
                     const credential = GoogleAuthProvider.credentialFromResult(result);
                     accessToken = credential?.accessToken || null;
-                } catch (error) {
-                    console.warn('Failed to re-authenticate for access token:', error);
-                    // If re-authentication fails, we might need to force a new sign-in
-                    throw new Error('Google access token not available. Please sign in with Google to use this feature.');
+                } catch (signInError) {
+                    console.error('Google sign-in failed:', signInError);
+                    throw new Error('Google access token not available. Please allow popups and sign in with Google to use this feature.');
                 }
-            } else {
-                // User is not signed in with Google
-                throw new Error('Google access token not available. Please sign in with Google to use this feature.');
+            }
+        } else {
+            // Not signed in with Google, prompt sign-in
+            try {
+                const result = await signInWithPopup(auth, googleAuthProvider);
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                accessToken = credential?.accessToken || null;
+            } catch (signInError) {
+                console.error('Google sign-in failed:', signInError);
+                throw new Error('Google access token not available. Please allow popups and sign in with Google to use this feature.');
             }
         }
 
         if (!accessToken) {
-            throw new Error('Google access token not available. Please sign in with Google to use this feature.');
+            throw new Error('Google access token not available after authentication. Please try again.');
         }
+        const token = await currentUser.getIdToken();
 
         // Make the API request with the access token
         const response = await apiRequest<YouTubeSubscriptionResponse>(
-            `/youtube/subscription?channelId=${channelId}`,
+            `/youtube/check-subscription?channelId=${channelId}`,
             {
                 method: 'GET',
                 headers: {
                     'X-Google-Access-Token': accessToken,
+                    'Authorization': `Bearer ${token}`,
                 },
             }
         );

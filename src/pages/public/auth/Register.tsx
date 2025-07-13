@@ -28,6 +28,7 @@ const Register = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect");
 
   const isCompleteStep = location.pathname === "/register/complete";
   const isGoogleSignup = searchParams.get("source") === "google";
@@ -194,7 +195,7 @@ const Register = () => {
         description: "Your profile has been updated successfully.",
       });
 
-      navigate("/member/dashboard");
+      navigate(redirect || "/member/dashboard");
     } catch (error: any) {
       setError(error.message);
       toast({

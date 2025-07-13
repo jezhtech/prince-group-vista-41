@@ -28,6 +28,7 @@ import {
 import Logo from "./Logo";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
+import { UserProfile } from "./UserProfile";
 
 // Define breakpoints for better control
 const TABLET_BREAKPOINT = 1024; // Changed from 768 (md) to 1024 (lg) to include iPad mini
@@ -487,82 +488,7 @@ const MainNavbar = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6 }}
                 >
-                  {currentUser ? (
-                    // User is logged in - show user dropdown menu
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          variant="ghost"
-                          className="rounded-full hover:bg-[#85cbc3]/20 text-gray-700"
-                        >
-                          <User className="mr-2 h-4 w-4" />
-                          <span className="hidden lg:inline">
-                            {currentUser.displayName ||
-                              currentUser.email?.split("@")[0] ||
-                              "User"}
-                          </span>
-                          <ChevronDown className="ml-1 h-3 w-3" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-56 z-[999]">
-                        <DropdownMenuLabel className="font-normal">
-                          <div className="flex flex-col space-y-1">
-                            <p className="text-sm font-medium leading-none">
-                              {currentUser.displayName || "User"}
-                            </p>
-                            <p className="text-xs leading-none text-muted-foreground">
-                              {currentUser.email}
-                            </p>
-                          </div>
-                        </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <Link
-                            to={
-                              userData?.role === "admin"
-                                ? "/admin"
-                                : "/member/dashboard"
-                            }
-                          >
-                            <UserCircle className="mr-2 h-4 w-4" />
-                            <span>Dashboard</span>
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link
-                            to={
-                              userData?.role === "admin"
-                                ? "/admin/tickets"
-                                : "/member/tickets"
-                            }
-                          >
-                            <Ticket className="mr-2 h-4 w-4" />
-                            <span>Tickets</span>
-                          </Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={handleLogout}
-                          className="text-red-600"
-                        >
-                          <LogOut className="mr-2 h-4 w-4" />
-                          <span>Logout</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  ) : (
-                    // User is not logged in - show login button
-                    <Button
-                      asChild
-                      variant="ghost"
-                      className="rounded-full hover:bg-[#85cbc3]/20 text-gray-700"
-                    >
-                      <Link to="/login">
-                        <User className="mr-2 h-4 w-4" />
-                        <span className="hidden lg:inline">Login</span>
-                      </Link>
-                    </Button>
-                  )}
+                  <UserProfile />
                   {
                     <Button
                       asChild

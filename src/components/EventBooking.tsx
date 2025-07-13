@@ -17,105 +17,7 @@ import { Ticket } from "@/types";
 import { getAllTickets } from "@/services";
 import { useAuth } from "@/hooks/useAuth";
 import { useYouTubeSubscription } from "@/services/youtube";
-
-const TICKET_CLASSES = [
-  {
-    id: "platinum",
-    name: "Platinum",
-    price: 7499,
-    offerPriceWithReferral: 5999,
-    offerPriceWithReferralAndYoutube: 4999,
-    description: "Elite experience with exclusive amenities and prime viewing",
-    benefits: [
-      "Front row seating",
-      "Meet & Greet",
-      "Exclusive merchandise",
-      "VIP lounge access",
-    ],
-  },
-  {
-    id: "elite",
-    name: "Elite",
-    price: 5999,
-    offerPriceWithReferral: 4999,
-    offerPriceWithReferralAndYoutube: 3999,
-    description: "Elite experience with exclusive amenities and prime viewing",
-    benefits: [
-      "Front row seating",
-      "Meet & Greet",
-      "Exclusive merchandise",
-      "VIP lounge access",
-    ],
-  },
-  {
-    id: "vvip",
-    name: "VVIP",
-    price: 4999,
-    offerPriceWithReferral: 3999,
-    offerPriceWithReferralAndYoutube: 2999,
-    description: "Very exclusive access with premium services and seating",
-    benefits: [
-      "Premium seating",
-      "Complimentary refreshments",
-      "Priority entry",
-      "Photo opportunity",
-    ],
-  },
-  {
-    id: "ultraluxury",
-    name: "Ultra Luxury",
-    price: 3999,
-    offerPriceWithReferral: 3499,
-    offerPriceWithReferralAndYoutube: 2499,
-    description: "Ultra-premium comfort with excellent views",
-    benefits: [
-      "Excellent view",
-      "Comfortable seating",
-      "Refreshments",
-      "Priority entry",
-    ],
-  },
-  {
-    id: "luxury",
-    name: "Luxury",
-    price: 3499,
-    offerPriceWithReferral: 2999,
-    offerPriceWithReferralAndYoutube: 1999,
-    description: "Superior comfort with great visibility",
-    benefits: ["Great visibility", "Comfortable seating", "Refreshments"],
-  },
-  {
-    id: "vip",
-    name: "VIP",
-    price: 2999,
-    offerPriceWithReferral: 1999,
-    offerPriceWithReferralAndYoutube: 1499,
-    description: "Priority access with enhanced amenities",
-    benefits: ["Priority access", "Good view", "Refreshments"],
-  },
-  {
-    id: "eco",
-    name: "Eco",
-    price: 1999,
-    offerPriceWithReferral: 1499,
-    offerPriceWithReferralAndYoutube: 999,
-    description: "Standard admission with good experience",
-    benefits: [
-      "Standard admission",
-      "Good experience",
-      "Refreshments available",
-    ],
-  },
-  {
-    id: "ecostanding",
-    name: "Eco Standing",
-    price: 1499,
-    offerPriceWithReferral: 999,
-    offerPriceWithReferralAndYoutube: 499,
-    description: "Affordable standing area with full event access",
-    benefits: ["Standing area", "Full event access", "Refreshments available"],
-  },
-];
+import { useNavigate } from "react-router-dom";
 
 const EVENT_DETAILS = {
   date: "5 PM, 20 September 2025",
@@ -178,6 +80,7 @@ export const EventBooking = memo(
     const [ticketCategory, setTicketCategory] = useState("");
     const [isTicketClassesLoading, setIsTicketClassesLoading] = useState(false);
     const [ticketClasses, setTicketClasses] = useState<Ticket[]>([]);
+    const navigate = useNavigate();
 
     // Offer states
     const [referralCode, setReferralCode] = useState("");
@@ -187,8 +90,8 @@ export const EventBooking = memo(
 
     // Memoized calculations
     const selectedTicket = useMemo(
-      () => TICKET_CLASSES.find((ticket) => ticket.id === ticketCategory),
-      [ticketCategory]
+      () => ticketClasses.find((ticket) => ticket.type === ticketCategory),
+      [ticketCategory, ticketClasses]
     );
 
     const basePrice = useMemo(
@@ -272,18 +175,7 @@ export const EventBooking = memo(
 
     const handleProceedToPayment = useCallback(() => {
       if (isBookingValid) {
-        // Handle booking logic here
-        console.log("Booking:", {
-          ticketCategory,
-          ticketQuantity,
-          basePrice,
-          finalPrice,
-          referralCode,
-          isYoutubeSubscribed,
-          totalSavings,
-        });
         handleClose();
-        // Show success message or redirect to payment
       }
     }, [
       isBookingValid,
@@ -376,7 +268,8 @@ export const EventBooking = memo(
               </div>
               {/* Offer Price */}
               <div className="text-xs sm:text-sm text-green-400 font-medium">
-                {formatPrice(ticket.price)} with offers
+                {formatPrice(ticket.offerPriceWithReferralAndYoutube)} with
+                offers
               </div>
             </div>
           </div>
@@ -578,7 +471,7 @@ export const EventBooking = memo(
           return (
             <div className="space-y-6">
               <div>
-                <h4 className="text-lg font-semibold mb-4 text-white/90">
+                <h4 className="text-lg font-semibold text-white/90">
                   Available Offers
                 </h4>
                 <p className="text-white/60 mb-6">
@@ -592,7 +485,7 @@ export const EventBooking = memo(
                   <Gift className="h-5 w-5 text-pink-500" />
                   <div>
                     <h5 className="font-medium text-white">Referral Code</h5>
-                    <p className="text-sm text-white/60">
+                    <p className="text-xs sm:text-sm text-white/60">
                       Get 20% off with a valid referral code
                     </p>
                   </div>
@@ -614,7 +507,7 @@ export const EventBooking = memo(
                     <h5 className="font-medium text-white">
                       YouTube Subscription
                     </h5>
-                    <p className="text-sm text-white/60">
+                    <p className="text-xs sm:text-sm text-white/60">
                       Subscribe to our channel for additional 30% off
                     </p>
                   </div>
@@ -638,7 +531,7 @@ export const EventBooking = memo(
                           You're signed in with Google. Click below to check
                           your subscription status.
                         </p>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row  gap-2">
                           <Button
                             onClick={() =>
                               window.open(
@@ -649,7 +542,7 @@ export const EventBooking = memo(
                             className="bg-red-600 hover:bg-red-700 text-white"
                           >
                             <Youtube className="mr-2 h-4 w-4" />
-                            Subscribe to YouTube Channel
+                            Subscribe our Channel
                           </Button>
                           <Button
                             variant="outline"
@@ -665,11 +558,11 @@ export const EventBooking = memo(
                       </>
                     ) : (
                       <>
-                        <p className="text-sm text-white/60">
+                        <p className="text-xs sm:text-sm text-white/60">
                           To check your subscription status, you need to sign in
                           with Google.
                         </p>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                           <Button
                             onClick={() =>
                               window.open(
@@ -680,7 +573,7 @@ export const EventBooking = memo(
                             className="bg-red-600 hover:bg-red-700 text-white"
                           >
                             <Youtube className="mr-2 h-4 w-4" />
-                            Subscribe to YouTube Channel
+                            Subscribe our Channel
                           </Button>
                           <Button
                             variant="outline"
@@ -730,12 +623,12 @@ export const EventBooking = memo(
 
         case "payment":
           return (
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               <div>
-                <h4 className="text-lg font-semibold mb-4 text-white/90">
+                <h4 className="text-lg font-semibold text-white/90">
                   Payment Details
                 </h4>
-                <p className="text-white/60 mb-6">
+                <p className="text-white/60 mb-6 text-sm sm:text-base">
                   Review your booking and proceed to payment
                 </p>
               </div>
@@ -799,15 +692,15 @@ export const EventBooking = memo(
 
     return (
       <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-        <DialogContent className="booking-form-section concert z-[9999] p-0 sm:max-w-[700px] max-h-[90vh] overflow-y-auto bg-prince border-none">
+        <DialogContent className="booking-form-section concert z-[9999] p-0 pb-2 sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-prince border-none">
           {/* Header */}
-          <div className="booking-form-header">
+          <div className="booking-form-header py-2 sm:py-4 px-3 sm:px-4">
             <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-r from-pink-600 to-red-600 flex items-center justify-center">
+              <div className="sm:size-10 size-8 rounded-full bg-gradient-to-r from-pink-600 to-red-600 flex items-center justify-center">
                 <MusicIcon className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl font-bold text-pink-500">
+                <h3 className="sm:text-xl font-bold text-pink-500">
                   Book Concert Tickets
                 </h3>
                 <p className="text-xs text-white/60">
@@ -831,45 +724,48 @@ export const EventBooking = memo(
             </Button>
           </div>
 
-          <div className={cn("booking-form-content open", isIOS && "mb-0")}>
+          <div
+            className={cn(
+              "booking-form-content h-auto py-2 px-3 sm:px-4",
+              isIOS && "mb-0"
+            )}
+          >
             {renderStepContent()}
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row justify-between gap-2 mt-6">
-              <div className="flex gap-2">
-                {currentStep !== "tickets" && (
-                  <Button
-                    variant="outline"
-                    onClick={handlePreviousStep}
-                    className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
-                  >
-                    <ArrowLeft className="mr-1.5 h-3.5 w-3.5" />
-                    Previous
-                  </Button>
-                )}
+              {currentStep !== "tickets" && (
                 <Button
                   variant="outline"
-                  onClick={handleClose}
-                  className="border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
+                  onClick={handlePreviousStep}
+                  className="w-full sm:w-fit border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
                 >
-                  Cancel
+                  <ArrowLeft className="mr-1.5 h-3.5 w-3.5" />
+                  Previous
                 </Button>
-              </div>
+              )}
 
-              <div className="flex gap-2">
+              <div className="flex gap-2 sm:w-full">
                 {currentStep === "tickets" && (
                   <Button
-                    className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
+                    className="w-full sm:w-fit sm:ml-auto bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
                     disabled={!canProceedToOffers}
-                    onClick={handleNextStep}
+                    onClick={() => {
+                      if (currentUser) {
+                        handleNextStep();
+                      } else {
+                        navigate("/login?redirect=/events?eventDialogue=true");
+                      }
+                    }}
                   >
                     Next
                     <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                   </Button>
                 )}
+
                 {currentStep === "offers" && (
                   <Button
-                    className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
+                    className="w-full sm:w-fit bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
                     disabled={!canProceedToPayment}
                     onClick={handleNextStep}
                   >
@@ -879,7 +775,7 @@ export const EventBooking = memo(
                 )}
                 {currentStep === "payment" && (
                   <Button
-                    className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
+                    className="w-full sm:w-fit bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white"
                     disabled={!isBookingValid}
                     onClick={handleProceedToPayment}
                   >

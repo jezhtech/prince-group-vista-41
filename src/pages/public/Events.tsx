@@ -14,13 +14,15 @@ import {
   CalendarDays,
   CalendarIcon,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { cn, isIOS } from "@/lib/utils";
 import { EventBooking } from "@/components/EventBooking";
 
 const Events = () => {
   // Ref for scroll animations
   const containerRef = useRef<HTMLDivElement>(null);
+  const [searchParams] = useSearchParams();
+  const isEventDialogueOpen = searchParams.get("eventDialogue") === "true";
 
   // State variables
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -155,14 +157,11 @@ const Events = () => {
     return () => clearInterval(timer);
   }, [performers.length]);
 
-  // Format price as Indian Rupees
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "INR",
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  useEffect(() => {
+    if (isEventDialogueOpen) {
+      setIsBookingOpen(true);
+    }
+  }, [isEventDialogueOpen]);
 
   return (
     <div className="min-h-screen flex flex-col" ref={containerRef}>

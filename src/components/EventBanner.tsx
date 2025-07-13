@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Ticket, Calendar, ArrowRight, Clock } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { isIOS } from "@/lib/utils";
+import { UserProfile } from "./UserProfile";
 
 // Event messages for typing animation
 const EVENT_MESSAGES = [
@@ -50,6 +51,9 @@ const EventBanner = ({
   const [isIpad, setIsIpad] = useState(false);
   const typingSpeed = 40; // faster typing speed
   const pauseDuration = 1500; // pause between messages
+
+  const location = useLocation();
+  const isEventsPage = location.pathname === "/events";
 
   // Check if mobile view
   useEffect(() => {
@@ -186,29 +190,32 @@ const EventBanner = ({
       </div>
 
       <div className="container mx-auto h-full px-2 sm:px-4 flex items-center justify-between relative z-10">
-        {/* Left section - Ticket count */}
-        {showTicketCount && (
-          <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
-            <div className="bg-pink-600 p-1.5 rounded-full">
-              <Ticket className="h-4 w-4 text-white" />
-            </div>
-            <div>
-              <div className="font-bold text-xs">
-                Last few tickets remaining!
+        <div className="flex items-center gap-2">
+          {isEventsPage && <UserProfile mode="dark" />}
+          {/* Left section - Ticket count */}
+          {showTicketCount && (
+            <div className="hidden sm:flex items-center gap-2 flex-shrink-0">
+              <div className="bg-pink-600 p-1.5 rounded-full">
+                <Ticket className="h-4 w-4 text-white" />
               </div>
-              <motion.div
-                key={seats}
-                className="text-[10px] text-pink-200"
-                initial={{ opacity: 0.5, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                Only <span className="font-bold">{formatNumber(seats)}</span>{" "}
-                seats left
-              </motion.div>
+              <div>
+                <div className="font-bold text-xs">
+                  Last few tickets remaining!
+                </div>
+                <motion.div
+                  key={seats}
+                  className="text-[10px] text-pink-200"
+                  initial={{ opacity: 0.5, y: 5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  Only <span className="font-bold">{formatNumber(seats)}</span>{" "}
+                  seats left
+                </motion.div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Center section - Typing animation */}
         <div className="flex-1 mx-2 sm:mx-4 overflow-hidden text-center">

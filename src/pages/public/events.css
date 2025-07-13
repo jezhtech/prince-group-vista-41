@@ -831,7 +831,6 @@ html.ipad-9th-gen [role="dialog"][data-state="open"] {
 
 .booking-form-content.open {
   height: auto;
-  overflow: visible;
   padding: 1.5rem;
 }
 
