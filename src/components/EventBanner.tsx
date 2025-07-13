@@ -53,7 +53,8 @@ const EventBanner = ({
   const pauseDuration = 1500; // pause between messages
 
   const location = useLocation();
-  const isEventsPage = location.pathname === "/events";
+  const isEventsPage =
+    location.pathname === "/events" || location.pathname === "/";
 
   // Check if mobile view
   useEffect(() => {
