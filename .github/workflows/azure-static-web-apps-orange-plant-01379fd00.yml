@@ -34,7 +34,7 @@ jobs:
           action: "upload"
           app_location: "/"           # Change if your app is inside a folder
           api_location: ""            # Leave empty if no API
-          output_location: "build"    # Update to dist/build/output folder name
+          output_location: "dist"    # Update to dist/build/output folder name
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
