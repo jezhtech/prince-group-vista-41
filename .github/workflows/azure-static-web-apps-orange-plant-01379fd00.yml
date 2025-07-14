@@ -20,21 +20,20 @@ jobs:
           submodules: true
           lfs: false
 
-      # Optional: Add this if your project requires npm build
-      - name: Install Dependencies and Build
+      - name: Install Dependencies & Build
         run: |
           npm install
           npm run build
 
-      - name: Build And Deploy
-        id: builddeploy
+      - name: Deploy to Azure Static Web Apps
+        id: deploy
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ORANGE_PLANT_01379FD00 }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: "upload"
-          app_location: "/"           # Change if your app is inside a folder
-          api_location: ""            # Leave empty if no API
-          output_location: "dist"    # Update to dist/build/output folder name
+          app_location: "/"             # Root directory
+          api_location: ""              # No backend API
+          output_location: "dist"       # Vite's default output
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
