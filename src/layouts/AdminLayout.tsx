@@ -58,7 +58,7 @@ const AdminLayout = () => {
     },
     { name: "Ticket Management", path: "/admin/tickets", icon: Ticket },
     { name: "Referrals", path: "/admin/referrals", icon: LinkIcon },
-    { name: "Members", path: "/admin/membership", icon: UserPlus },
+    // { name: "Members", path: "/admin/membership", icon: UserPlus },
     { name: "Users", path: "/admin/users", icon: Users },
     { name: "Revenue", path: "/admin/revenue", icon: CreditCard },
   ];
