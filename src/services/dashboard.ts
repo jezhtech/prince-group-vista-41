@@ -9,6 +9,9 @@ import { getAllTickets } from './ticket';
 export interface DashboardStats {
   totalRegistrations: number;
   totalCapacity: number;
+  totalTickets: number;
+  soldTickets: number;
+  totalTicketCount: number;
   membershipSignups: number;
   conversionRate: number;
   ticketRevenue: number;
@@ -32,6 +35,7 @@ export interface RecentRegistration {
   date: string;
   amount: string;
   status: string;
+  ticketCount?: number;
 }
 
 export interface DashboardData {
@@ -78,6 +82,9 @@ export const getDashboardData = async (token: string): Promise<DashboardData> =>
 const calculateStats = (users: User[], bookings: Booking[], tickets: Ticket[]): DashboardStats => {
   const totalRegistrations = bookings.length;
   const totalCapacity = tickets.reduce((sum, ticket) => sum + ticket.totalTickets, 0);
+  const totalTickets = tickets.reduce((sum, ticket) => sum + ticket.totalTickets, 0);
+  const soldTickets = bookings.length; // Total bookings made
+  const totalTicketCount = bookings.reduce((sum, booking) => sum + (booking.ticketCount || 1), 0); // Total individual tickets sold
   
   // For now, we'll consider all users as memberships (you can adjust this logic)
   const membershipSignups = users.length;
@@ -86,17 +93,20 @@ const calculateStats = (users: User[], bookings: Booking[], tickets: Ticket[]): 
   const successfulBookings = bookings;
   const ticketRevenue = successfulBookings.reduce((sum, booking) => {
     const ticket = tickets.find(t => t.id === booking.ticketId);
-    return sum + (ticket?.price || 0);
+    return sum + ((ticket?.price || 0) * (booking.ticketCount || 1));
   }, 0);
   
   // For now, assuming membership revenue is a fixed amount per user
   const membershipRevenue = users.length * 1000; // ₹1000 per membership
-  const averageTicketPrice = successfulBookings.length > 0 ? ticketRevenue / successfulBookings.length : 0;
+  const averageTicketPrice = successfulBookings.length > 0 ? ticketRevenue / totalTicketCount : 0;
   const averageMembershipPrice = users.length > 0 ? membershipRevenue / users.length : 0;
 
   return {
     totalRegistrations,
     totalCapacity,
+    totalTickets,
+    soldTickets,
+    totalTicketCount,
     membershipSignups,
     conversionRate,
     ticketRevenue,
@@ -110,7 +120,8 @@ const calculateTicketTypeStats = (tickets: Ticket[], bookings: Booking[]): Ticke
   const successfulBookings = bookings.filter(b => b.paymentStatus === 'success');
   
   return tickets.map(ticket => {
-    const soldCount = successfulBookings.filter(b => b.ticketId === ticket.id).length;
+    const ticketBookings = successfulBookings.filter(b => b.ticketId === ticket.id);
+    const soldCount = ticketBookings.reduce((sum, booking) => sum + (booking.ticketCount || 1), 0);
     const percent = ticket.totalTickets > 0 ? (soldCount / ticket.totalTickets) * 100 : 0;
     
     // Assign colors based on ticket type
@@ -148,8 +159,9 @@ const getRecentRegistrations = (bookings: Booking[], limit: number): RecentRegis
       month: 'long',
       day: 'numeric'
     }),
-    amount: `₹${booking.ticket?.price || 0}`,
-    status: booking.status === 'confirmed' ? 'Confirmed' : 'Pending'
+    amount: `₹${((booking.ticket?.price || 0) * (booking.ticketCount || 1)).toLocaleString()}`,
+    status: booking.status === 'confirmed' ? 'Confirmed' : 'Pending',
+    ticketCount: booking.ticketCount || 1
   }));
 };
 
@@ -176,7 +188,7 @@ const calculateRevenueBreakdown = (bookings: Booking[], tickets: Ticket[]) => {
   const successfulBookings = bookings.filter(b => b.paymentStatus === 'success');
   const ticketRevenue = successfulBookings.reduce((sum, booking) => {
     const ticket = tickets.find(t => t.id === booking.ticketId);
-    return sum + (ticket?.price || 0);
+    return sum + ((ticket?.price || 0) * (booking.ticketCount || 1));
   }, 0);
   
   // For now, assuming membership revenue is a fixed amount per user

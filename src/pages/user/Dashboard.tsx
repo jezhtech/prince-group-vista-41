@@ -527,10 +527,9 @@ const MemberDashboard = () => {
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="grid grid-cols-1 lg:grid-cols-3 gap-8"
               >
                 {/* Profile Information Card */}
-                <motion.div variants={itemVariants} className="lg:col-span-2">
+                <motion.div variants={itemVariants}>
                   <Card className="border-[#4eb4a7]/10 shadow-lg hover:shadow-xl transition-all duration-300">
                     <CardHeader className="bg-gradient-to-r from-[#4eb4a7]/5 to-[#60afb4]/5 border-b border-[#4eb4a7]/10">
                       <div className="flex justify-between items-center">
@@ -635,84 +634,6 @@ const MemberDashboard = () => {
                       >
                         <Edit className="h-4 w-4 mr-2" />
                         Edit Profile
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </motion.div>
-
-                {/* Digital Membership Card */}
-                <motion.div variants={itemVariants}>
-                  <Card className="overflow-hidden border-[#4eb4a7]/10 shadow-lg hover:shadow-xl transition-all duration-300">
-                    <CardHeader className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] text-white p-6">
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <img
-                            src="https://placehold.co/80x80/ffffff/4eb4a7?text=PG"
-                            alt="Prince Group Logo"
-                            className="h-10 w-10 mr-3"
-                          />
-                          <div>
-                            <p className="text-xs text-white/80">
-                              Prince Group
-                            </p>
-                            <CardTitle>Membership Card</CardTitle>
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-6 space-y-6">
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="text-sm text-gray-500">Member Name</p>
-                            <p className="font-bold text-lg">
-                              {memberInfo.name}
-                            </p>
-                          </div>
-                          <div className="h-12 w-12 rounded-full bg-[#4eb4a7] flex items-center justify-center text-white text-xl font-bold">
-                            {memberInfo.name.charAt(0)}
-                          </div>
-                        </div>
-
-                        <div>
-                          <p className="text-sm text-gray-500">Member ID</p>
-                          <p className="font-medium">
-                            {memberInfo.membershipId}
-                          </p>
-                        </div>
-
-                        <div className="pt-2 border-t border-gray-100">
-                          <div className="flex justify-between">
-                            <div>
-                              <p className="text-xs text-gray-500">
-                                Membership Type
-                              </p>
-                              <p className="font-semibold text-[#4eb4a7]">
-                                {memberInfo.membershipType}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="bg-[#4eb4a7]/5 p-4 rounded-lg border border-[#4eb4a7]/10 text-center">
-                        <img
-                          src="https://placehold.co/200x200/e9e9e9/4eb4a7?text=QR+Code"
-                          alt="Membership QR Code"
-                          className="h-32 w-32 mx-auto mb-2"
-                        />
-                        <p className="text-xs text-gray-500">
-                          Scan to verify membership
-                        </p>
-                      </div>
-                    </CardContent>
-                    <CardFooter className="bg-gray-50 border-t border-gray-100 p-4">
-                      <Button
-                        variant="outline"
-                        className="w-full border-[#4eb4a7] text-[#4eb4a7] hover:bg-[#4eb4a7]/5"
-                      >
-                        <DownloadCloud className="h-4 w-4 mr-2" />
-                        Download Membership Card
                       </Button>
                     </CardFooter>
                   </Card>
@@ -827,7 +748,7 @@ const MemberDashboard = () => {
                                           {EVENT_DETAILS.name}
                                         </h3>
                                         <p className="text-[#4eb4a7] font-medium">
-                                          Booking #{booking.id}
+                                          Booking #{booking.bookingNumber}
                                         </p>
                                       </div>
 
@@ -895,15 +816,24 @@ const MemberDashboard = () => {
                                           {booking.ticket?.type || "Standard"}
                                         </p>
                                       </div>
-
                                       <div>
                                         <p className="text-gray-500 text-sm">
-                                          Price
+                                          Ticket Count
+                                        </p>
+                                        <p className="font-semibold">
+                                          {booking.ticketCount}
+                                        </p>
+                                      </div>
+                                      <div>
+                                        <p className="text-gray-500 text-sm">
+                                          Total Price
                                         </p>
                                         <p className="font-semibold">
                                           ₹
-                                          {booking.ticket?.price?.toLocaleString() ||
-                                            "0"}
+                                          {(
+                                            (booking.ticket?.price || 0) *
+                                            booking.ticketCount
+                                          ).toLocaleString("en-IN")}
                                         </p>
                                       </div>
 

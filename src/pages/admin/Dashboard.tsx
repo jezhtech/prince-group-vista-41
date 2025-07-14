@@ -143,7 +143,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="bg-gradient-to-br from-ui-blue-50 to-white">
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-ui-gray-500 flex items-center">
@@ -239,10 +239,45 @@ const AdminDashboard = () => {
                   <div className="text-xs text-ui-gray-500">Avg. Ticket</div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+                          </CardContent>
+            </Card>
+            
+            <Card className="bg-gradient-to-br from-purple-50 to-white">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-ui-gray-500 flex items-center">
+                  <Users className="h-4 w-4 mr-2 text-purple-500" /> Total Tickets
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex justify-between items-end">
+                  <div>
+                    <div className="text-3xl font-bold text-ui-gray-900">
+                      {dashboardData.stats.totalTicketCount}
+                    </div>
+                    <p className="text-xs flex items-center mt-1">
+                      <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
+                      <span className="text-green-500">Individual tickets</span>
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-sm font-medium text-ui-gray-900">
+                      {dashboardData.stats.totalTickets}
+                    </div>
+                    <div className="text-xs text-ui-gray-500">Capacity</div>
+                  </div>
+                </div>
+                <Progress
+                  className="h-2 mt-3 bg-purple-100"
+                  value={
+                    dashboardData.stats.totalTickets > 0
+                      ? (dashboardData.stats.totalTicketCount / dashboardData.stats.totalTickets) * 100
+                      : 0
+                  }
+                />
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
 
       {/* Ticket breakdown and analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -354,6 +389,9 @@ const AdminDashboard = () => {
                         Purchase Date
                       </th>
                       <th className="text-left p-4 font-medium text-ui-gray-500">
+                        Tickets
+                      </th>
+                      <th className="text-left p-4 font-medium text-ui-gray-500">
                         Amount
                       </th>
                       <th className="text-right p-4 font-medium text-ui-gray-500">
@@ -396,6 +434,9 @@ const AdminDashboard = () => {
                               {registration.date}
                             </td>
                             <td className="p-4 font-medium">
+                              {registration.ticketCount || 1}
+                            </td>
+                            <td className="p-4 font-medium">
                               {registration.amount}
                             </td>
                             <td className="p-4 text-right">
@@ -415,7 +456,7 @@ const AdminDashboard = () => {
                     ) : (
                       <tr>
                         <td
-                          colSpan={5}
+                          colSpan={6}
                           className="p-8 text-center text-ui-gray-500"
                         >
                           No recent registrations found

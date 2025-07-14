@@ -5,9 +5,11 @@ import { Referral } from './referral';
 export interface Booking {
     id: string; // Changed from number to string for UUID
     userId: string;
+    bookingNumber: string;
     referralId: string;
     ticketId: number;
     status: 'pending' | 'confirmed' | 'cancelled';
+    ticketCount: number;
     paymentMethod: string;
     paymentStatus: 'pending' | 'success' | 'failed';
     paymentDate: string;

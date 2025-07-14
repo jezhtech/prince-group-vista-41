@@ -212,6 +212,7 @@ export const EventBooking = memo(
           userId: currentUser.uid,
           referralId: isValidReferral ? referralCode : "",
           ticketId: selectedTicket!.id,
+          ticketCount: ticketQuantity,
           status: "pending" as const,
           paymentMethod: "cashfree",
           paymentStatus: "pending" as const,
