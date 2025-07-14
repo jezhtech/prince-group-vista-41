@@ -1,6 +1,6 @@
 import { Referral, CreateReferralRequest, UpdateReferralRequest } from "@/types/referral";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 export const getReferralById = async (token: string, id: string): Promise<Referral> => {
     const response = await fetch(`${API_BASE_URL}/referral/${id}`, {

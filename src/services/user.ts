@@ -1,6 +1,6 @@
 import { User, CreateUserRequest } from "@/types/user";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
 export const createUser = async (token: string, user: CreateUserRequest): Promise<User> => {
     const response = await fetch(`${API_BASE_URL}/user/`, {
