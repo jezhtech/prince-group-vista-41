@@ -1,11 +1,24 @@
-
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarCheck, Clock, MapPin, Calendar, ArrowRight, CheckCircle } from "lucide-react";
-import MainNavbar from "@/components/MainNavbar";
+import {
+  CalendarCheck,
+  Clock,
+  MapPin,
+  Calendar,
+  ArrowRight,
+  CheckCircle,
+} from "lucide-react";
 import MainFooter from "@/components/MainFooter";
+import { EventNavbar } from "@/components/EventNavbar";
 
 const events = [
   {
@@ -14,9 +27,10 @@ const events = [
     date: "Jun 15, 2023",
     time: "10:00 AM - 12:00 PM",
     location: "Nagercoil Main Branch",
-    description: "Learn about efficient document registration processes and tips to avoid common pitfalls.",
+    description:
+      "Learn about efficient document registration processes and tips to avoid common pitfalls.",
     status: "upcoming",
-    registered: true
+    registered: true,
   },
   {
     id: 2,
@@ -24,9 +38,10 @@ const events = [
     date: "Jun 22, 2023",
     time: "2:00 PM - 4:00 PM",
     location: "Thuckalay Branch",
-    description: "Expert guidance on managing personal finances, investments, and retirement planning.",
+    description:
+      "Expert guidance on managing personal finances, investments, and retirement planning.",
     status: "upcoming",
-    registered: false
+    registered: false,
   },
   {
     id: 4,
@@ -34,9 +49,10 @@ const events = [
     date: "Jul 5, 2023",
     time: "5:00 PM - 7:00 PM",
     location: "Nagercoil Main Branch",
-    description: "Connect with other Prince Group members and build valuable professional relationships.",
+    description:
+      "Connect with other Prince Group members and build valuable professional relationships.",
     status: "upcoming",
-    registered: true
+    registered: true,
   },
   {
     id: 5,
@@ -44,20 +60,21 @@ const events = [
     date: "May 12, 2023",
     time: "10:00 AM - 12:00 PM",
     location: "Colachel Branch",
-    description: "Comprehensive overview of property documentation requirements and best practices.",
+    description:
+      "Comprehensive overview of property documentation requirements and best practices.",
     status: "past",
-    registered: true
-  }
+    registered: true,
+  },
 ];
 
 const MemberEvents = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
-  
-  const filteredEvents = events.filter(event => event.status === activeTab);
+
+  const filteredEvents = events.filter((event) => event.status === activeTab);
 
   return (
     <div className="min-h-screen flex flex-col">
-      <MainNavbar />
+      <EventNavbar />
       <main className="flex-grow bg-gradient-to-br from-gray-50 to-ui-blue-50/30 py-10">
         <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
@@ -66,10 +83,24 @@ const MemberEvents = () => {
               <p className="text-gray-600">Upcoming and past events</p>
             </div>
 
-            <Tabs defaultValue="upcoming" onValueChange={setActiveTab} className="mb-8">
+            <Tabs
+              defaultValue="upcoming"
+              onValueChange={setActiveTab}
+              className="mb-8"
+            >
               <TabsList className="bg-white border border-gray-200">
-                <TabsTrigger value="upcoming" className="data-[state=active]:bg-ui-blue-500 data-[state=active]:text-white">Upcoming</TabsTrigger>
-                <TabsTrigger value="past" className="data-[state=active]:bg-ui-blue-500 data-[state=active]:text-white">Past</TabsTrigger>
+                <TabsTrigger
+                  value="upcoming"
+                  className="data-[state=active]:bg-ui-blue-500 data-[state=active]:text-white"
+                >
+                  Upcoming
+                </TabsTrigger>
+                <TabsTrigger
+                  value="past"
+                  className="data-[state=active]:bg-ui-blue-500 data-[state=active]:text-white"
+                >
+                  Past
+                </TabsTrigger>
               </TabsList>
             </Tabs>
 
@@ -79,27 +110,35 @@ const MemberEvents = () => {
                   <Calendar className="h-12 w-12 text-gray-400 mb-4" />
                   <p className="text-lg font-medium">No events found</p>
                   <p className="text-gray-500 mt-1">
-                    {activeTab === "upcoming" 
-                      ? "You don't have any upcoming events" 
-                      : "You don't have any past events"
-                    }
+                    {activeTab === "upcoming"
+                      ? "You don't have any upcoming events"
+                      : "You don't have any past events"}
                   </p>
                   {activeTab === "upcoming" && (
-                    <Button className="mt-4 bg-ui-blue-500 hover:bg-ui-blue-600" asChild>
+                    <Button
+                      className="mt-4 bg-ui-blue-500 hover:bg-ui-blue-600"
+                      asChild
+                    >
                       <a href="/events">Browse Events</a>
                     </Button>
                   )}
                 </Card>
               ) : (
-                filteredEvents.map(event => (
-                  <Card key={event.id} className="overflow-hidden bg-white border-0 shadow-md">
+                filteredEvents.map((event) => (
+                  <Card
+                    key={event.id}
+                    className="overflow-hidden bg-white border-0 shadow-md"
+                  >
                     <CardHeader>
                       <div className="flex justify-between items-start">
                         <div>
-                          <CardTitle className="text-xl">{event.title}</CardTitle>
+                          <CardTitle className="text-xl">
+                            {event.title}
+                          </CardTitle>
                           {event.registered && (
                             <CardDescription className="text-ui-green-500 font-medium mt-1 flex items-center">
-                              <CheckCircle className="h-4 w-4 mr-1" /> Registered
+                              <CheckCircle className="h-4 w-4 mr-1" />{" "}
+                              Registered
                             </CardDescription>
                           )}
                           {!event.registered && (
@@ -130,17 +169,26 @@ const MemberEvents = () => {
                     <CardFooter className="border-t border-gray-100 pt-4">
                       {event.registered ? (
                         <div className="flex space-x-3">
-                          <Button variant="default" className="bg-ui-blue-500 hover:bg-ui-blue-600">
+                          <Button
+                            variant="default"
+                            className="bg-ui-blue-500 hover:bg-ui-blue-600"
+                          >
                             View Ticket <ArrowRight className="ml-1 h-4 w-4" />
                           </Button>
                           {event.status === "upcoming" && (
-                            <Button variant="outline" className="text-ui-blue-600 border-ui-blue-200 hover:bg-ui-blue-50">
+                            <Button
+                              variant="outline"
+                              className="text-ui-blue-600 border-ui-blue-200 hover:bg-ui-blue-50"
+                            >
                               Cancel Registration
                             </Button>
                           )}
                         </div>
                       ) : (
-                        <Button variant="default" className="bg-ui-green-500 hover:bg-ui-green-600">
+                        <Button
+                          variant="default"
+                          className="bg-ui-green-500 hover:bg-ui-green-600"
+                        >
                           Register Now
                         </Button>
                       )}

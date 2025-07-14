@@ -31,19 +31,14 @@ import {
   Phone,
   Download,
   Edit,
-  DownloadCloud,
   Clock,
   CheckCircle,
   Shield,
   Star,
-  ChevronRight,
-  Bell,
-  LogOut,
   Loader2,
   RefreshCw,
 } from "lucide-react";
 
-import MainNavbar from "@/components/MainNavbar";
 import MainFooter from "@/components/MainFooter";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
@@ -54,6 +49,7 @@ import { getUser, updateUser } from "@/services/user";
 import { toast } from "@/hooks/use-toast";
 import { Booking } from "@/types";
 import { getBookingsByUserId } from "@/services";
+import { EventNavbar } from "@/components/EventNavbar";
 
 interface MemberInfo {
   name: string;
@@ -381,7 +377,7 @@ const MemberDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fdfc] via-white to-[#f0faf9]">
-        <MainNavbar />
+        <EventNavbar />
         <main className="flex-grow pt-24 pb-16">
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-center min-h-[60vh]">
@@ -404,7 +400,7 @@ const MemberDashboard = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#f8fdfc] via-white to-[#f0faf9]">
-      <MainNavbar />
+      <EventNavbar />
       <main className="flex-grow pt-24 pb-16">
         <div className="container mx-auto px-4">
           {/* Top Section with Profile Summary */}
