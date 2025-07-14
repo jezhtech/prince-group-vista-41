@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -40,6 +40,7 @@ import {
   Bell,
   LogOut,
   Loader2,
+  RefreshCw,
 } from "lucide-react";
 
 import MainNavbar from "@/components/MainNavbar";
@@ -51,6 +52,8 @@ import LogoutButton from "@/components/LogoutButton";
 import { User as UserType } from "@/types/user";
 import { getUser, updateUser } from "@/services/user";
 import { toast } from "@/hooks/use-toast";
+import { Booking } from "@/types";
+import { getBookingsByUserId } from "@/services";
 
 interface MemberInfo {
   name: string;
@@ -67,34 +70,23 @@ interface MemberInfo {
   aadhaar: string;
 }
 
-const TICKETS = [
-  {
-    id: "T-1002",
-    event: "Prince Group Mega Music Festival",
-    date: "December 21, 2025",
-    time: "9:00 AM - 10:00 PM",
-    location: "Kanyakumari",
-    ticketClass: "VVIP",
-    price: "₹5,000",
-    status: "Valid",
-    qrCode: "https://placehold.co/200x200/e9e9e9/7d7d7d?text=QR+Code",
-  },
-  {
-    id: "T-1001",
-    event: "Financial Planning Seminar",
-    date: "June 15, 2023",
-    time: "10:00 AM - 12:00 PM",
-    location: "Nagercoil Branch",
-    ticketClass: "General",
-    price: "Free",
-    status: "Used",
-    qrCode: "https://placehold.co/200x200/e9e9e9/7d7d7d?text=QR+Code",
-  },
-];
+const EVENT_DETAILS = {
+  name: "Prince Group Mega Music Festival",
+  date: "September 20, 2025",
+  time: "5:00 PM - 10:00 PM",
+  location: "Concordia High School Ground, Nagercoil",
+  performers: ["Aditya Rkay", "Sri Nisha", "Aparnaa Pratheep"],
+};
 
 const MemberDashboard = () => {
-  const { currentUser, logout, userData } = useAuth();
+  const { currentUser, userData, userToken } = useAuth();
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
+
+  const tab = searchParams.get("tab") || "profile";
+
+  // Get default tab from URL parameter
+  const [defaultTab, setDefaultTab] = useState(tab);
   const [memberInfo, setMemberInfo] = useState<MemberInfo>({
     name: "",
     email: "",
@@ -116,6 +108,29 @@ const MemberDashboard = () => {
   const [editedProfile, setEditedProfile] = useState<MemberInfo>({
     ...memberInfo,
   });
+  const navigate = useNavigate();
+
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(true);
+
+  // Helper function to format status
+  const formatStatus = (status: string) => {
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+
+  // Helper function to get status color
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "success":
+        return "text-green-600";
+      case "pending":
+        return "text-yellow-600";
+      case "failed":
+        return "text-red-600";
+      default:
+        return "text-gray-600";
+    }
+  };
 
   // Handle profile edit
   const handleProfileChange = (e) => {
@@ -337,6 +352,31 @@ const MemberDashboard = () => {
     }
   }, [currentUser]);
 
+  useEffect(() => {
+    setDefaultTab(tab);
+  }, [tab]);
+
+  useEffect(() => {
+    if (currentUser && userToken) {
+      setLoadingBookings(true);
+      getBookingsByUserId(userToken)
+        .then((bookings) => {
+          setBookings(bookings);
+        })
+        .catch((error) => {
+          console.error("Error fetching bookings:", error);
+          toast({
+            title: "Error",
+            description: "Failed to fetch bookings",
+            variant: "destructive",
+          });
+        })
+        .finally(() => {
+          setLoadingBookings(false);
+        });
+    }
+  }, [currentUser, userToken]);
+
   // Loading state
   if (loading) {
     return (
@@ -457,7 +497,13 @@ const MemberDashboard = () => {
           </motion.div>
 
           {/* Main Content Tabs */}
-          <Tabs defaultValue="profile" className="w-full">
+          <Tabs
+            defaultValue={defaultTab}
+            onValueChange={(value) => {
+              navigate(`/member/dashboard?tab=${value}`);
+            }}
+            className="w-full"
+          >
             <TabsList className="mb-8 w-full justify-start bg-white border border-[#4eb4a7]/10 p-1 rounded-xl shadow-sm">
               <TabsTrigger
                 value="profile"
@@ -472,13 +518,6 @@ const MemberDashboard = () => {
               >
                 <Ticket className="h-4 w-4 mr-2" />
                 My Tickets
-              </TabsTrigger>
-              <TabsTrigger
-                value="membership"
-                className="rounded-lg data-[state=active]:bg-[#4eb4a7] data-[state=active]:text-white"
-              >
-                <Star className="h-4 w-4 mr-2" />
-                Membership
               </TabsTrigger>
             </TabsList>
 
@@ -694,48 +733,105 @@ const MemberDashboard = () => {
                     <CardHeader className="bg-gradient-to-r from-[#4eb4a7]/5 to-[#60afb4]/5 border-b border-[#4eb4a7]/10">
                       <div className="flex justify-between items-center">
                         <CardTitle className="text-gray-800">
-                          My Event Tickets
+                          My Event Bookings
                         </CardTitle>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            if (userToken) {
+                              setLoadingBookings(true);
+                              getBookingsByUserId(userToken)
+                                .then((bookings) => {
+                                  setBookings(bookings);
+                                  toast({
+                                    title: "Success",
+                                    description:
+                                      "Bookings refreshed successfully",
+                                  });
+                                })
+                                .catch((error) => {
+                                  console.error(
+                                    "Error refreshing bookings:",
+                                    error
+                                  );
+                                  toast({
+                                    title: "Error",
+                                    description: "Failed to refresh bookings",
+                                    variant: "destructive",
+                                  });
+                                })
+                                .finally(() => {
+                                  setLoadingBookings(false);
+                                });
+                            }
+                          }}
+                          disabled={loadingBookings}
+                          className="border-[#4eb4a7] text-[#4eb4a7] hover:bg-[#4eb4a7]/5"
+                        >
+                          <RefreshCw
+                            className={`h-4 w-4 mr-1 ${
+                              loadingBookings ? "animate-spin" : ""
+                            }`}
+                          />
+                          Refresh
+                        </Button>
                       </div>
                     </CardHeader>
                     <CardContent className="p-6">
-                      {TICKETS.length > 0 ? (
+                      {loadingBookings ? (
+                        <div className="text-center py-12">
+                          <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                            <Loader2 className="h-8 w-8 text-[#4eb4a7] animate-spin" />
+                          </div>
+                          <h3 className="text-lg font-medium text-gray-800 mb-2">
+                            Loading your bookings...
+                          </h3>
+                          <p className="text-gray-500">
+                            Please wait while we fetch your booking information.
+                          </p>
+                        </div>
+                      ) : bookings.length > 0 ? (
                         <div className="space-y-6">
-                          {TICKETS.map((ticket, index) => (
+                          {bookings.map((booking) => (
                             <div
-                              key={ticket.id}
+                              key={booking.id}
                               className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300"
                             >
                               <div
                                 className={`p-6 border-l-4 ${
-                                  ticket.status === "Valid"
+                                  booking.status === "confirmed"
                                     ? "border-l-green-500"
-                                    : "border-l-gray-300"
+                                    : booking.status === "pending"
+                                    ? "border-l-yellow-500"
+                                    : "border-l-red-500"
                                 }`}
                               >
                                 <div className="flex flex-col md:flex-row gap-6">
-                                  {/* Ticket details */}
+                                  {/* Booking details */}
                                   <div className="flex-grow space-y-4">
                                     <div className="flex justify-between items-start">
                                       <div>
                                         <Badge
                                           className={
-                                            ticket.status === "Valid"
+                                            booking.status === "confirmed"
                                               ? "bg-green-100 hover:bg-green-100 text-green-800 mb-2"
-                                              : "bg-gray-100 hover:bg-gray-100 text-gray-800 mb-2"
+                                              : booking.status === "pending"
+                                              ? "bg-yellow-100 hover:bg-yellow-100 text-yellow-800 mb-2"
+                                              : "bg-red-100 hover:bg-red-100 text-red-800 mb-2"
                                           }
                                         >
-                                          {ticket.status}
+                                          {formatStatus(booking.status)}
                                         </Badge>
                                         <h3 className="text-xl font-bold text-gray-800">
-                                          {ticket.event}
+                                          {EVENT_DETAILS.name}
                                         </h3>
                                         <p className="text-[#4eb4a7] font-medium">
-                                          Ticket #{ticket.id}
+                                          Booking #{booking.id}
                                         </p>
                                       </div>
 
-                                      {ticket.status === "Valid" && (
+                                      {booking.status === "confirmed" && (
                                         <Button
                                           size="sm"
                                           className="bg-[#4eb4a7] hover:bg-[#3da296]"
@@ -750,9 +846,17 @@ const MemberDashboard = () => {
                                       <div className="flex items-center gap-2">
                                         <Calendar className="h-4 w-4 text-[#4eb4a7]" />
                                         <div>
-                                          <p className="text-gray-500">Date</p>
+                                          <p className="text-gray-500">
+                                            Booking Date
+                                          </p>
                                           <p className="font-medium">
-                                            {ticket.date}
+                                            {new Date(
+                                              booking.createdAt
+                                            ).toLocaleDateString("en-US", {
+                                              year: "numeric",
+                                              month: "short",
+                                              day: "numeric",
+                                            })}
                                           </p>
                                         </div>
                                       </div>
@@ -760,9 +864,11 @@ const MemberDashboard = () => {
                                       <div className="flex items-center gap-2">
                                         <Clock className="h-4 w-4 text-[#4eb4a7]" />
                                         <div>
-                                          <p className="text-gray-500">Time</p>
+                                          <p className="text-gray-500">
+                                            Event Time
+                                          </p>
                                           <p className="font-medium">
-                                            {ticket.time}
+                                            {EVENT_DETAILS.time}
                                           </p>
                                         </div>
                                       </div>
@@ -774,7 +880,7 @@ const MemberDashboard = () => {
                                             Location
                                           </p>
                                           <p className="font-medium">
-                                            {ticket.location}
+                                            {EVENT_DETAILS.location}
                                           </p>
                                         </div>
                                       </div>
@@ -783,10 +889,10 @@ const MemberDashboard = () => {
                                     <div className="flex items-center gap-6 pt-2">
                                       <div>
                                         <p className="text-gray-500 text-sm">
-                                          Ticket Class
+                                          Ticket Type
                                         </p>
                                         <p className="font-semibold">
-                                          {ticket.ticketClass}
+                                          {booking.ticket?.type || "Standard"}
                                         </p>
                                       </div>
 
@@ -795,20 +901,40 @@ const MemberDashboard = () => {
                                           Price
                                         </p>
                                         <p className="font-semibold">
-                                          {ticket.price}
+                                          ₹
+                                          {booking.ticket?.price?.toLocaleString() ||
+                                            "0"}
+                                        </p>
+                                      </div>
+
+                                      <div>
+                                        <p className="text-gray-500 text-sm">
+                                          Payment Status
+                                        </p>
+                                        <p
+                                          className={`font-semibold ${getStatusColor(
+                                            "success"
+                                          )}`}
+                                        >
+                                          {formatStatus("success")}
                                         </p>
                                       </div>
                                     </div>
                                   </div>
 
-                                  {/* QR code (only for valid tickets) */}
-                                  {ticket.status === "Valid" && (
+                                  {/* QR code (only for confirmed bookings) */}
+                                  {booking.status === "confirmed" && (
                                     <div className="w-32 h-32 flex-shrink-0">
-                                      <img
-                                        src={ticket.qrCode}
-                                        alt="Ticket QR Code"
-                                        className="w-full h-full rounded-lg border border-gray-200"
-                                      />
+                                      <div className="w-full h-full rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
+                                        <div className="text-center">
+                                          <div className="w-20 h-20 bg-gray-200 rounded-lg mb-2 flex items-center justify-center">
+                                            <Ticket className="h-8 w-8 text-gray-400" />
+                                          </div>
+                                          <p className="text-xs text-gray-500">
+                                            QR Code
+                                          </p>
+                                        </div>
+                                      </div>
                                     </div>
                                   )}
                                 </div>
@@ -822,10 +948,10 @@ const MemberDashboard = () => {
                             <Ticket className="h-8 w-8 text-gray-400" />
                           </div>
                           <h3 className="text-lg font-medium text-gray-800 mb-2">
-                            No tickets found
+                            No bookings found
                           </h3>
                           <p className="text-gray-500 mb-6">
-                            You haven't purchased any event tickets yet.
+                            You haven't made any event bookings yet.
                           </p>
                           <Button
                             asChild
@@ -836,125 +962,6 @@ const MemberDashboard = () => {
                         </div>
                       )}
                     </CardContent>
-                  </Card>
-                </motion.div>
-              </motion.div>
-            </TabsContent>
-
-            {/* Membership Tab Content */}
-            <TabsContent value="membership">
-              <motion.div
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-                className="space-y-8"
-              >
-                <motion.div variants={itemVariants}>
-                  <Card className="overflow-hidden border-[#4eb4a7]/10 shadow-lg">
-                    <div className="bg-gradient-to-r from-[#4eb4a7] to-[#60afb4] py-12 px-6 text-center text-white">
-                      <Badge className="bg-white/20 hover:bg-white/30 mb-4">
-                        {memberInfo.membershipType} Member
-                      </Badge>
-                      <h2 className="text-3xl font-bold mb-2">
-                        Your Membership is Active
-                      </h2>
-                      <p className="text-white/80 max-w-md mx-auto">
-                        Enjoy all the benefits of your{" "}
-                        {memberInfo.membershipType} membership
-                      </p>
-                    </div>
-
-                    <CardContent className="p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div className="bg-[#4eb4a7]/5 rounded-xl p-4 border border-[#4eb4a7]/10 text-center">
-                          <div className="h-12 w-12 bg-[#4eb4a7]/10 rounded-full flex items-center justify-center text-[#4eb4a7] mx-auto mb-3">
-                            <Calendar className="h-6 w-6" />
-                          </div>
-                          <h3 className="font-medium mb-1">Member Since</h3>
-                          <p className="text-gray-600">
-                            {memberInfo.memberSince}
-                          </p>
-                        </div>
-
-                        <div className="bg-[#4eb4a7]/5 rounded-xl p-4 border border-[#4eb4a7]/10 text-center">
-                          <div className="h-12 w-12 bg-[#4eb4a7]/10 rounded-full flex items-center justify-center text-[#4eb4a7] mx-auto mb-3">
-                            <Star className="h-6 w-6" />
-                          </div>
-                          <h3 className="font-medium mb-1">Membership Tier</h3>
-                          <p className="text-gray-600">
-                            {memberInfo.membershipType}
-                          </p>
-                        </div>
-                      </div>
-
-                      <h3 className="text-xl font-bold mb-4">
-                        Membership Benefits
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <div className="flex items-start gap-3">
-                          <CheckCircle className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
-                          <div>
-                            <p className="font-medium">
-                              Priority Document Processing
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              Get your documents processed ahead of regular
-                              queue
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-3">
-                          <CheckCircle className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
-                          <div>
-                            <p className="font-medium">
-                              Exclusive Event Access
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              Early access to all Prince Group events
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-3">
-                          <CheckCircle className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
-                          <div>
-                            <p className="font-medium">
-                              Dedicated Relationship Manager
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              Personal assistance for all your service needs
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex items-start gap-3">
-                          <CheckCircle className="h-5 w-5 text-[#4eb4a7] mt-0.5" />
-                          <div>
-                            <p className="font-medium">
-                              Preferential Loan Rates
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              Special interest rates on all loan services
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-
-                    <CardFooter className="bg-gray-50 border-t border-gray-100 p-6 flex justify-between items-center">
-                      <div>
-                        <p className="text-sm text-gray-500">
-                          Need to upgrade?
-                        </p>
-                        <p className="font-medium">
-                          Contact our membership team
-                        </p>
-                      </div>
-                      <Button className="bg-[#4eb4a7] hover:bg-[#3da296]">
-                        Renew Membership
-                      </Button>
-                    </CardFooter>
                   </Card>
                 </motion.div>
               </motion.div>

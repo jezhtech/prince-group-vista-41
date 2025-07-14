@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "./ui/button";
 import {
   CheckCircle,
@@ -10,23 +10,33 @@ import {
   Music,
   Star,
   Sparkles,
+  XCircle,
+  AlertCircle,
 } from "lucide-react";
 
 export const PaymentResult = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [showConfetti, setShowConfetti] = useState(false);
+  
+  const status = searchParams.get("status") || "success";
+  const bookingId = searchParams.get("bookingId");
+  const isSuccess = status === "success";
+  const isFailed = status === "failed";
 
   useEffect(() => {
-    // Trigger confetti animation after component mounts
-    const timer = setTimeout(() => {
-      setShowConfetti(true);
-    }, 500);
+    // Trigger confetti animation after component mounts (only for success)
+    if (isSuccess) {
+      const timer = setTimeout(() => {
+        setShowConfetti(true);
+      }, 500);
 
-    return () => clearTimeout(timer);
-  }, []);
+      return () => clearTimeout(timer);
+    }
+  }, [isSuccess]);
 
   const handleViewBookings = () => {
-    navigate("/member/tickets");
+    navigate("/member/dashboard?tab=tickets");
   };
 
   const handleGoHome = () => {
@@ -78,29 +88,71 @@ export const PaymentResult = () => {
 
       <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl max-w-lg w-full p-4 md:p-8 space-y-6 shadow-2xl border border-white/20">
-          {/* Success Icon with Animation */}
+          {/* Status Icon with Animation */}
           <div className="text-center">
             <div className="relative inline-block">
-              <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20"></div>
-              <div className="relative bg-green-500 rounded-full p-4 animate-bounce">
-                <CheckCircle className="h-12 w-12 text-white" />
-              </div>
+              {isSuccess ? (
+                <>
+                  <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20"></div>
+                  <div className="relative bg-green-500 rounded-full p-4 animate-bounce">
+                    <CheckCircle className="h-12 w-12 text-white" />
+                  </div>
+                </>
+              ) : isFailed ? (
+                <div className="relative bg-red-500 rounded-full p-4">
+                  <XCircle className="h-12 w-12 text-white" />
+                </div>
+              ) : (
+                <div className="relative bg-yellow-500 rounded-full p-4">
+                  <AlertCircle className="h-12 w-12 text-white" />
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Success Message */}
+          {/* Status Message */}
           <div className="text-center space-y-3">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent animate-pulse">
-              Booking Confirmed!
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Your concert tickets have been successfully booked!
-            </p>
-            <div className="flex items-center justify-center gap-2 text-green-600 font-medium">
-              <Sparkles className="h-5 w-5 animate-spin" />
-              <span>Payment Successful</span>
-              <Sparkles className="h-5 w-5 animate-spin" />
-            </div>
+            {isSuccess ? (
+              <>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent animate-pulse">
+                  Booking Confirmed!
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Your concert tickets have been successfully booked!
+                </p>
+                <div className="flex items-center justify-center gap-2 text-green-600 font-medium">
+                  <Sparkles className="h-5 w-5 animate-spin" />
+                  <span>Payment Successful</span>
+                  <Sparkles className="h-5 w-5 animate-spin" />
+                </div>
+              </>
+            ) : isFailed ? (
+              <>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">
+                  Payment Failed
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Your payment was not successful. Please try again.
+                </p>
+                <div className="flex items-center justify-center gap-2 text-red-600 font-medium">
+                  <AlertCircle className="h-5 w-5" />
+                  <span>Payment Failed</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-600 to-yellow-700 bg-clip-text text-transparent">
+                  Payment Pending
+                </h1>
+                <p className="text-gray-600 text-lg">
+                  Your payment is being processed. Please wait.
+                </p>
+                <div className="flex items-center justify-center gap-2 text-yellow-600 font-medium">
+                  <AlertCircle className="h-5 w-5" />
+                  <span>Payment Pending</span>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Event Details Card */}
@@ -156,21 +208,61 @@ export const PaymentResult = () => {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            <Button
-              onClick={handleViewBookings}
-              className="flex-1 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
-            >
-              <Ticket className="mr-2 h-5 w-5" />
-              View My Bookings
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleGoHome}
-              className="flex-1 border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
-            >
-              <Home className="mr-2 h-5 w-5" />
-              Back to Home
-            </Button>
+            {isSuccess ? (
+              <>
+                <Button
+                  onClick={handleViewBookings}
+                  className="flex-1 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700 text-white font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <Ticket className="mr-2 h-5 w-5" />
+                  View My Bookings
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleGoHome}
+                  className="flex-1 border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <Home className="mr-2 h-5 w-5" />
+                  Back to Home
+                </Button>
+              </>
+            ) : isFailed ? (
+              <>
+                <Button
+                  onClick={() => navigate("/events")}
+                  className="flex-1 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <Ticket className="mr-2 h-5 w-5" />
+                  Try Again
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleGoHome}
+                  className="flex-1 border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <Home className="mr-2 h-5 w-5" />
+                  Back to Home
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  onClick={handleViewBookings}
+                  className="flex-1 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-white font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <Ticket className="mr-2 h-5 w-5" />
+                  Check Status
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleGoHome}
+                  className="flex-1 border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <Home className="mr-2 h-5 w-5" />
+                  Back to Home
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Additional Info */}

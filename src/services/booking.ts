@@ -19,8 +19,25 @@ export const getBookingById = async (token: string, id: number): Promise<Booking
     return data.booking;
 };
 
-export const getAllBookings = async (token: string): Promise<Booking[]> => {
-    const response = await fetch(`${API_BASE_URL}/booking/all`, {
+export const getBookingsByUserId = async (token: string): Promise<Booking[]> => {
+    const response = await fetch(`${API_BASE_URL}/booking/user`, {
+        method: "GET",
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to fetch bookings");
+    }
+
+    const data = await response.json();
+    return data.bookings;
+};
+
+export const getAllBookings = async (token: string, userId: string): Promise<Booking[]> => {
+    const response = await fetch(`${API_BASE_URL}/booking/user/${userId}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${token}`,

@@ -19,8 +19,11 @@ import {
   signInWithCredential,
   signInWithPopup,
   GoogleAuthProvider,
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  signInWithEmailLink,
 } from "firebase/auth";
-import { auth, googleAuthProvider } from "@/lib/firebase";
+import { auth, googleAuthProvider, actionCodeSettings } from "@/lib/firebase";
 import { createUser, getUser } from "@/services/user";
 import { User as UserType } from "@/types/user";
 
@@ -41,6 +44,10 @@ interface AuthContextType {
     recaptchaVerifier: RecaptchaVerifier
   ) => Promise<any>;
   verifyPhoneOTP: (verificationId: string, otp: string) => Promise<any>;
+  sendEmailOTP: (email: string) => Promise<void>;
+  verifyEmailOTP: (email: string) => Promise<void>;
+  signInWithEmailOTP: (email: string, otp: string) => Promise<{ success: boolean }>;
+  isEmailLink: (link: string) => boolean;
   userData: UserType | null;
   userToken: string | null;
 }
@@ -168,6 +175,34 @@ function AuthProvider({ children }: AuthProviderProps) {
     return await signInWithCredential(auth, credential);
   };
 
+  const sendEmailOTP = async (email: string) => {
+    await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+  };
+
+  const verifyEmailOTP = async (email: string) => {
+    if (isSignInWithEmailLink(auth, email)) {
+      await signInWithEmailLink(auth, email);
+    }
+  };
+
+  const signInWithEmailOTP = async (email: string, otp: string) => {
+    // This will be called from the Login component after OTP verification
+    // The actual OTP verification is handled by the backend
+    // Here we just need to handle the user session
+    try {
+      // Get user data from backend using the token
+      const userData = await getUser("");
+      setUserData(userData);
+      return { success: true };
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const isEmailLink = (link: string) => {
+    return isSignInWithEmailLink(auth, link);
+  };
+
   const value = {
     currentUser,
     loading,
@@ -179,6 +214,10 @@ function AuthProvider({ children }: AuthProviderProps) {
     updateUserProfile,
     sendPhoneOTP,
     verifyPhoneOTP,
+    sendEmailOTP,
+    verifyEmailOTP,
+    signInWithEmailOTP,
+    isEmailLink,
     userData,
     userToken,
   };

@@ -41,7 +41,7 @@ export interface PaymentStatus {
 }
 
 export interface CreatePaymentRequest {
-  bookingId: number;
+  bookingId: string;
   amount: number;
   currency: string;
   customerName: string;

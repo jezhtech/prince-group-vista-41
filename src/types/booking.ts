@@ -3,7 +3,7 @@ import { Ticket } from './ticket';
 import { Referral } from './referral';
 
 export interface Booking {
-    id: number;
+    id: string; // Changed from number to string for UUID
     userId: string;
     referralId: string;
     ticketId: number;

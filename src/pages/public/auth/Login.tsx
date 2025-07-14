@@ -13,9 +13,10 @@ import { Mail, KeySquare, Lock, AlertCircle, Chrome } from "lucide-react";
 import Logo from "@/components/Logo";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
+import { emailOTPService } from "@/services/emailOTP";
 
 const Login = () => {
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn, signInWithGoogle, signInWithEmailOTP } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -47,16 +48,13 @@ const Login = () => {
     setError("");
 
     try {
-      // For now, we'll simulate OTP sending since Firebase doesn't have built-in email OTP
-      // In a real implementation, you'd integrate with a service like Twilio or your backend
-      setTimeout(() => {
-        setOtpSent(true);
-        setIsLoading(false);
-        toast({
-          title: "OTP Sent",
-          description: `A verification code has been sent to ${email}. For demo purposes, use code: 123456`,
-        });
-      }, 1500);
+      const response = await emailOTPService.sendOTP(email);
+      setOtpSent(true);
+      setIsLoading(false);
+      toast({
+        title: "OTP Sent",
+        description: response.message || `A verification code has been sent to ${email}.`,
+      });
     } catch (error: any) {
       setError(error.message);
       toast({
@@ -74,18 +72,22 @@ const Login = () => {
     setError("");
 
     try {
-      // For demo purposes, accept 123456 as the OTP
-      if (otp === "123456") {
+      const response = await emailOTPService.verifyOTP(email, otp);
+      
+      if (response.success) {
+        // Sign in with the verified OTP
+        await signInWithEmailOTP(email, otp);
+        
         toast({
           title: "Login Successful",
           description: "You have been logged in successfully.",
         });
         navigate(from, { replace: true });
       } else {
-        setError("Invalid OTP code");
+        setError(response.message || "Invalid OTP code");
         toast({
           title: "Invalid OTP",
-          description: "Please enter the correct verification code.",
+          description: response.message || "Please enter the correct verification code.",
           variant: "destructive",
         });
       }
@@ -439,10 +441,28 @@ const Login = () => {
                     Didn't receive the code?{" "}
                     <button
                       type="button"
-                      onClick={handleSendOtp}
+                      onClick={async () => {
+                        try {
+                          setIsLoading(true);
+                          const response = await emailOTPService.resendOTP(email);
+                          toast({
+                            title: "OTP Resent",
+                            description: response.message || "A new verification code has been sent.",
+                          });
+                        } catch (error: any) {
+                          toast({
+                            title: "Failed to Resend OTP",
+                            description: error.message,
+                            variant: "destructive",
+                          });
+                        } finally {
+                          setIsLoading(false);
+                        }
+                      }}
                       className="text-[#4eb4a7] hover:underline"
+                      disabled={isLoading}
                     >
-                      Resend OTP
+                      {isLoading ? "Sending..." : "Resend OTP"}
                     </button>
                   </p>
                 </div>
