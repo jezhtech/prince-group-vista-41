@@ -91,7 +91,7 @@ export const UserProfile = ({
         <DropdownMenuItem asChild>
           <Link
             to={
-              userData?.role === "admin" ? "/admin/tickets" : "/member/tickets"
+              userData?.role === "admin" ? "/admin/tickets" : "/member/dashboard?tab=tickets"
             }
           >
             <Ticket className="mr-2 h-4 w-4" />
