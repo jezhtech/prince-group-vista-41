@@ -76,7 +76,7 @@ const EVENT_DETAILS = {
 };
 
 const MemberDashboard = () => {
-  const { currentUser, userData, userToken } = useAuth();
+  const { currentUser, userData, userToken, setUserData } = useAuth();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
 
@@ -305,7 +305,7 @@ const MemberDashboard = () => {
       const token = await currentUser?.getIdToken();
       if (currentUser && token) {
         const user: UserType = await getUser(token);
-
+        setUserData(user);
         // Map the user data to memberInfo with defaults for missing fields
         const memberData = {
           name: user.fullName || "Member",

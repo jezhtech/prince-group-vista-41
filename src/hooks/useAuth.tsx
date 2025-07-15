@@ -18,7 +18,6 @@ import {
   PhoneAuthProvider,
   signInWithCredential,
   signInWithPopup,
-  GoogleAuthProvider,
   sendSignInLinkToEmail,
   isSignInWithEmailLink,
   signInWithEmailLink,
@@ -48,6 +47,7 @@ interface AuthContextType {
   verifyEmailOTP: (email: string) => Promise<void>;
   signInWithEmailOTP: (email: string, otp: string) => Promise<{ success: boolean }>;
   isEmailLink: (link: string) => boolean;
+  setUserData: (userData: UserType) => void;
   userData: UserType | null;
   userToken: string | null;
 }
@@ -219,6 +219,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     signInWithEmailOTP,
     isEmailLink,
     userData,
+    setUserData,
     userToken,
   };
 
