@@ -13,27 +13,78 @@ import {
   XCircle,
   AlertCircle,
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  checkPaymentStatus,
+  checkPaymentWithBookingNumber,
+  updateBooking,
+} from "@/services";
+import NotFound from "@/pages/public/NotFound";
 
 export const PaymentResult = () => {
   const navigate = useNavigate();
+  const { userToken } = useAuth();
   const [searchParams] = useSearchParams();
   const [showConfetti, setShowConfetti] = useState(false);
-  
-  const status = searchParams.get("status") || "success";
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+  const [isValidPayment, setIsValidPayment] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const orderId = searchParams.get("orderId");
   const bookingId = searchParams.get("bookingId");
-  const isSuccess = status === "success";
-  const isFailed = status === "failed";
+
+  const checkPayment = async () => {
+    setIsLoading(true);
+    try {
+      const checkResponse = await checkPaymentWithBookingNumber(
+        userToken,
+        bookingId,
+        orderId
+      );
+
+      if (checkResponse.status === "success") {
+        setPaymentStatus("success");
+        setShowConfetti(true);
+        setIsValidPayment(true);
+      } else {
+        setIsValidPayment(false);
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setIsValidPayment(false);
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Trigger confetti animation after component mounts (only for success)
-    if (isSuccess) {
-      const timer = setTimeout(() => {
-        setShowConfetti(true);
-      }, 500);
-
-      return () => clearTimeout(timer);
+    if (userToken) {
+      checkPayment();
     }
-  }, [isSuccess]);
+  }, [userToken]);
+
+  useEffect(() => {
+    console.log(userToken, isValidPayment);
+    if (userToken && isValidPayment) {
+      setIsLoading(true);
+      checkPaymentStatus(userToken, orderId)
+        .then((data) => {
+          updateBooking(userToken, {
+            bookingNumber: bookingId,
+            paymentStatus: data.status as "pending" | "success" | "failed",
+          });
+          setPaymentStatus(data.status);
+          console.log(data.status);
+          if (data.status === "success") {
+            setShowConfetti(true);
+          } else {
+            setShowConfetti(false);
+          }
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [userToken, isValidPayment]);
 
   const handleViewBookings = () => {
     navigate("/member/dashboard?tab=tickets");
@@ -43,8 +94,29 @@ export const PaymentResult = () => {
     navigate("/");
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen pt-20 md:pt-0 bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900 relative overflow-hidden">
+        <div className="relative z-10 flex items-center justify-center min-h-screen p-4">
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl max-w-lg w-full p-4 md:p-8 space-y-6 shadow-2xl border border-white/20">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-yellow-600 to-yellow-700 bg-clip-text text-transparent">
+              Payment Pending
+            </h1>
+            <p className="text-gray-600 text-lg">
+              Your payment is being processed. Please wait.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isLoading && !isValidPayment) {
+    return <NotFound />;
+  }
+
   return (
-    <div className="min-h-screen pt-10 md:pt-0 bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900 relative overflow-hidden">
+    <div className="min-h-screen pt-20 md:pt-0 bg-gradient-to-br from-pink-900 via-purple-900 to-indigo-900 relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(20)].map((_, i) => (
@@ -91,14 +163,14 @@ export const PaymentResult = () => {
           {/* Status Icon with Animation */}
           <div className="text-center">
             <div className="relative inline-block">
-              {isSuccess ? (
+              {paymentStatus === "success" ? (
                 <>
                   <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20"></div>
                   <div className="relative bg-green-500 rounded-full p-4 animate-bounce">
                     <CheckCircle className="h-12 w-12 text-white" />
                   </div>
                 </>
-              ) : isFailed ? (
+              ) : paymentStatus === "failed" ? (
                 <div className="relative bg-red-500 rounded-full p-4">
                   <XCircle className="h-12 w-12 text-white" />
                 </div>
@@ -112,7 +184,7 @@ export const PaymentResult = () => {
 
           {/* Status Message */}
           <div className="text-center space-y-3">
-            {isSuccess ? (
+            {paymentStatus === "success" ? (
               <>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent animate-pulse">
                   Booking Confirmed!
@@ -126,7 +198,7 @@ export const PaymentResult = () => {
                   <Sparkles className="h-5 w-5 animate-spin" />
                 </div>
               </>
-            ) : isFailed ? (
+            ) : paymentStatus === "failed" ? (
               <>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-700 bg-clip-text text-transparent">
                   Payment Failed
@@ -154,6 +226,36 @@ export const PaymentResult = () => {
               </>
             )}
           </div>
+
+          {/* Payment Status Display */}
+          {/* {paymentStatus && (
+            <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 text-blue-600" />
+                Payment Status
+              </h3>
+              <div className="text-center">
+                <p className="text-lg font-medium text-blue-700">
+                  Status: {paymentStatus.toUpperCase()}
+                </p>
+                {paymentStatus === "success" && (
+                  <p className="text-sm text-green-600 mt-2">
+                    Your payment has been processed successfully!
+                  </p>
+                )}
+                {paymentStatus === "failed" && (
+                  <p className="text-sm text-red-600 mt-2">
+                    Payment was not successful. Please try again.
+                  </p>
+                )}
+                {paymentStatus === "pending" && (
+                  <p className="text-sm text-yellow-600 mt-2">
+                    Payment is still being processed. Please wait.
+                  </p>
+                )}
+              </div>
+            </div>
+          )} */}
 
           {/* Event Details Card */}
           <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl p-6 border border-pink-200">
@@ -208,7 +310,7 @@ export const PaymentResult = () => {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            {isSuccess ? (
+            {paymentStatus === "success" ? (
               <>
                 <Button
                   onClick={handleViewBookings}
@@ -226,7 +328,7 @@ export const PaymentResult = () => {
                   Back to Home
                 </Button>
               </>
-            ) : isFailed ? (
+            ) : paymentStatus === "failed" ? (
               <>
                 <Button
                   onClick={() => navigate("/events")}
@@ -247,11 +349,14 @@ export const PaymentResult = () => {
             ) : (
               <>
                 <Button
-                  onClick={handleViewBookings}
-                  className="flex-1 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-white font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105"
+                  onClick={() =>
+                    orderId && checkPaymentStatus(userToken, orderId)
+                  }
+                  disabled={isLoading}
+                  className="flex-1 bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 text-white font-semibold py-3 rounded-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50"
                 >
                   <Ticket className="mr-2 h-5 w-5" />
-                  Check Status
+                  {isLoading ? "Checking..." : "Check Status"}
                 </Button>
                 <Button
                   variant="outline"

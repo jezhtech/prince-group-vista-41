@@ -1,11 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import MainFooter from "@/components/MainFooter";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { Helmet } from "react-helmet-async";
 import "./events.css";
+
 import {
   MapPin,
   Ticket,
@@ -14,10 +8,18 @@ import {
   CalendarDays,
   CalendarIcon,
 } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
 import { cn, isIOS } from "@/lib/utils";
-import { EventBooking } from "@/components/EventBooking";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import MainFooter from "@/components/MainFooter";
 import { EventNavbar } from "@/components/EventNavbar";
+import { EventBooking } from "@/components/EventBooking";
 
 const Events = () => {
   // Ref for scroll animations
@@ -27,89 +29,7 @@ const Events = () => {
 
   // State variables
   const [isBookingOpen, setIsBookingOpen] = useState(false);
-  const [selectedPerformer, setSelectedPerformer] = useState<string | null>(
-    null
-  );
-  const [ticketQuantity, setTicketQuantity] = useState(1);
-  const [totalPrice, setTotalPrice] = useState(0);
   const [currentPerformer, setCurrentPerformer] = useState(0);
-
-  // Ticket categories and pricing
-  const ticketClasses = [
-    {
-      id: "elite",
-      name: "Elite",
-      price: 19999,
-      description:
-        "Elite experience with exclusive amenities and prime viewing",
-      benefits: [
-        "Front row seating",
-        "Meet & Greet",
-        "Exclusive merchandise",
-        "VIP lounge access",
-      ],
-    },
-    {
-      id: "vvip",
-      name: "VVIP",
-      price: 14999,
-      description: "Very exclusive access with premium services and seating",
-      benefits: [
-        "Premium seating",
-        "Complimentary refreshments",
-        "Priority entry",
-        "Photo opportunity",
-      ],
-    },
-    {
-      id: "ultraluxury",
-      name: "Ultra Luxury",
-      price: 9999,
-      description: "Ultra-premium comfort with excellent views",
-      benefits: [
-        "Excellent view",
-        "Comfortable seating",
-        "Refreshments",
-        "Priority entry",
-      ],
-    },
-    {
-      id: "luxury",
-      name: "Luxury",
-      price: 4999,
-      description: "Superior comfort with great visibility",
-      benefits: ["Great visibility", "Comfortable seating", "Refreshments"],
-    },
-    {
-      id: "vip",
-      name: "VIP",
-      price: 2499,
-      description: "Priority access with enhanced amenities",
-      benefits: ["Priority access", "Good view", "Refreshments"],
-    },
-    {
-      id: "eco",
-      name: "Eco",
-      price: 999,
-      description: "Standard admission with good experience",
-      benefits: [
-        "Standard admission",
-        "Good experience",
-        "Refreshments available",
-      ],
-    },
-    {
-      id: "ecostanding",
-      name: "Eco Standing",
-      price: 499,
-      description: "Affordable standing area with full event access",
-      benefits: [
-        "Standing area",
-        "Full event access",
-        "Refreshments available",
-      ],
-    },
-  ];
 
   // Three main performers
   const performers = [

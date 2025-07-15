@@ -1,121 +1,144 @@
-import { Booking, CreateBookingRequest, UpdateBookingRequest } from "@/types/booking";
+import {
+  Booking,
+  CreateBookingRequest,
+  UpdateBookingRequest,
+} from "@/types/booking";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api/v1";
 
-export const getBookingById = async (token: string, id: number): Promise<Booking> => {
-    const response = await fetch(`${API_BASE_URL}/booking/${id}`, {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-    });
+export const getBookingById = async (
+  token: string,
+  id: number
+): Promise<Booking> => {
+  const response = await fetch(`${API_BASE_URL}/booking/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
-    if (!response.ok) {
-        throw new Error("Failed to fetch booking");
-    }
+  if (!response.ok) {
+    throw new Error("Failed to fetch booking");
+  }
 
-    const data = await response.json();
-    return data.booking;
+  const data = await response.json();
+  return data.booking;
 };
 
-export const getBookingsByUserId = async (token: string): Promise<Booking[]> => {
-    const response = await fetch(`${API_BASE_URL}/booking/user`, {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-    });
+export const getBookingsByUserId = async (
+  token: string
+): Promise<Booking[]> => {
+  const response = await fetch(`${API_BASE_URL}/booking/user`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
-    if (!response.ok) {
-        throw new Error("Failed to fetch bookings");
-    }
+  if (!response.ok) {
+    throw new Error("Failed to fetch bookings");
+  }
 
-    const data = await response.json();
-    return data.bookings;
+  const data = await response.json();
+  return data.bookings;
 };
 
-export const getAllBookings = async (token: string, userId: string): Promise<Booking[]> => {
-    const response = await fetch(`${API_BASE_URL}/booking/user/${userId}`, {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-    });
+export const getAllBookings = async (
+  token: string,
+  userId: string
+): Promise<Booking[]> => {
+  const response = await fetch(`${API_BASE_URL}/booking/user/${userId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
-    if (!response.ok) {
-        throw new Error("Failed to fetch bookings");
-    }
+  if (!response.ok) {
+    throw new Error("Failed to fetch bookings");
+  }
 
-    const data = await response.json();
-    return data.bookings;
+  const data = await response.json();
+  return data.bookings;
 };
 
-export const getAllBookingsForAdmin = async (token: string): Promise<Booking[]> => {
-    const response = await fetch(`${API_BASE_URL}/booking/admin/all`, {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-    });
+export const getAllBookingsForAdmin = async (
+  token: string
+): Promise<Booking[]> => {
+  const response = await fetch(`${API_BASE_URL}/booking/admin/all`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
-    if (!response.ok) {
-        throw new Error("Failed to fetch all bookings");
-    }
+  if (!response.ok) {
+    throw new Error("Failed to fetch all bookings");
+  }
 
-    const data = await response.json();
-    return data.bookings;
+  const data = await response.json();
+  return data.bookings;
 };
 
-export const createBooking = async (token: string, booking: CreateBookingRequest): Promise<Booking> => {
-    const response = await fetch(`${API_BASE_URL}/booking/`, {
-        method: "POST",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(booking),
-    });
+export const createBooking = async (
+  token: string,
+  booking: CreateBookingRequest
+): Promise<Booking> => {
+  const response = await fetch(`${API_BASE_URL}/booking/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(booking),
+  });
 
-    if (!response.ok) {
-        throw new Error("Failed to create booking");
-    }
+  if (!response.ok) {
+    throw new Error("Failed to create booking");
+  }
 
-    const data = await response.json();
-    return data.booking;
+  const data = await response.json();
+  return data.booking;
 };
 
-export const updateBooking = async (token: string, booking: UpdateBookingRequest): Promise<Booking> => {
-    const response = await fetch(`${API_BASE_URL}/booking/${booking.id}`, {
-        method: "PUT",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(booking),
-    });
+export const updateBooking = async (
+  token: string,
+  booking: UpdateBookingRequest
+): Promise<Booking> => {
+  const response = await fetch(`${API_BASE_URL}/booking/${booking.bookingNumber}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(booking),
+  });
 
-    if (!response.ok) {
-        throw new Error("Failed to update booking");
-    }
+  if (!response.ok) {
+    throw new Error("Failed to update booking");
+  }
 
-    const data = await response.json();
-    return data.booking;
+  const data = await response.json();
+  return data.booking;
 };
 
-export const deleteBooking = async (token: string, id: number): Promise<void> => {
-    const response = await fetch(`${API_BASE_URL}/booking/${id}`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-        },
-    });
+export const deleteBooking = async (
+  token: string,
+  id: number
+): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL}/booking/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
-    if (!response.ok) {
-        throw new Error("Failed to delete booking");
-    }
-}; 
+  if (!response.ok) {
+    throw new Error("Failed to delete booking");
+  }
+};

@@ -1,71 +1,89 @@
-import { apiRequest } from './api';
-import { 
-  CashfreePaymentLinkRequest, 
-  CashfreePaymentResponse, 
-  PaymentStatus, 
-  CreatePaymentRequest 
-} from '@/types/payment';
+import { apiRequest } from "./api";
+import {
+  CashfreePaymentLinkRequest,
+  CashfreePaymentResponse,
+  PaymentStatus,
+  CreatePaymentRequest,
+} from "@/types/payment";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api/v1";
 
 export const createPaymentSession = async (
-  token: string, 
+  token: string,
   paymentData: CreatePaymentRequest
 ): Promise<CashfreePaymentResponse> => {
   const response = await apiRequest<CashfreePaymentResponse>(
-    '/payment/links',
+    "/payment/links",
     {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(paymentData),
     },
     token
   );
-  
+
+  return response;
+};
+
+export const checkPaymentWithBookingNumber = async (
+  token: string,
+  bookingNumber: string,
+  paymentLinkID: string
+): Promise<PaymentStatus> => {
+  const response = await apiRequest<PaymentStatus>(
+    `/booking/check-payment/${bookingNumber}?paymentLinkId=${paymentLinkID}`,
+    {
+      method: "GET",
+    },
+    token
+  );
+
   return response;
 };
 
 export const checkPaymentStatus = async (
-  token: string, 
+  token: string,
   linkId: string
 ): Promise<PaymentStatus> => {
   const response = await apiRequest<PaymentStatus>(
     `/payment/status/${linkId}`,
     {
-      method: 'GET',
+      method: "GET",
     },
     token
   );
-  
+
   return response;
 };
 
-export const getPaymentHistory = async (token: string): Promise<PaymentStatus[]> => {
+export const getPaymentHistory = async (
+  token: string
+): Promise<PaymentStatus[]> => {
   const response = await apiRequest<{ payments: PaymentStatus[] }>(
-    '/payment/history',
+    "/payment/history",
     {
-      method: 'GET',
+      method: "GET",
     },
     token
   );
-  
+
   return response.payments;
 };
 
 export const refundPayment = async (
-  token: string, 
-  linkId: string, 
-  amount: number, 
+  token: string,
+  linkId: string,
+  amount: number,
   reason: string
 ): Promise<{ success: boolean; message: string }> => {
   const response = await apiRequest<{ success: boolean; message: string }>(
-    '/payment/refund',
+    "/payment/refund",
     {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({ linkId, amount, reason }),
     },
     token
   );
-  
+
   return response;
 };
 
@@ -84,4 +102,4 @@ export const formatAmountForCashfree = (amount: number): number => {
 // Utility function to format amount from Cashfree (from paise)
 export const formatAmountFromCashfree = (amount: number): number => {
   return amount / 100; // Convert from paise
-}; 
+};

@@ -50,6 +50,7 @@ import { toast } from "@/hooks/use-toast";
 import { Booking } from "@/types";
 import { getBookingsByUserId } from "@/services";
 import { EventNavbar } from "@/components/EventNavbar";
+import { cn } from "@/lib/utils";
 
 interface MemberInfo {
   name: string;
@@ -108,11 +109,6 @@ const MemberDashboard = () => {
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
-
-  // Helper function to format status
-  const formatStatus = (status: string) => {
-    return status.charAt(0).toUpperCase() + status.slice(1);
-  };
 
   // Helper function to get status color
   const getStatusColor = (status: string) => {
@@ -717,9 +713,9 @@ const MemberDashboard = () => {
                             >
                               <div
                                 className={`p-6 border-l-4 ${
-                                  booking.status === "confirmed"
+                                  booking.paymentStatus === "success"
                                     ? "border-l-green-500"
-                                    : booking.status === "pending"
+                                    : booking.paymentStatus === "pending"
                                     ? "border-l-yellow-500"
                                     : "border-l-red-500"
                                 }`}
@@ -730,15 +726,17 @@ const MemberDashboard = () => {
                                     <div className="flex justify-between items-start">
                                       <div>
                                         <Badge
-                                          className={
-                                            booking.status === "confirmed"
+                                          className={cn(
+                                            "capitalize",
+                                            booking.paymentStatus === "success"
                                               ? "bg-green-100 hover:bg-green-100 text-green-800 mb-2"
-                                              : booking.status === "pending"
+                                              : booking.paymentStatus ===
+                                                "pending"
                                               ? "bg-yellow-100 hover:bg-yellow-100 text-yellow-800 mb-2"
                                               : "bg-red-100 hover:bg-red-100 text-red-800 mb-2"
-                                          }
+                                          )}
                                         >
-                                          {formatStatus(booking.status)}
+                                          {booking.paymentStatus}
                                         </Badge>
                                         <h3 className="text-xl font-bold text-gray-800">
                                           {EVENT_DETAILS.name}
@@ -748,7 +746,7 @@ const MemberDashboard = () => {
                                         </p>
                                       </div>
 
-                                      {booking.status === "confirmed" && (
+                                      {booking.paymentStatus === "success" && (
                                         <Button
                                           size="sm"
                                           className="bg-[#4eb4a7] hover:bg-[#3da296]"
@@ -838,18 +836,24 @@ const MemberDashboard = () => {
                                           Payment Status
                                         </p>
                                         <p
-                                          className={`font-semibold ${getStatusColor(
-                                            "success"
-                                          )}`}
+                                          className={cn(
+                                            "font-semibold capitalize",
+                                            booking.paymentStatus === "success"
+                                              ? "text-green-600"
+                                              : booking.paymentStatus ===
+                                                "pending"
+                                              ? "text-yellow-600"
+                                              : "text-red-600"
+                                          )}
                                         >
-                                          {formatStatus("success")}
+                                          {booking.paymentStatus}
                                         </p>
                                       </div>
                                     </div>
                                   </div>
 
                                   {/* QR code (only for confirmed bookings) */}
-                                  {booking.status === "confirmed" && (
+                                  {booking.paymentStatus === "success" && (
                                     <div className="w-32 h-32 flex-shrink-0">
                                       <div className="w-full h-full rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
                                         <div className="text-center">

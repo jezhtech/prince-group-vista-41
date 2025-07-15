@@ -147,10 +147,18 @@ const Register = () => {
 
       navigate("/register/complete");
     } catch (error: any) {
-      setError(error.message);
+      let errorMesg = "";
+      if (error.message.includes("Firebase: Error")) {
+        const regex = /Firebase: Error \(auth\/([^)]+)\)/;
+        const match = error.message.match(regex);
+        errorMesg = match ? match[1].split("-").join(" ") : "An unknown error occurred";
+      } else {
+        errorMesg = error.message;
+      }
+      setError(errorMesg);
       toast({
         title: "Registration Failed",
-        description: error.message,
+        description: errorMesg,
         variant: "destructive",
       });
     } finally {

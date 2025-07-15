@@ -217,9 +217,7 @@ export const EventBooking = memo(
           paymentMethod: "cashfree",
           paymentStatus: "pending" as const,
           paymentDate: new Date().toISOString(),
-          paymentUrl: "",
-          paymentId: "",
-          transactionId: "",
+          paymentLinkId: "",
         };
 
         const booking = await createBooking(
@@ -229,7 +227,7 @@ export const EventBooking = memo(
 
         // Create payment session with Cashfree
         const paymentData = {
-          bookingId: booking.id,
+          bookingId: booking.bookingNumber,
           amount: finalPrice,
           currency: "INR",
           customerName: currentUser.displayName || "Guest",

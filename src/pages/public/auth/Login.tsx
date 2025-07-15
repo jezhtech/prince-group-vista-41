@@ -53,7 +53,8 @@ const Login = () => {
       setIsLoading(false);
       toast({
         title: "OTP Sent",
-        description: response.message || `A verification code has been sent to ${email}.`,
+        description:
+          response.message || `A verification code has been sent to ${email}.`,
       });
     } catch (error: any) {
       setError(error.message);
@@ -73,11 +74,11 @@ const Login = () => {
 
     try {
       const response = await emailOTPService.verifyOTP(email, otp);
-      
+
       if (response.success) {
         // Sign in with the verified OTP
         await signInWithEmailOTP(email, otp);
-        
+
         toast({
           title: "Login Successful",
           description: "You have been logged in successfully.",
@@ -87,7 +88,8 @@ const Login = () => {
         setError(response.message || "Invalid OTP code");
         toast({
           title: "Invalid OTP",
-          description: response.message || "Please enter the correct verification code.",
+          description:
+            response.message || "Please enter the correct verification code.",
           variant: "destructive",
         });
       }
@@ -116,21 +118,22 @@ const Login = () => {
       });
       navigate(redirect || from, { replace: true });
     } catch (error: any) {
-      if (error.message.includes("auth/invalid-credential")) {
-        setError("Invalid email or password");
-        toast({
-          title: "Login Failed",
-          description: "Invalid email or password",
-          variant: "destructive",
-        });
+      let errorMesg = "";
+      if (error.message.includes("Firebase: Error")) {
+        const regex = /Firebase: Error \(auth\/([^)]+)\)/;
+        const match = error.message.match(regex);
+        errorMesg = match
+          ? match[1].split("-").join(" ")
+          : "An unknown error occurred";
       } else {
-        setError(error.message);
-        toast({
-          title: "Login Failed",
-          description: error.message,
-          variant: "destructive",
-        });
+        errorMesg = error.message;
       }
+      setError(errorMesg);
+      toast({
+        title: "Registration Failed",
+        description: errorMesg,
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -444,10 +447,14 @@ const Login = () => {
                       onClick={async () => {
                         try {
                           setIsLoading(true);
-                          const response = await emailOTPService.resendOTP(email);
+                          const response = await emailOTPService.resendOTP(
+                            email
+                          );
                           toast({
                             title: "OTP Resent",
-                            description: response.message || "A new verification code has been sent.",
+                            description:
+                              response.message ||
+                              "A new verification code has been sent.",
                           });
                         } catch (error: any) {
                           toast({
