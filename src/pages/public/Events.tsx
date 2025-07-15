@@ -545,11 +545,16 @@ const Events = () => {
             <p className="text-white/70 text-lg max-w-2xl mx-auto mb-4 md:mb-12">
               Brought to you by the best in the industry
             </p>
-            <img
-              src="/teal-cg-logo.png"
-              alt="Prince Group"
-              className="h-16 mx-auto"
-            />
+            <div className="w-auto mx-auto flex flex-col justify-center items-center">
+              <img
+                src="/small-logo.png"
+                alt="Prince Group"
+                className="h-20 object-contain mb-4"
+              />
+              <h4 className="font-semibold text-2xl text-teal-500">
+                PRINCE GROUP OF COMPANIES
+              </h4>
+            </div>
           </motion.div>
         </div>
       </section>
