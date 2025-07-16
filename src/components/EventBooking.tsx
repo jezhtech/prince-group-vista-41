@@ -44,6 +44,13 @@ const EVENT_DETAILS = {
 
 const AVAILABLE_OFFERS = [
   {
+    id: "bulk",
+    name: "Bulk Purchase Offer",
+    description: "Buy 4 tickets get 1 more free, Buy 8 tickets get 2 more free",
+    type: "bulk",
+    icon: Gift,
+  },
+  {
     id: "referral",
     name: "Referral Discount",
     description: "Get 20% off with a valid referral code",
@@ -134,12 +141,40 @@ export const EventBooking = memo(
         price = selectedTicket.offerPriceWithReferralAndYoutube;
       }
 
-      return price * ticketQuantity;
+      // Calculate price based on quantity purchased (not received)
+      let ticketsToPayFor = ticketQuantity;
+
+      // Apply bulk purchase offer - pay for the base quantity, get extra free
+      if (ticketQuantity >= 8) {
+        // Buy 8, get 2 more free = pay for 8, receive 10
+        ticketsToPayFor = 8;
+      } else if (ticketQuantity >= 4) {
+        // Buy 4, get 1 more free = pay for 4, receive 5
+        ticketsToPayFor = 4;
+      }
+
+      return price * ticketsToPayFor;
     }, [selectedTicket, ticketQuantity, isValidReferral, isYoutubeSubscribed]);
 
     const totalSavings = useMemo(() => {
       return basePrice - finalPrice;
     }, [basePrice, finalPrice]);
+
+    // Calculate bulk offer savings
+    const bulkSavings = useMemo(() => {
+      if (!selectedTicket) return 0;
+
+      let savings = 0;
+      if (ticketQuantity >= 8) {
+        // Paying for 8 tickets but receiving 10 (2 free)
+        savings = selectedTicket.price * 2;
+      } else if (ticketQuantity >= 4) {
+        // Paying for 4 tickets but receiving 5 (1 free)
+        savings = selectedTicket.price * 1;
+      }
+
+      return savings;
+    }, [selectedTicket, ticketQuantity]);
 
     const isBookingValid = useMemo(
       () => ticketCategory && ticketQuantity > 0,
@@ -205,6 +240,21 @@ export const EventBooking = memo(
         return;
       }
 
+      // Check if userData is available
+      if (!userData) {
+        console.error("userData is null:", {
+          currentUser,
+          userToken,
+          userData,
+        });
+        toast({
+          title: "User Data Missing",
+          description: "Please refresh the page or log in again to continue.",
+          variant: "destructive",
+        });
+        return;
+      }
+
       setIsProcessingPayment(true);
       try {
         // Create booking first
@@ -212,7 +262,12 @@ export const EventBooking = memo(
           userId: currentUser.uid,
           referralId: isValidReferral ? referralCode : "",
           ticketId: selectedTicket!.id,
-          ticketCount: ticketQuantity,
+          ticketCount:
+            ticketQuantity >= 8
+              ? ticketQuantity + 2
+              : ticketQuantity >= 4
+              ? ticketQuantity + 1
+              : ticketQuantity, // Store actual tickets received
           paymentMethod: "cashfree",
           paymentStatus: "pending" as const,
           paymentDate: new Date().toISOString(),
@@ -229,12 +284,19 @@ export const EventBooking = memo(
           bookingId: booking.bookingNumber,
           amount: finalPrice,
           currency: "INR",
-          customerName: currentUser.displayName || "Guest",
-          customerEmail: currentUser.email || "",
-          customerPhone: userData.mobile || "", // You might want to get this from user profile
-          orderNote: `Booking for ${
-            selectedTicket!.name
-          } x ${ticketQuantity} tickets`,
+          customerName:
+            currentUser.displayName || userData?.fullName || "Guest",
+          customerEmail: currentUser.email || userData?.email || "",
+          customerPhone: userData?.mobile || "", // You might want to get this from user profile
+          orderNote: `Booking for ${selectedTicket!.name} x ${
+            ticketQuantity >= 8
+              ? ticketQuantity + 2
+              : ticketQuantity >= 4
+              ? ticketQuantity + 1
+              : ticketQuantity
+          } tickets (${ticketQuantity} paid + ${
+            ticketQuantity >= 8 ? 2 : ticketQuantity >= 4 ? 1 : 0
+          } free)`,
         };
 
         const paymentResponse = await createPaymentSession(
@@ -488,9 +550,28 @@ export const EventBooking = memo(
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
-                    <p className="text-white/50 text-sm mt-1">
-                      Maximum 15 tickets per booking
-                    </p>
+                    <div className="mt-2 space-y-1">
+                      <p className="text-white/50 text-sm">
+                        Maximum 15 tickets per booking
+                      </p>
+                      {ticketQuantity >= 4 && (
+                        <p className="text-green-400 text-sm font-medium">
+                          {ticketQuantity >= 8
+                            ? "🎉 You're getting 2 MORE FREE tickets!"
+                            : "🎉 You're getting 1 MORE FREE ticket!"}
+                        </p>
+                      )}
+                      {ticketQuantity === 3 && (
+                        <p className="text-yellow-400 text-sm">
+                          Add 1 more ticket to get 1 MORE FREE ticket!
+                        </p>
+                      )}
+                      {ticketQuantity === 7 && (
+                        <p className="text-yellow-400 text-sm">
+                          Add 1 more ticket to get 2 MORE FREE tickets!
+                        </p>
+                      )}
+                    </div>
                   </div>
 
                   {/* Event Date */}
@@ -560,6 +641,16 @@ export const EventBooking = memo(
                           {ticketQuantity}
                         </span>
                       </p>
+                      {ticketQuantity >= 4 && (
+                        <p className="flex justify-between">
+                          <span className="text-white/70">Bulk Offer</span>
+                          <span className="text-green-400 text-sm">
+                            {ticketQuantity >= 8
+                              ? "Buy 8, Get 2 More Free"
+                              : "Buy 4, Get 1 More Free"}
+                          </span>
+                        </p>
+                      )}
                       {selectedTicket && (
                         <p className="flex justify-between">
                           <span className="text-white/70">
@@ -570,10 +661,18 @@ export const EventBooking = memo(
                           </span>
                         </p>
                       )}
+                      {bulkSavings > 0 && (
+                        <p className="flex justify-between">
+                          <span className="text-green-400">Bulk Savings</span>
+                          <span className="text-green-400 font-medium">
+                            -{formatPrice(bulkSavings)}
+                          </span>
+                        </p>
+                      )}
                       <p className="pt-2 border-t border-white/20 flex justify-between">
                         <span className="font-medium text-white">Subtotal</span>
                         <span className="font-bold text-pink-400 text-lg">
-                          {basePrice > 0 ? formatPrice(basePrice) : "---"}
+                          {finalPrice > 0 ? formatPrice(finalPrice) : "---"}
                         </span>
                       </p>
                     </div>
@@ -593,6 +692,103 @@ export const EventBooking = memo(
                 <p className="text-white/60 mb-6">
                   Unlock additional discounts to save more on your tickets!
                 </p>
+              </div>
+
+              {/* Bulk Purchase Offer */}
+              <div className="bg-white/5 p-4 rounded-lg border border-white/20">
+                <div className="flex items-center gap-3 mb-3">
+                  <Gift className="h-5 w-5 text-pink-500" />
+                  <div>
+                    <h5 className="font-medium text-white">
+                      Bulk Purchase Offer
+                    </h5>
+                    <p className="text-xs sm:text-sm text-white/60">
+                      Buy 4 tickets get 1 more free, Buy 8 tickets get 2 more
+                      free
+                    </p>
+                  </div>
+                </div>
+
+                {/* Current Offer Status */}
+                <div className="mb-3">
+                  {ticketQuantity >= 8 ? (
+                    <div className="flex items-center gap-2 text-green-400">
+                      <CheckCircle className="h-4 w-4" />
+                      <span className="text-sm font-medium">
+                        You're getting 2 MORE FREE tickets! (Pay for 8, Get 10)
+                      </span>
+                    </div>
+                  ) : ticketQuantity >= 4 ? (
+                    <div className="flex items-center gap-2 text-green-400">
+                      <CheckCircle className="h-4 w-4" />
+                      <span className="text-sm font-medium">
+                        You're getting 1 MORE FREE ticket! (Pay for 4, Get 5)
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-yellow-400">
+                      <div className="h-4 w-4 rounded-full border-2 border-yellow-400"></div>
+                      <span className="text-sm">
+                        Add {4 - ticketQuantity} more ticket
+                        {ticketQuantity === 3 ? "" : "s"} to get 1 MORE FREE
+                        ticket
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Quick Add Buttons */}
+                <div className="flex flex-wrap gap-2">
+                  {ticketQuantity < 4 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setTicketQuantity(4)}
+                      className="border-pink-500/50 text-pink-400 hover:bg-pink-500/10"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Buy 4 Get 1 More Free
+                    </Button>
+                  )}
+                  {ticketQuantity < 8 && ticketQuantity >= 4 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setTicketQuantity(8)}
+                      className="border-pink-500/50 text-pink-400 hover:bg-pink-500/10"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Buy 8 Get 2 More Free
+                    </Button>
+                  )}
+                  {ticketQuantity >= 8 && ticketQuantity < 15 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        setTicketQuantity(Math.min(ticketQuantity + 1, 15))
+                      }
+                      className="border-white/20 hover:bg-white/10"
+                    >
+                      <Plus className="h-3 w-3 mr-1" />
+                      Add More Tickets
+                    </Button>
+                  )}
+                </div>
+
+                {/* Bulk Savings Display */}
+                {bulkSavings > 0 && (
+                  <div className="mt-3 p-2 bg-green-500/10 border border-green-500/20 rounded">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-green-400">
+                        Bulk Offer Savings:
+                      </span>
+                      <span className="text-sm font-medium text-green-400">
+                        -{formatPrice(bulkSavings)}
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Referral Code */}
@@ -772,6 +968,51 @@ export const EventBooking = memo(
                     <span className="text-white/70">Original Price:</span>
                     <span className="text-white">{formatPrice(basePrice)}</span>
                   </div>
+
+                  {/* Bulk Offer Savings */}
+                  {bulkSavings > 0 && (
+                    <div className="flex justify-between">
+                      <span className="text-green-400">
+                        Bulk Offer Savings:
+                      </span>
+                      <span className="text-green-400 font-medium">
+                        -{formatPrice(bulkSavings)}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Referral Savings */}
+                  {isValidReferral && (
+                    <div className="flex justify-between">
+                      <span className="text-green-400">Referral Discount:</span>
+                      <span className="text-green-400 font-medium">
+                        -
+                        {formatPrice(
+                          basePrice -
+                            (selectedTicket?.offerPriceWithReferral || 0) *
+                              ticketQuantity
+                        )}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* YouTube Savings */}
+                  {isYoutubeSubscribed && (
+                    <div className="flex justify-between">
+                      <span className="text-green-400">YouTube Discount:</span>
+                      <span className="text-green-400 font-medium">
+                        -
+                        {formatPrice(
+                          (selectedTicket?.offerPriceWithReferral ||
+                            selectedTicket?.price ||
+                            0) *
+                            ticketQuantity -
+                            finalPrice
+                        )}
+                      </span>
+                    </div>
+                  )}
+
                   {totalSavings > 0 && (
                     <div className="flex justify-between">
                       <span className="text-green-400">Total Savings:</span>
@@ -780,12 +1021,26 @@ export const EventBooking = memo(
                       </span>
                     </div>
                   )}
+
                   <div className="flex justify-between pt-2 border-t border-white/20">
                     <span className="font-medium text-white">Final Price:</span>
                     <span className="font-bold text-pink-400 text-lg">
                       {formatPrice(finalPrice)}
                     </span>
                   </div>
+
+                  {/* Ticket Count Info */}
+                  {ticketQuantity >= 4 && (
+                    <div className="text-xs text-white/60 mt-2">
+                      {ticketQuantity >= 8
+                        ? `You'll receive ${
+                            ticketQuantity + 2
+                          } tickets (paying for ${ticketQuantity})`
+                        : `You'll receive ${
+                            ticketQuantity + 1
+                          } tickets (paying for ${ticketQuantity})`}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -813,6 +1068,16 @@ export const EventBooking = memo(
                       {selectedTicket?.name} x {ticketQuantity}
                     </span>
                   </div>
+                  {ticketQuantity >= 4 && (
+                    <div className="flex justify-between">
+                      <span className="text-white/70">Bulk Offer:</span>
+                      <span className="text-green-400">
+                        {ticketQuantity >= 8
+                          ? "Buy 8, Get 2 More Free"
+                          : "Buy 4, Get 1 More Free"}
+                      </span>
+                    </div>
+                  )}
                   <div className="flex justify-between">
                     <span className="text-white/70">Event:</span>
                     <span className="text-white">{EVENT_DETAILS.date}</span>
@@ -896,7 +1161,7 @@ export const EventBooking = memo(
 
     return (
       <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-        <DialogContent className="booking-form-section concert z-[9999] p-0 pb-2 sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-prince border-none">
+        <DialogContent className="booking-form-section concert p-0 pb-2 sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-prince border-none">
           {/* Header */}
           <div className="booking-form-header py-2 sm:py-4 px-3 sm:px-4">
             <div className="flex items-center gap-2">

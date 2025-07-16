@@ -69,6 +69,21 @@ export const getPaymentHistory = async (
   return response.payments;
 };
 
+export const sendPaymentConfirmationEmail = async (
+  token: string,
+  bookingNumber: string
+): Promise<{ status: string; message: string }> => {
+  const response = await apiRequest<{ status: string; message: string }>(
+    `/payment/send-email/${bookingNumber}`,
+    {
+      method: "POST",
+    },
+    token
+  );
+
+  return response;
+};
+
 export const refundPayment = async (
   token: string,
   linkId: string,

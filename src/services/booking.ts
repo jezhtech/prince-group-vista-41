@@ -142,3 +142,23 @@ export const deleteBooking = async (
     throw new Error("Failed to delete booking");
   }
 };
+
+export const getBookingByBookingNumber = async (
+  token: string,
+  bookingNumber: string
+): Promise<Booking> => {
+  const response = await fetch(`${API_BASE_URL}/booking/number/${bookingNumber}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch booking");
+  }
+
+  const data = await response.json();
+  return data.booking;
+}; 

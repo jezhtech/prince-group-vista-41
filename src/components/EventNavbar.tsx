@@ -17,7 +17,7 @@ export const EventNavbar = ({
         marginTop: isIOS() ? "48px" : 0,
       }}
       className={cn(
-        "sticky top-12 left-0 right-0 z-[999] backdrop-blur py-3 shadow-md",
+        "sticky top-12 left-0 right-0 z-10 backdrop-blur py-3 shadow-md",
         mode === "dark" && "bg-black/20",
         mode === "light" && "bg-white/20"
       )}

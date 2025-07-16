@@ -18,6 +18,7 @@ import {
   checkPaymentStatus,
   checkPaymentWithBookingNumber,
   updateBooking,
+  sendPaymentConfirmationEmail,
 } from "@/services";
 import NotFound from "@/pages/public/NotFound";
 
@@ -63,7 +64,6 @@ export const PaymentResult = () => {
   }, [userToken]);
 
   useEffect(() => {
-    console.log(userToken, isValidPayment);
     if (userToken && isValidPayment) {
       setIsLoading(true);
       checkPaymentStatus(userToken, orderId)
@@ -72,8 +72,8 @@ export const PaymentResult = () => {
             bookingNumber: bookingId,
             paymentStatus: data.status as "pending" | "success" | "failed",
           });
+          handleResendEmail();
           setPaymentStatus(data.status);
-          console.log(data.status);
           if (data.status === "success") {
             setShowConfetti(true);
           } else {
@@ -92,6 +92,16 @@ export const PaymentResult = () => {
 
   const handleGoHome = () => {
     navigate("/");
+  };
+
+  const handleResendEmail = async () => {
+    if (bookingId) {
+      try {
+        await sendPaymentConfirmationEmail(userToken, bookingId);
+      } catch (error) {
+        console.error("Failed to send email:", error);
+      }
+    }
   };
 
   if (isLoading) {
@@ -371,10 +381,22 @@ export const PaymentResult = () => {
           </div>
 
           {/* Additional Info */}
-          <div className="text-center text-sm text-gray-500 space-y-2">
+          {/* <div className="text-center text-sm text-gray-500 space-y-2">
             <p>You will receive a confirmation email shortly.</p>
             <p>Please arrive 30 minutes before the event starts.</p>
-          </div>
+            {paymentStatus === "success" && (
+              <div className="mt-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleResendEmail}
+                  className="text-xs border-gray-300 hover:border-gray-400"
+                >
+                  📧 Resend Email
+                </Button>
+              </div>
+            )}
+          </div> */}
         </div>
       </div>
     </div>

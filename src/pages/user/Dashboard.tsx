@@ -826,7 +826,11 @@ const MemberDashboard = () => {
                                           ₹
                                           {(
                                             (booking.ticket?.price || 0) *
-                                            booking.ticketCount
+                                            (booking.ticketCount > 8
+                                              ? booking.ticketCount - 2
+                                              : booking.ticketCount > 4
+                                              ? booking.ticketCount - 1
+                                              : booking.ticketCount)
                                           ).toLocaleString("en-IN")}
                                         </p>
                                       </div>

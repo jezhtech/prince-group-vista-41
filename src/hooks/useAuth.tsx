@@ -54,6 +54,7 @@ interface AuthContextType {
   userData: UserType | null;
   userToken: string | null;
   getApiToken: () => string | null;
+  refreshUserData: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -86,10 +87,57 @@ function AuthProvider({ children }: AuthProviderProps) {
         try {
           const token = await user.getIdToken();
           setUserToken(token);
-          const userData = await getUser();
-          setUserData(userData);
+
+          // Try to fetch user data from backend
+          try {
+            const userData = await getUser();
+            setUserData(userData);
+          } catch (userDataError) {
+            console.error(
+              "Error fetching user data from backend:",
+              userDataError
+            );
+
+            // Fallback: Create user data from Firebase user info
+            const fallbackUserData = {
+              id: parseInt(user.uid) || 0,
+              userId: user.uid,
+              firebaseId: user.uid,
+              email: user.email || "",
+              fullName: user.displayName || user.email || "",
+              mobile: "",
+              address: "",
+              city: "",
+              state: "",
+              pincode: "",
+              aadhaar: "",
+              role: "user" as const,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            };
+
+            setUserData(fallbackUserData);
+          }
         } catch (error) {
-          console.error("Error fetching user data:", error);
+          console.error("Error in Firebase auth state change:", error);
+          // Even if token fetch fails, try to set basic user data
+          const fallbackUserData = {
+            id: parseInt(user.uid) || 0,
+            userId: user.uid,
+            firebaseId: user.uid,
+            email: user.email || "",
+            fullName: user.displayName || user.email || "",
+            mobile: "",
+            address: "",
+            city: "",
+            state: "",
+            pincode: "",
+            aadhaar: "",
+            role: "user" as const,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          };
+          setUserData(fallbackUserData);
         }
       } else {
         // Firebase user is null, check for backend authentication
@@ -99,7 +147,6 @@ function AuthProvider({ children }: AuthProviderProps) {
         if (backendToken && backendUserStr) {
           try {
             const backendUser = JSON.parse(backendUserStr);
-            console.log("Backend session found:", backendUser.email);
 
             // Create a custom user object for backend authentication
             const customUser = {
@@ -140,6 +187,13 @@ function AuthProvider({ children }: AuthProviderProps) {
     return unsubscribe;
   }, []);
 
+  // Ensure userData is always available when user is authenticated
+  useEffect(() => {
+    if (currentUser && !userData && !loading) {
+      refreshUserData();
+    }
+  }, [currentUser, userData, loading]);
+
   const signIn = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
   };
@@ -169,7 +223,8 @@ function AuthProvider({ children }: AuthProviderProps) {
         // Profile incomplete, needs completion
         return { isNewUser: false, needsProfileCompletion: true };
       }
-      // Profile complete
+      // Profile complete - ensure userData is set
+      setUserData(existingUser);
       return { isNewUser: false, needsProfileCompletion: false };
     } catch (error: any) {
       // User doesn't exist, create new user
@@ -182,12 +237,45 @@ function AuthProvider({ children }: AuthProviderProps) {
           mobile: "", // Will be filled in the next step
           role: "user" as const,
         });
+
+        // Set basic user data for new user
+        const newUserData = {
+          id: parseInt(result.user.uid) || 0,
+          userId: result.user.uid,
+          firebaseId: result.user.uid,
+          email: result.user.email || "",
+          fullName: result.user.displayName || "",
+          mobile: "",
+          address: "",
+          city: "",
+          state: "",
+          pincode: "",
+          aadhaar: "",
+          role: "user" as const,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        setUserData(newUserData);
+
         // New user created, will need to complete profile
         return { isNewUser: true };
       } catch (createError: any) {
         console.error("Error creating user:", createError);
         throw createError;
       }
+    }
+  };
+
+  // Function to refresh user data
+  const refreshUserData = async () => {
+    if (!currentUser) return;
+
+    try {
+      const token = await currentUser.getIdToken();
+      const userData = await getUser(token);
+      setUserData(userData);
+    } catch (error) {
+      console.error("Error refreshing user data:", error);
     }
   };
 
@@ -325,6 +413,7 @@ function AuthProvider({ children }: AuthProviderProps) {
     setUserData,
     userToken,
     getApiToken,
+    refreshUserData,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -170,7 +170,7 @@ const EventBanner = ({
 
   return (
     <div
-      className={`${position} top-0 left-0 right-0 h-[60px] sm:h-[50px] w-full bg-gradient-to-r from-purple-900 via-indigo-800 to-purple-800 text-white z-[1001] border-b-2 border-pink-500 shadow-xl overflow-hidden ${
+      className={`${position} top-0 left-0 right-0 h-[60px] sm:h-[50px] w-full bg-gradient-to-r from-purple-900 via-indigo-800 to-purple-800 text-white z-10 border-b-2 border-pink-500 shadow-xl overflow-hidden ${
         isIpad ? "ipad-event-banner" : ""
       } ${additionalClassName}`}
     >
