@@ -670,7 +670,7 @@ export const EventBooking = memo(
               </div>
 
               {/* YouTube Subscription */}
-              <div className="bg-white/5 p-4 rounded-lg border border-white/20">
+              {/* <div className="bg-white/5 p-4 rounded-lg border border-white/20">
                 <div className="flex items-center gap-3 mb-3">
                   <Youtube className="h-5 w-5 text-red-500" />
                   <div>
@@ -760,7 +760,7 @@ export const EventBooking = memo(
                     )}
                   </div>
                 )}
-              </div>
+              </div> */}
 
               {/* Price Summary */}
               <div className="bg-pink-900/20 p-4 rounded-lg border border-pink-500/20">

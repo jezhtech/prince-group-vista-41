@@ -116,11 +116,11 @@ const AdminDashboard = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-bold text-ui-gray-900">
-              Annual Developers Conference 2023
+              Rythm of Kumari 2025
             </h1>
             <p className="text-ui-gray-500 flex items-center mt-1">
-              <Calendar className="h-4 w-4 mr-2" />
-              June 15-16, 2023 • Nagercoil Convention Center
+              <Calendar className="h-4 w-4 mr-2" />5 PM • Sep 20, 2025 •
+              Nagercoil Convention Center
             </p>
           </div>
 
@@ -239,45 +239,47 @@ const AdminDashboard = () => {
                   <div className="text-xs text-ui-gray-500">Avg. Ticket</div>
                 </div>
               </div>
-                          </CardContent>
-            </Card>
-            
-            <Card className="bg-gradient-to-br from-purple-50 to-white">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium text-ui-gray-500 flex items-center">
-                  <Users className="h-4 w-4 mr-2 text-purple-500" /> Total Tickets
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-end">
-                  <div>
-                    <div className="text-3xl font-bold text-ui-gray-900">
-                      {dashboardData.stats.totalTicketCount}
-                    </div>
-                    <p className="text-xs flex items-center mt-1">
-                      <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
-                      <span className="text-green-500">Individual tickets</span>
-                    </p>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-50 to-white">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-ui-gray-500 flex items-center">
+                <Users className="h-4 w-4 mr-2 text-purple-500" /> Total Tickets
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex justify-between items-end">
+                <div>
+                  <div className="text-3xl font-bold text-ui-gray-900">
+                    {dashboardData.stats.totalTicketCount}
                   </div>
-                  <div className="text-right">
-                    <div className="text-sm font-medium text-ui-gray-900">
-                      {dashboardData.stats.totalTickets}
-                    </div>
-                    <div className="text-xs text-ui-gray-500">Capacity</div>
-                  </div>
+                  <p className="text-xs flex items-center mt-1">
+                    <TrendingUp className="h-3 w-3 mr-1 text-green-500" />
+                    <span className="text-green-500">Individual tickets</span>
+                  </p>
                 </div>
-                <Progress
-                  className="h-2 mt-3 bg-purple-100"
-                  value={
-                    dashboardData.stats.totalTickets > 0
-                      ? (dashboardData.stats.totalTicketCount / dashboardData.stats.totalTickets) * 100
-                      : 0
-                  }
-                />
-              </CardContent>
-            </Card>
-          </div>
+                <div className="text-right">
+                  <div className="text-sm font-medium text-ui-gray-900">
+                    {dashboardData.stats.totalTickets}
+                  </div>
+                  <div className="text-xs text-ui-gray-500">Capacity</div>
+                </div>
+              </div>
+              <Progress
+                className="h-2 mt-3 bg-purple-100"
+                value={
+                  dashboardData.stats.totalTickets > 0
+                    ? (dashboardData.stats.totalTicketCount /
+                        dashboardData.stats.totalTickets) *
+                      100
+                    : 0
+                }
+              />
+            </CardContent>
+          </Card>
         </div>
+      </div>
 
       {/* Ticket breakdown and analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -336,7 +338,7 @@ const AdminDashboard = () => {
                               : "text-ui-gray-500"
                           }`}
                         >
-                          {type.percent === 100 ? "Sold out" : "Available"}
+                          {type.percent === 100 ? "Sold out" : "Booked"}
                         </div>
                       </div>
                     </div>

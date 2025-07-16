@@ -149,7 +149,6 @@ const getRecentRegistrations = (bookings: Booking[], limit: number): RecentRegis
     .filter(b => b.paymentStatus === 'success')
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, limit);
-
   return successfulBookings.map(booking => ({
     name: booking.user?.fullName || 'Unknown User',
     email: booking.user?.email || 'No email',
@@ -160,7 +159,7 @@ const getRecentRegistrations = (bookings: Booking[], limit: number): RecentRegis
       day: 'numeric'
     }),
     amount: `₹${((booking.ticket?.price || 0) * (booking.ticketCount || 1)).toLocaleString()}`,
-    status: booking.status === 'confirmed' ? 'Confirmed' : 'Pending',
+    status: booking.paymentStatus === 'success' ? 'Success' : 'Pending',
     ticketCount: booking.ticketCount || 1
   }));
 };

@@ -2,6 +2,18 @@ import { User, CreateUserRequest } from "@/types/user";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api/v1';
 
+// Helper function to get the appropriate token
+const getApiToken = (): string | null => {
+    // First try to get backend token from localStorage
+    const backendToken = localStorage.getItem('backend_token');
+    if (backendToken) {
+        return backendToken;
+    }
+    
+    // If no backend token, return null (Firebase token should be passed explicitly)
+    return null;
+};
+
 export const createUser = async (token: string, user: CreateUserRequest): Promise<User> => {
     const response = await fetch(`${API_BASE_URL}/user/`, {
         method: "POST",
@@ -20,11 +32,21 @@ export const createUser = async (token: string, user: CreateUserRequest): Promis
     return data.user;
 };
 
-export const getUser = async (token: string): Promise<User> => {
+export const getUser = async (token?: string): Promise<User> => {
+    // If no token provided, try to get it from localStorage
+    let apiToken = token;
+    if (!apiToken) {
+        apiToken = getApiToken();
+    }
+    
+    if (!apiToken) {
+        throw new Error("No authentication token available");
+    }
+
     const response = await fetch(`${API_BASE_URL}/user/`, {
         method: "GET",
         headers: {
-            "Authorization": `Bearer ${token}`,
+            "Authorization": `Bearer ${apiToken}`,
             "Content-Type": "application/json",
         },
     });

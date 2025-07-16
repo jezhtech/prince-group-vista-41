@@ -73,25 +73,15 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await emailOTPService.verifyOTP(email, otp);
+      // Directly call the auth hook which handles backend verification
+      const result = await signInWithEmailOTP(email, otp);
 
-      if (response.success) {
-        // Sign in with the verified OTP
-        await signInWithEmailOTP(email, otp);
-
+      if (result.success) {
         toast({
           title: "Login Successful",
           description: "You have been logged in successfully.",
         });
         navigate(from, { replace: true });
-      } else {
-        setError(response.message || "Invalid OTP code");
-        toast({
-          title: "Invalid OTP",
-          description:
-            response.message || "Please enter the correct verification code.",
-          variant: "destructive",
-        });
       }
     } catch (error: any) {
       setError(error.message);
