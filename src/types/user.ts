@@ -2,7 +2,7 @@ export interface User {
   id: number;
   userId: string;
   firebaseId: string;
-  role: "admin" | "user";
+  role: "admin" | "user" | "client";
   fullName: string;
   email: string;
   mobile: string;

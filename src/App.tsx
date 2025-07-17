@@ -48,6 +48,7 @@ import AdminMembership from "@/pages/admin/Membership";
 import AdminUsers from "@/pages/admin/Users";
 import AdminRevenue from "@/pages/admin/revenue";
 import AdminReferrals from "@/pages/admin/Referrals";
+import ClientPage from "./pages/client/page";
 
 const queryClient = new QueryClient();
 
@@ -128,6 +129,8 @@ const App = () => (
                 <Route path="revenue" element={<AdminRevenue />} />
                 <Route path="*" element={<NotFound />} />
               </Route>
+
+              <Route path="/client" element={<ClientPage />} />
 
               {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />

@@ -6,6 +6,22 @@ import {
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "/api/v1";
 
+// Pagination interface
+export interface PaginationInfo {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+}
+
+// Paginated bookings response
+export interface PaginatedBookingsResponse {
+  bookings: Booking[];
+  pagination: PaginationInfo;
+}
+
 export const getBookingById = async (
   token: string,
   id: number
@@ -82,6 +98,62 @@ export const getAllBookingsForAdmin = async (
 
   const data = await response.json();
   return data.bookings;
+};
+
+// Get paginated bookings for admin with user and ticket data
+export const getPaginatedBookingsForAdmin = async (
+  token: string,
+  page: number = 1,
+  pageSize: number = 10
+): Promise<PaginatedBookingsResponse> => {
+  const response = await fetch(
+    `${API_BASE_URL}/booking/admin/paginated?page=${page}&pageSize=${pageSize}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch paginated bookings");
+  }
+
+  const data = await response.json();
+  return {
+    bookings: data.bookings,
+    pagination: data.pagination,
+  };
+};
+
+// Get paginated bookings for client with user and ticket data
+export const getPaginatedBookingsForClient = async (
+  token: string,
+  page: number = 1,
+  pageSize: number = 10
+): Promise<PaginatedBookingsResponse> => {
+  const response = await fetch(
+    `${API_BASE_URL}/client/bookings/paginated?page=${page}&pageSize=${pageSize}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch paginated bookings");
+  }
+
+  const data = await response.json();
+  return {
+    bookings: data.bookings,
+    pagination: data.pagination,
+  };
 };
 
 export const createBooking = async (
