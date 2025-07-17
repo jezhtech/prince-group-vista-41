@@ -52,8 +52,12 @@ export const getUser = async (token?: string): Promise<User> => {
     });
 
     if (!response.ok) {
-        throw new Error("Failed to get user");
+        if (response.status === 404) {
+            throw new Error("User not found");
+        }
+        throw new Error(`Failed to get user: ${response.status} ${response.statusText}`);
     }
+    
     const data = await response.json();
     return data.user;
 };

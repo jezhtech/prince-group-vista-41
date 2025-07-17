@@ -79,120 +79,133 @@ function AuthProvider({ children }: AuthProviderProps) {
   const [userData, setUserData] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Function to fetch user data from backend
+  const fetchUserData = async (token: string): Promise<UserType> => {
+    try {
+      console.log("Fetching user data with token:", token.substring(0, 20) + "...");
+      const userData = await getUser(token);
+      console.log("User data fetched successfully:", userData);
+      return userData;
+    } catch (error) {
+      console.error("Error fetching user data from backend:", error);
+      throw error; // Re-throw to handle it properly
+    }
+  };
+
+  // Function to create a custom Firebase user for backend authentication
+  const createCustomFirebaseUser = (backendUser: UserType, token: string): User => {
+    return {
+      uid: backendUser.id?.toString() || backendUser.email,
+      email: backendUser.email,
+      displayName: backendUser.fullName || backendUser.email,
+      getIdToken: async () => token,
+      emailVerified: true,
+      isAnonymous: false,
+      metadata: {
+        creationTime: backendUser.createdAt || new Date().toISOString(),
+        lastSignInTime: new Date().toISOString(),
+      },
+    } as User;
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        // Firebase user is authenticated
-        setCurrentUser(user);
-        try {
-          const token = await user.getIdToken();
-          setUserToken(token);
-
-          // Try to fetch user data from backend
+      console.log("Auth state changed:", user ? "User authenticated" : "No user");
+      try {
+        if (user) {
+          // Firebase user is authenticated
+          console.log("Setting current user:", user.email);
+          setCurrentUser(user);
+          
           try {
-            const userData = await getUser();
+            const token = await user.getIdToken();
+            console.log("Got Firebase token:", token.substring(0, 20) + "...");
+            setUserToken(token);
+
+            // Fetch real user data from backend
+            console.log("Fetching user data from backend...");
+            const userData = await fetchUserData(token);
+            console.log("Setting user data:", userData);
             setUserData(userData);
-          } catch (userDataError) {
-            console.error(
-              "Error fetching user data from backend:",
-              userDataError
-            );
-
-            // Fallback: Create user data from Firebase user info
-            const fallbackUserData = {
-              id: parseInt(user.uid) || 0,
-              userId: user.uid,
-              firebaseId: user.uid,
-              email: user.email || "",
-              fullName: user.displayName || user.email || "",
-              mobile: "",
-              address: "",
-              city: "",
-              state: "",
-              pincode: "",
-              aadhaar: "",
-              role: "user" as const,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            };
-
-            setUserData(fallbackUserData);
-          }
-        } catch (error) {
-          console.error("Error in Firebase auth state change:", error);
-          // Even if token fetch fails, try to set basic user data
-          const fallbackUserData = {
-            id: parseInt(user.uid) || 0,
-            userId: user.uid,
-            firebaseId: user.uid,
-            email: user.email || "",
-            fullName: user.displayName || user.email || "",
-            mobile: "",
-            address: "",
-            city: "",
-            state: "",
-            pincode: "",
-            aadhaar: "",
-            role: "user" as const,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-          };
-          setUserData(fallbackUserData);
-        }
-      } else {
-        // Firebase user is null, check for backend authentication
-        const backendToken = localStorage.getItem("backend_token");
-        const backendUserStr = localStorage.getItem("backend_user");
-
-        if (backendToken && backendUserStr) {
-          try {
-            const backendUser = JSON.parse(backendUserStr);
-
-            // Create a custom user object for backend authentication
-            const customUser = {
-              uid: backendUser.id?.toString() || backendUser.email,
-              email: backendUser.email,
-              displayName: backendUser.fullName || backendUser.email,
-              getIdToken: async () => backendToken,
-              emailVerified: true,
-              isAnonymous: false,
-              metadata: {
-                creationTime: new Date().toISOString(),
-                lastSignInTime: new Date().toISOString(),
-              },
-            } as User;
-
-            setCurrentUser(customUser);
-            setUserToken(backendToken);
-            setUserData(backendUser);
           } catch (error) {
-            console.error("Error restoring backend session:", error);
-            // Clear invalid backend session
-            localStorage.removeItem("backend_token");
-            localStorage.removeItem("backend_user");
+            console.error("Error fetching user data:", error);
+            
+            // If backend fetch fails, check if we have stored backend session
+            const backendToken = localStorage.getItem("backend_token");
+            const backendUserStr = localStorage.getItem("backend_user");
+
+            if (backendToken && backendUserStr) {
+              try {
+                console.log("Trying to restore backend session...");
+                const backendUser = JSON.parse(backendUserStr);
+                const customUser = createCustomFirebaseUser(backendUser, backendToken);
+                
+                setCurrentUser(customUser);
+                setUserToken(backendToken);
+                setUserData(backendUser);
+                console.log("Backend session restored successfully");
+              } catch (parseError) {
+                console.error("Error parsing stored backend session:", parseError);
+                // Clear invalid session and sign out
+                localStorage.removeItem("backend_token");
+                localStorage.removeItem("backend_user");
+                await signOut(auth);
+              }
+            } else {
+              // No valid session found, sign out to force re-authentication
+              console.error("No valid user session found, signing out");
+              await signOut(auth);
+            }
+          }
+        } else {
+          // Firebase user is null, check for backend authentication
+          console.log("Checking for backend authentication...");
+          const backendToken = localStorage.getItem("backend_token");
+          const backendUserStr = localStorage.getItem("backend_user");
+
+          if (backendToken && backendUserStr) {
+            try {
+              console.log("Restoring backend session...");
+              const backendUser = JSON.parse(backendUserStr);
+              const customUser = createCustomFirebaseUser(backendUser, backendToken);
+
+              setCurrentUser(customUser);
+              setUserToken(backendToken);
+              setUserData(backendUser);
+              console.log("Backend session restored successfully");
+            } catch (error) {
+              console.error("Error restoring backend session:", error);
+              // Clear invalid backend session
+              localStorage.removeItem("backend_token");
+              localStorage.removeItem("backend_user");
+              setCurrentUser(null);
+              setUserToken(null);
+              setUserData(null);
+            }
+          } else {
+            // No authentication found
+            console.log("No authentication found");
             setCurrentUser(null);
             setUserToken(null);
             setUserData(null);
           }
-        } else {
-          // No authentication found
-          setCurrentUser(null);
-          setUserToken(null);
-          setUserData(null);
         }
+      } catch (error) {
+        console.error("Error in auth state change:", error);
+        // On any error, clear everything and sign out
+        setCurrentUser(null);
+        setUserToken(null);
+        setUserData(null);
+        localStorage.removeItem("backend_token");
+        localStorage.removeItem("backend_user");
+        await signOut(auth);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return unsubscribe;
   }, []);
-
-  // Ensure userData is always available when user is authenticated
-  useEffect(() => {
-    if (currentUser && !userData && !loading) {
-      refreshUserData();
-    }
-  }, [currentUser, userData, loading]);
 
   const signIn = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
@@ -238,23 +251,8 @@ function AuthProvider({ children }: AuthProviderProps) {
           role: "user" as const,
         });
 
-        // Set basic user data for new user
-        const newUserData = {
-          id: parseInt(result.user.uid) || 0,
-          userId: result.user.uid,
-          firebaseId: result.user.uid,
-          email: result.user.email || "",
-          fullName: result.user.displayName || "",
-          mobile: "",
-          address: "",
-          city: "",
-          state: "",
-          pincode: "",
-          aadhaar: "",
-          role: "user" as const,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
+        // Fetch the newly created user data
+        const newUserData = await getUser(token);
         setUserData(newUserData);
 
         // New user created, will need to complete profile
@@ -272,10 +270,11 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       const token = await currentUser.getIdToken();
-      const userData = await getUser(token);
+      const userData = await fetchUserData(token);
       setUserData(userData);
     } catch (error) {
       console.error("Error refreshing user data:", error);
+      // If refresh fails, the auth state change handler will handle it
     }
   };
 
@@ -346,37 +345,17 @@ function AuthProvider({ children }: AuthProviderProps) {
         setUserToken(data.token);
         setUserData(data.user);
 
-        // Create a Firebase user session using custom token
-        // This ensures Firebase session management works properly
-        try {
-          // Create a custom Firebase user object that mimics Firebase auth
-          const customUser = {
-            uid: data.user.id?.toString() || data.user.email,
-            email: data.user.email,
-            displayName: data.user.fullName || data.user.email,
-            getIdToken: async () => data.token,
-            // Add other Firebase User properties as needed
-            emailVerified: true,
-            isAnonymous: false,
-            metadata: {
-              creationTime: new Date().toISOString(),
-              lastSignInTime: new Date().toISOString(),
-            },
-          } as User;
+        // Create a custom Firebase user object for backend authentication
+        const customUser = createCustomFirebaseUser(data.user, data.token);
 
-          // Set the user state directly (this will be overridden by Firebase listener)
-          setCurrentUser(customUser);
+        // Set the user state directly
+        setCurrentUser(customUser);
 
-          // Store the backend token in localStorage for persistence
-          localStorage.setItem("backend_token", data.token);
-          localStorage.setItem("backend_user", JSON.stringify(data.user));
+        // Store the backend token in localStorage for persistence
+        localStorage.setItem("backend_token", data.token);
+        localStorage.setItem("backend_user", JSON.stringify(data.user));
 
-          return { success: true };
-        } catch (firebaseError) {
-          console.error("Firebase session creation error:", firebaseError);
-          // Even if Firebase session creation fails, we still have backend auth
-          return { success: true };
-        }
+        return { success: true };
       } else {
         throw new Error(data.message || "OTP verification failed");
       }

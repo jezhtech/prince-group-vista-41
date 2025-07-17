@@ -28,7 +28,7 @@ export const EventNavbar = ({
             <img
               src="/small-logo.png"
               alt="Prince Group"
-              className="h-10 object-contain"
+              className="h-10 w-12 object-contain"
             />
             <h4 className="font-semibold text-2xl text-teal-500">
               PRINCE GROUP OF COMPANIES

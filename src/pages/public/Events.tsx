@@ -174,7 +174,7 @@ const Events = () => {
           </div>
 
           {/* Content Container */}
-          <div className="container mx-auto px-3 sm:px-4 relative z-10">
+          <div className="container mx-auto px-3 sm:px-4 relative">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               {/* Left Side - Hero Content */}
               <motion.div
@@ -303,7 +303,7 @@ const Events = () => {
                       <Card className="h-[90%] overflow-hidden border-0 bg-gradient-to-br from-[#0c1e3c] to-[#0e253f] shadow-2xl">
                         {/* Performer Image */}
                         <div className="relative h-full overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-10" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                           <img
                             src={performers[currentPerformer].image}
                             alt={performers[currentPerformer].name}
@@ -315,7 +315,7 @@ const Events = () => {
                           />
 
                           {/* Overlay with performer info */}
-                          <div className="absolute bottom-0 left-0 right-0 p-8 z-20">
+                          <div className="absolute bottom-0 left-0 right-0 p-8">
                             <div className="flex items-center justify-between mb-4">
                               <Badge
                                 className={`${performers[currentPerformer].buttonColor} text-white border-none`}
@@ -333,7 +333,7 @@ const Events = () => {
                   </AnimatePresence>
 
                   {/* Carousel Navigation */}
-                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-30">
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
                     <div className="flex gap-2">
                       {performers.map((_, index) => (
                         <button
@@ -358,7 +358,7 @@ const Events = () => {
                           : currentPerformer - 1
                       )
                     }
-                    className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 h-12 w-12 rounded-full bg-black/50 text-white hover:bg-black/70 flex items-center justify-center transition-all"
+                    className="absolute left-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full bg-black/50 text-white hover:bg-black/70 flex items-center justify-center transition-all"
                   >
                     <ArrowRight className="h-6 w-6 rotate-180" />
                   </button>
@@ -370,7 +370,7 @@ const Events = () => {
                           : currentPerformer + 1
                       )
                     }
-                    className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 h-12 w-12 rounded-full bg-black/50 text-white hover:bg-black/70 flex items-center justify-center transition-all"
+                    className="absolute right-4 top-1/2 transform -translate-y-1/2 h-12 w-12 rounded-full bg-black/50 text-white hover:bg-black/70 flex items-center justify-center transition-all"
                   >
                     <ArrowRight className="h-6 w-6" />
                   </button>
@@ -382,7 +382,7 @@ const Events = () => {
       </section>
 
       {/* Event Details Section */}
-      <section className="py-20 relative z-10">
+      <section className="py-20 relative">
         <div className="container mx-auto px-3 sm:px-4">
           <div className="text-center mb-16">
             <Badge className="bg-[#4eb4a7]/20 text-[#4eb4a7] border-none backdrop-blur-sm py-2 px-4 mb-6 text-sm">
@@ -447,7 +447,7 @@ const Events = () => {
       </section>
 
       {/* Partners Section */}
-      <section className="py-20 relative z-10">
+      <section className="py-20 relative">
         <div className="container mx-auto px-3 sm:px-4">
           <motion.div
             className="text-center mb-8"

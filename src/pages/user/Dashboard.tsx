@@ -458,32 +458,6 @@ const MemberDashboard = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* Membership status bar */}
-                <div className="bg-[#4eb4a7]/5 rounded-xl p-4 border border-[#4eb4a7]/10 flex flex-wrap gap-8 justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
-                      <Calendar className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Member Since</p>
-                      <p className="font-medium">{memberInfo.memberSince}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-[#4eb4a7]/10 flex items-center justify-center text-[#4eb4a7]">
-                      <Shield className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Status</p>
-                      <p className="font-medium flex items-center text-green-600">
-                        <CheckCircle className="h-4 w-4 mr-1" />
-                        Active
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </div>
             </motion.div>
           </motion.div>
