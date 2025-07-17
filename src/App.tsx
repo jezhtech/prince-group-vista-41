@@ -130,7 +130,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Route>
 
-              <Route path="/client" element={<ClientPage />} />
+              <Route path="/client/dashboard" element={<ClientPage />} />
 
               {/* Catch-all route */}
               <Route path="*" element={<NotFound />} />

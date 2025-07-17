@@ -221,7 +221,7 @@ const ClientPage = () => {
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">
-                        {currentUser.displayName || "Admin User"}
+                        {currentUser.displayName || ""}
                       </p>
                       <p className="text-xs leading-none text-muted-foreground">
                         {currentUser.email}
@@ -230,15 +230,9 @@ const ClientPage = () => {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to="/admin">
+                    <Link to="/client/dashboard">
                       <UserCircle className="mr-2 h-4 w-4" />
                       <span>Dashboard</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin/tickets">
-                      <Ticket className="mr-2 h-4 w-4" />
-                      <span>Tickets</span>
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />

@@ -82,9 +82,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   // Function to fetch user data from backend
   const fetchUserData = async (token: string): Promise<UserType> => {
     try {
-      console.log("Fetching user data with token:", token.substring(0, 20) + "...");
       const userData = await getUser(token);
-      console.log("User data fetched successfully:", userData);
       return userData;
     } catch (error) {
       console.error("Error fetching user data from backend:", error);
@@ -93,7 +91,10 @@ function AuthProvider({ children }: AuthProviderProps) {
   };
 
   // Function to create a custom Firebase user for backend authentication
-  const createCustomFirebaseUser = (backendUser: UserType, token: string): User => {
+  const createCustomFirebaseUser = (
+    backendUser: UserType,
+    token: string
+  ): User => {
     return {
       uid: backendUser.id?.toString() || backendUser.email,
       email: backendUser.email,
@@ -110,42 +111,41 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      console.log("Auth state changed:", user ? "User authenticated" : "No user");
       try {
         if (user) {
           // Firebase user is authenticated
-          console.log("Setting current user:", user.email);
           setCurrentUser(user);
-          
+
           try {
             const token = await user.getIdToken();
-            console.log("Got Firebase token:", token.substring(0, 20) + "...");
             setUserToken(token);
 
             // Fetch real user data from backend
-            console.log("Fetching user data from backend...");
             const userData = await fetchUserData(token);
-            console.log("Setting user data:", userData);
             setUserData(userData);
           } catch (error) {
             console.error("Error fetching user data:", error);
-            
+
             // If backend fetch fails, check if we have stored backend session
             const backendToken = localStorage.getItem("backend_token");
             const backendUserStr = localStorage.getItem("backend_user");
 
             if (backendToken && backendUserStr) {
               try {
-                console.log("Trying to restore backend session...");
                 const backendUser = JSON.parse(backendUserStr);
-                const customUser = createCustomFirebaseUser(backendUser, backendToken);
-                
+                const customUser = createCustomFirebaseUser(
+                  backendUser,
+                  backendToken
+                );
+
                 setCurrentUser(customUser);
                 setUserToken(backendToken);
                 setUserData(backendUser);
-                console.log("Backend session restored successfully");
               } catch (parseError) {
-                console.error("Error parsing stored backend session:", parseError);
+                console.error(
+                  "Error parsing stored backend session:",
+                  parseError
+                );
                 // Clear invalid session and sign out
                 localStorage.removeItem("backend_token");
                 localStorage.removeItem("backend_user");
@@ -159,20 +159,20 @@ function AuthProvider({ children }: AuthProviderProps) {
           }
         } else {
           // Firebase user is null, check for backend authentication
-          console.log("Checking for backend authentication...");
           const backendToken = localStorage.getItem("backend_token");
           const backendUserStr = localStorage.getItem("backend_user");
 
           if (backendToken && backendUserStr) {
             try {
-              console.log("Restoring backend session...");
               const backendUser = JSON.parse(backendUserStr);
-              const customUser = createCustomFirebaseUser(backendUser, backendToken);
+              const customUser = createCustomFirebaseUser(
+                backendUser,
+                backendToken
+              );
 
               setCurrentUser(customUser);
               setUserToken(backendToken);
               setUserData(backendUser);
-              console.log("Backend session restored successfully");
             } catch (error) {
               console.error("Error restoring backend session:", error);
               // Clear invalid backend session
@@ -184,7 +184,6 @@ function AuthProvider({ children }: AuthProviderProps) {
             }
           } else {
             // No authentication found
-            console.log("No authentication found");
             setCurrentUser(null);
             setUserToken(null);
             setUserData(null);

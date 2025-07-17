@@ -25,7 +25,7 @@ const Login = () => {
   const loginType = searchParams.get("type") || "password";
 
   // Get the intended destination from location state
-  const from = (location.state as any)?.from?.pathname || "/member/dashboard";
+  const from = (location.state as any)?.from?.pathname || "/events";
 
   // States for passwordless login
   const [email, setEmail] = useState("");

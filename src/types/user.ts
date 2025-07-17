@@ -18,7 +18,7 @@ export interface User {
 export interface CreateUserRequest extends Partial<User> {
   userId: string;
   firebaseId: string;
-  role: "admin" | "user";
+  role: "admin" | "user" | "client";
   fullName: string;
   email: string;
   mobile: string;

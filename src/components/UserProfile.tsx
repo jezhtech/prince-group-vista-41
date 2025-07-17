@@ -82,13 +82,13 @@ export const UserProfile = ({
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <Link
-            to={userData?.role === "admin" ? "/admin" : "/member/dashboard"}
+            to={userData?.role === "admin" ? "/admin" : userData?.role === "client" ? "/client/dashboard" : "/member/dashboard"}
           >
             <UserCircle className="mr-2 h-4 w-4" />
             <span>Dashboard</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem asChild>
+        {userData?.role !== "client" && <DropdownMenuItem asChild>
           <Link
             to={
               userData?.role === "admin" ? "/admin/tickets" : "/member/dashboard?tab=tickets"
@@ -97,7 +97,7 @@ export const UserProfile = ({
             <Ticket className="mr-2 h-4 w-4" />
             <span>Tickets</span>
           </Link>
-        </DropdownMenuItem>
+        </DropdownMenuItem>}
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} className="text-red-600">
           <LogOut className="mr-2 h-4 w-4" />
