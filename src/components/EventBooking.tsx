@@ -411,55 +411,83 @@ export const EventBooking = memo(
       );
     }, [currentUser]);
 
-    // Memoized ticket cards to prevent unnecessary re-renders
+    // Redesigned ticket cards for Select Ticket Class
     const ticketCards = useMemo(() => {
-      return ticketClasses.map((ticket) => (
-        <div
-          key={ticket.id}
-          className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
-            ticketCategory === ticket.type
-              ? "border-pink-500 bg-pink-500/10"
-              : "border-white/10 hover:border-pink-500/50 bg-white/5"
-          }`}
-          onClick={() => handleTicketSelect(ticket.type)}
-        >
-          <div className="flex justify-between items-start">
-            <div className="flex-1">
-              <h4 className="font-medium text-white text-sm sm:text-base">
-                {ticket.name}
-              </h4>
-              <p className="text-xs sm:text-sm text-white/60 mt-1">
-                {ticket.type}
-              </p>
-              {/* Show benefits for selected ticket */}
-              {ticketCategory === ticket.type && ticket.type && (
-                <div className="mt-2 space-y-1">
-                  {ticket.benefits.slice(0, 2).map((benefit, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-start gap-1.5 text-xs text-white/70"
-                    >
-                      <CheckCircle className="h-3 w-3 text-pink-400 mt-0.5 flex-shrink-0" />
-                      <span>{benefit}</span>
-                    </div>
-                  ))}
-                </div>
+      // Find the ticket with the lowest offer price for badge
+      let bestValueType = '';
+      let minOffer = Infinity;
+      ticketClasses.forEach(ticket => {
+        if (ticket.offerPriceWithReferralAndYoutube < minOffer) {
+          minOffer = ticket.offerPriceWithReferralAndYoutube;
+          bestValueType = ticket.type;
+        }
+      });
+      return ticketClasses.map((ticket) => {
+        const selected = ticketCategory === ticket.type;
+        const isBest = ticket.type === bestValueType;
+        return (
+          <div
+            key={ticket.id}
+            className={cn(
+              "relative group cursor-pointer border-2 rounded-2xl p-4 flex flex-col gap-2 transition-all duration-300 shadow-md",
+              selected
+                ? "border-pink-500 bg-gradient-to-br from-pink-600/80 to-red-500/80 scale-105 shadow-xl animate-pulse"
+                : "border-white/10 bg-white/5 hover:border-pink-400/80 hover:scale-105 hover:shadow-lg active:scale-100"
+            )}
+            onClick={() => handleTicketSelect(ticket.type)}
+            style={{ minHeight: 120 }}
+          >
+            {/* Best Value Badge */}
+            {isBest && (
+              <span className="absolute top-2 right-2 bg-yellow-400 text-pink-900 text-xs font-bold px-2 py-0.5 rounded-full shadow animate-bounce z-10">
+                Best Value
+              </span>
+            )}
+            {/* Icon and Name */}
+            <div className="flex items-center gap-3">
+              <div className={cn(
+                "rounded-full p-2 flex items-center justify-center",
+                selected ? "bg-white/20" : "bg-pink-500/20"
+              )}>
+                <TicketIcon className={cn("h-6 w-6", selected ? "text-white" : "text-pink-400")} />
+              </div>
+              <div>
+                <h4 className={cn(
+                  "font-bold text-base sm:text-lg",
+                  selected ? "text-white" : "text-pink-200"
+                )}>{ticket.name}</h4>
+                <p className="text-xs text-white/60 mt-0.5 uppercase tracking-wide">{ticket.type}</p>
+              </div>
+            </div>
+            {/* Price Section */}
+            <div className="flex items-end gap-2 mt-2">
+              <span className={cn(
+                "font-extrabold text-xl sm:text-2xl",
+                selected ? "text-yellow-200 drop-shadow" : "text-white"
+              )}>{formatPrice(ticket.offerPriceWithReferralAndYoutube)}</span>
+              <span className="text-xs text-green-400 font-semibold">with offers</span>
+              {ticket.price !== ticket.offerPriceWithReferralAndYoutube && (
+                <span className="text-xs text-white/50 line-through ml-2">{formatPrice(ticket.price)}</span>
               )}
             </div>
-            <div className="text-right ml-3">
-              {/* Original Price */}
-              <div className="font-bold text-white text-base sm:text-lg">
-                {formatPrice(ticket.price)}
-              </div>
-              {/* Offer Price */}
-              <div className="text-xs sm:text-sm text-green-400 font-medium">
-                {formatPrice(ticket.offerPriceWithReferralAndYoutube)} with
-                offers
-              </div>
+            {/* Benefits */}
+            <div className="mt-2 flex flex-wrap gap-2">
+              {ticket.benefits.slice(0, 2).map((benefit, idx) => (
+                <span
+                  key={idx}
+                  className={cn(
+                    "flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-pink-900/30 text-white/80",
+                    selected && "bg-yellow-400/20 text-yellow-100"
+                  )}
+                >
+                  <CheckCircle className="h-3 w-3 text-pink-400" />
+                  {benefit}
+                </span>
+              ))}
             </div>
           </div>
-        </div>
-      ));
+        );
+      });
     }, [ticketCategory, handleTicketSelect, formatPrice, ticketClasses]);
 
     useEffect(() => {
@@ -482,8 +510,10 @@ export const EventBooking = memo(
                 </h4>
                 <div
                   className={cn(
-                    "space-y-3 md:space-y-4 overflow-y-auto",
-                    isIOS ? "mb-3" : "max-h-96"
+                    "grid gap-4 md:gap-6 overflow-y-auto",
+                    isIOS ? "mb-3" : "max-h-96",
+                    "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+                    "bg-gradient-to-br from-pink-900/30 to-red-900/10 p-2 rounded-xl"
                   )}
                 >
                   {ticketCards}
@@ -1161,7 +1191,7 @@ export const EventBooking = memo(
 
     return (
       <Dialog open={isBookingOpen} onOpenChange={setIsBookingOpen}>
-        <DialogContent className="booking-form-section concert p-0 pb-2 sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-prince border-none">
+        <DialogContent className="z-[9999] booking-form-section concert p-0 pb-2 sm:max-w-3xl max-h-[90vh] overflow-y-auto bg-prince border-none relative">
           {/* Header */}
           <div className="booking-form-header py-2 sm:py-4 px-3 sm:px-4">
             <div className="flex items-center gap-2">
@@ -1195,8 +1225,7 @@ export const EventBooking = memo(
 
           <div
             className={cn(
-              "booking-form-content h-auto py-2 px-3 sm:px-4",
-              isIOS && "mb-0"
+              "booking-form-content h-auto py-2 px-3 sm:px-4"
             )}
           >
             {renderStepContent()}
@@ -1264,6 +1293,8 @@ export const EventBooking = memo(
               </div>
             </div>
           </div>
+
+          {/* Mobile Price/Offer Bar */}
         </DialogContent>
       </Dialog>
     );
