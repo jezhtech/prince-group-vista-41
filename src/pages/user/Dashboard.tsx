@@ -52,8 +52,7 @@ import { getBookingsByUserId } from "@/services";
 import { EventNavbar } from "@/components/EventNavbar";
 import { cn } from "@/lib/utils";
 import { QRCodeSVG } from "qrcode.react";
-import { downloadTicketPDFSimple } from "@/utils/ticketDownload";
-import TicketPDF from "@/components/TicketPDF";
+import { downloadTicketPDFReactPDF } from "@/utils/ticketDownloadReactPDF";
 
 interface MemberInfo {
   name: string;
@@ -126,6 +125,8 @@ const MemberDashboard = () => {
         return "text-gray-600";
     }
   };
+
+
 
   // Handle profile edit
   const handleProfileChange = (e) => {
@@ -733,7 +734,7 @@ const MemberDashboard = () => {
                                               className="bg-[#4eb4a7] hover:bg-[#3da296]"
                                               onClick={async () => {
                                                 try {
-                                                  await downloadTicketPDFSimple(
+                                                  await downloadTicketPDFReactPDF(
                                                     booking,
                                                     EVENT_DETAILS
                                                   );
@@ -1059,6 +1060,8 @@ const MemberDashboard = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      
+
       <MainFooter />
     </div>
   );
