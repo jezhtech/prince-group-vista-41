@@ -51,6 +51,9 @@ import { Booking } from "@/types";
 import { getBookingsByUserId } from "@/services";
 import { EventNavbar } from "@/components/EventNavbar";
 import { cn } from "@/lib/utils";
+import { QRCodeSVG } from "qrcode.react";
+import { downloadTicketPDFSimple } from "@/utils/ticketDownload";
+import TicketPDF from "@/components/TicketPDF";
 
 interface MemberInfo {
   name: string;
@@ -680,167 +683,202 @@ const MemberDashboard = () => {
                         </div>
                       ) : bookings.length > 0 ? (
                         <div className="space-y-6">
-                          {bookings.map((booking) => booking.paymentStatus === "success" && (
-                            <div
-                              key={booking.id}
-                              className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300"
-                            >
-                              <div
-                                className={`p-6 border-l-4 ${
-                                  booking.paymentStatus === "success"
-                                    ? "border-l-green-500"
-                                    : booking.paymentStatus === "pending"
-                                    ? "border-l-yellow-500"
-                                    : "border-l-red-500"
-                                }`}
-                              >
-                                <div className="flex flex-col md:flex-row gap-6">
-                                  {/* Booking details */}
-                                  <div className="flex-grow space-y-4">
-                                    <div className="flex justify-between items-start">
-                                      <div>
-                                        <Badge
-                                          className={cn(
-                                            "capitalize",
-                                            booking.paymentStatus === "success"
-                                              ? "bg-green-100 hover:bg-green-100 text-green-800 mb-2"
-                                              : booking.paymentStatus ===
-                                                "pending"
-                                              ? "bg-yellow-100 hover:bg-yellow-100 text-yellow-800 mb-2"
-                                              : "bg-red-100 hover:bg-red-100 text-red-800 mb-2"
+                          {bookings.map(
+                            (booking) =>
+                              booking.paymentStatus === "success" && (
+                                <div
+                                  key={booking.id}
+                                  className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300"
+                                >
+                                  <div
+                                    className={`p-6 border-l-4 ${
+                                      booking.paymentStatus === "success"
+                                        ? "border-l-green-500"
+                                        : booking.paymentStatus === "pending"
+                                        ? "border-l-yellow-500"
+                                        : "border-l-red-500"
+                                    }`}
+                                  >
+                                    <div className="flex flex-col md:flex-row gap-6">
+                                      {/* Booking details */}
+                                      <div className="flex-grow space-y-4">
+                                        <div className="flex justify-between items-start">
+                                          <div>
+                                            <Badge
+                                              className={cn(
+                                                "capitalize",
+                                                booking.paymentStatus ===
+                                                  "success"
+                                                  ? "bg-green-100 hover:bg-green-100 text-green-800 mb-2"
+                                                  : booking.paymentStatus ===
+                                                    "pending"
+                                                  ? "bg-yellow-100 hover:bg-yellow-100 text-yellow-800 mb-2"
+                                                  : "bg-red-100 hover:bg-red-100 text-red-800 mb-2"
+                                              )}
+                                            >
+                                              {booking.paymentStatus}
+                                            </Badge>
+                                            <h3 className="text-xl font-bold text-gray-800">
+                                              {EVENT_DETAILS.name}
+                                            </h3>
+                                            <p className="text-[#4eb4a7] font-medium">
+                                              Booking #{booking.bookingNumber}
+                                            </p>
+                                          </div>
+
+                                          {booking.paymentStatus ===
+                                            "success" && (
+                                            <Button
+                                              size="sm"
+                                              className="bg-[#4eb4a7] hover:bg-[#3da296]"
+                                              onClick={async () => {
+                                                try {
+                                                  await downloadTicketPDFSimple(
+                                                    booking,
+                                                    EVENT_DETAILS
+                                                  );
+                                                  toast({
+                                                    title: "Success",
+                                                    description:
+                                                      "Ticket PDF downloaded successfully!",
+                                                  });
+                                                } catch (error) {
+                                                  console.error(
+                                                    "Error downloading ticket:",
+                                                    error
+                                                  );
+                                                  toast({
+                                                    title: "Error",
+                                                    description:
+                                                      "Failed to download ticket PDF",
+                                                    variant: "destructive",
+                                                  });
+                                                }
+                                              }}
+                                            >
+                                              <Download className="h-4 w-4 mr-1" />
+                                              Download
+                                            </Button>
                                           )}
-                                        >
-                                          {booking.paymentStatus}
-                                        </Badge>
-                                        <h3 className="text-xl font-bold text-gray-800">
-                                          {EVENT_DETAILS.name}
-                                        </h3>
-                                        <p className="text-[#4eb4a7] font-medium">
-                                          Booking #{booking.bookingNumber}
-                                        </p>
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                                          <div className="flex items-center gap-2">
+                                            <Calendar className="h-4 w-4 text-[#4eb4a7]" />
+                                            <div>
+                                              <p className="text-gray-500">
+                                                Booking Date
+                                              </p>
+                                              <p className="font-medium">
+                                                {new Date(
+                                                  booking.createdAt
+                                                ).toLocaleDateString("en-US", {
+                                                  year: "numeric",
+                                                  month: "short",
+                                                  day: "numeric",
+                                                })}
+                                              </p>
+                                            </div>
+                                          </div>
+
+                                          <div className="flex items-center gap-2">
+                                            <Clock className="h-4 w-4 text-[#4eb4a7]" />
+                                            <div>
+                                              <p className="text-gray-500">
+                                                Event Time
+                                              </p>
+                                              <p className="font-medium">
+                                                {EVENT_DETAILS.time}
+                                              </p>
+                                            </div>
+                                          </div>
+
+                                          <div className="flex items-center gap-2">
+                                            <MapPin className="h-4 w-4 text-[#4eb4a7]" />
+                                            <div>
+                                              <p className="text-gray-500">
+                                                Location
+                                              </p>
+                                              <p className="font-medium">
+                                                {EVENT_DETAILS.location}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-6 pt-2">
+                                          <div>
+                                            <p className="text-gray-500 text-sm">
+                                              Ticket Type
+                                            </p>
+                                            <p className="font-semibold">
+                                              {booking.ticket?.type ||
+                                                "Standard"}
+                                            </p>
+                                          </div>
+                                          <div>
+                                            <p className="text-gray-500 text-sm">
+                                              Ticket Count
+                                            </p>
+                                            <p className="font-semibold">
+                                              {booking.ticketCount}
+                                            </p>
+                                          </div>
+                                          <div>
+                                            <p className="text-gray-500 text-sm">
+                                              Total Price
+                                            </p>
+                                            <p className="font-semibold">
+                                              ₹ {booking.paymentPrice}
+                                            </p>
+                                          </div>
+
+                                          <div>
+                                            <p className="text-gray-500 text-sm">
+                                              Payment Status
+                                            </p>
+                                            <p
+                                              className={cn(
+                                                "font-semibold capitalize",
+                                                booking.paymentStatus ===
+                                                  "success"
+                                                  ? "text-green-600"
+                                                  : booking.paymentStatus ===
+                                                    "pending"
+                                                  ? "text-yellow-600"
+                                                  : "text-red-600"
+                                              )}
+                                            >
+                                              {booking.paymentStatus}
+                                            </p>
+                                          </div>
+                                        </div>
                                       </div>
 
+                                      {/* QR code (only for confirmed bookings) */}
                                       {booking.paymentStatus === "success" && (
-                                        <Button
-                                          size="sm"
-                                          className="bg-[#4eb4a7] hover:bg-[#3da296]"
-                                        >
-                                          <Download className="h-4 w-4 mr-1" />
-                                          Download
-                                        </Button>
+                                        <div className="w-32 h-32 flex-shrink-0">
+                                          <div className="w-full h-full rounded-lg border border-gray-200 bg-white flex items-center justify-center p-2">
+                                            <div className="text-center">
+                                              <QRCodeSVG
+                                                value={booking.bookingNumber}
+                                                size={80}
+                                                level="M"
+                                                includeMargin={true}
+                                                className="mb-1"
+                                              />
+                                              <p className="text-xs text-gray-500">
+                                                Entry Pass
+                                              </p>
+                                            </div>
+                                          </div>
+                                        </div>
                                       )}
                                     </div>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm">
-                                      <div className="flex items-center gap-2">
-                                        <Calendar className="h-4 w-4 text-[#4eb4a7]" />
-                                        <div>
-                                          <p className="text-gray-500">
-                                            Booking Date
-                                          </p>
-                                          <p className="font-medium">
-                                            {new Date(
-                                              booking.createdAt
-                                            ).toLocaleDateString("en-US", {
-                                              year: "numeric",
-                                              month: "short",
-                                              day: "numeric",
-                                            })}
-                                          </p>
-                                        </div>
-                                      </div>
-
-                                      <div className="flex items-center gap-2">
-                                        <Clock className="h-4 w-4 text-[#4eb4a7]" />
-                                        <div>
-                                          <p className="text-gray-500">
-                                            Event Time
-                                          </p>
-                                          <p className="font-medium">
-                                            {EVENT_DETAILS.time}
-                                          </p>
-                                        </div>
-                                      </div>
-
-                                      <div className="flex items-center gap-2">
-                                        <MapPin className="h-4 w-4 text-[#4eb4a7]" />
-                                        <div>
-                                          <p className="text-gray-500">
-                                            Location
-                                          </p>
-                                          <p className="font-medium">
-                                            {EVENT_DETAILS.location}
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-6 pt-2">
-                                      <div>
-                                        <p className="text-gray-500 text-sm">
-                                          Ticket Type
-                                        </p>
-                                        <p className="font-semibold">
-                                          {booking.ticket?.type || "Standard"}
-                                        </p>
-                                      </div>
-                                      <div>
-                                        <p className="text-gray-500 text-sm">
-                                          Ticket Count
-                                        </p>
-                                        <p className="font-semibold">
-                                          {booking.ticketCount}
-                                        </p>
-                                      </div>
-                                      <div>
-                                        <p className="text-gray-500 text-sm">
-                                          Total Price
-                                        </p>
-                                        <p className="font-semibold">
-                                          ₹ {booking.paymentPrice}
-                                        </p>
-                                      </div>
-
-                                      <div>
-                                        <p className="text-gray-500 text-sm">
-                                          Payment Status
-                                        </p>
-                                        <p
-                                          className={cn(
-                                            "font-semibold capitalize",
-                                            booking.paymentStatus === "success"
-                                              ? "text-green-600"
-                                              : booking.paymentStatus ===
-                                                "pending"
-                                              ? "text-yellow-600"
-                                              : "text-red-600"
-                                          )}
-                                        >
-                                          {booking.paymentStatus}
-                                        </p>
-                                      </div>
-                                    </div>
                                   </div>
-
-                                  {/* QR code (only for confirmed bookings) */}
-                                  {booking.paymentStatus === "success" && (
-                                    <div className="w-32 h-32 flex-shrink-0">
-                                      <div className="w-full h-full rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center">
-                                        <div className="text-center">
-                                          <div className="w-20 h-20 bg-gray-200 rounded-lg mb-2 flex items-center justify-center">
-                                            <Ticket className="h-8 w-8 text-gray-400" />
-                                          </div>
-                                          <p className="text-xs text-gray-500">
-                                            QR Code
-                                          </p>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  )}
                                 </div>
-                              </div>
-                            </div>
-                          ))}
+                              )
+                          )}
                         </div>
                       ) : (
                         <div className="text-center py-12">
@@ -1021,7 +1059,6 @@ const MemberDashboard = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
       <MainFooter />
     </div>
   );

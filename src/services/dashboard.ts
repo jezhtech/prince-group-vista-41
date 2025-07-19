@@ -230,6 +230,9 @@ const calculateRevenueBreakdown = (bookings: Booking[], tickets: Ticket[]) => {
     (b) => b.paymentStatus === "success"
   );
   const ticketRevenue = successfulBookings.reduce((sum, booking) => {
+    if (booking.paymentStatus !== "success") {
+      return sum;
+    }
     return sum + booking.paymentPrice;
   }, 0);
 

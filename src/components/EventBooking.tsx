@@ -405,12 +405,12 @@ export const EventBooking = memo(
     }, [referralCode, userToken]);
 
     // Check if user is already signed in with Google
-    const isGoogleUser = useMemo(() => {
-      if (!currentUser) return false;
-      return currentUser.providerData.some(
-        (provider) => provider.providerId === "google.com"
-      );
-    }, [currentUser]);
+    // const isGoogleUser = useMemo(() => {
+    //   if (!currentUser) return false;
+    //   return currentUser.providerData.some(
+    //     (provider) => provider.providerId === "google.com"
+    //   );
+    // }, [currentUser]);
 
     // Redesigned ticket cards for Select Ticket Class
     const ticketCards = useMemo(() => {
