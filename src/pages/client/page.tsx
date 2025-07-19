@@ -50,6 +50,7 @@ import {
 } from "@/components/ui/select";
 import {
   getPaginatedBookingsForClient,
+  getClientStats,
   PaginatedBookingsResponse,
 } from "@/services/booking";
 import { Booking } from "@/types/booking";
@@ -73,6 +74,12 @@ const ClientPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [pageSize, setPageSize] = useState(10);
+  const [overallStats, setOverallStats] = useState({
+    total: 0,
+    paid: 0,
+    pending: 0,
+    failed: 0,
+  });
 
   // Fetch bookings
   const fetchBookings = async (page: number = 1, size: number = pageSize) => {
@@ -96,9 +103,25 @@ const ClientPage = () => {
     }
   };
 
-  // Load bookings on component mount
+  // Fetch overall stats
+  const fetchStats = async () => {
+    try {
+      if (!userToken) {
+        return;
+      }
+
+      const stats = await getClientStats(userToken);
+      setOverallStats(stats);
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+      toast.error("Failed to fetch statistics");
+    }
+  };
+
+  // Load bookings and stats on component mount
   useEffect(() => {
     fetchBookings();
+    fetchStats();
   }, [userToken]);
 
   // Handle page size change
@@ -276,7 +299,7 @@ const ClientPage = () => {
               <Ticket className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{pagination.total}</div>
+              <div className="text-2xl font-bold">{overallStats.total}</div>
             </CardContent>
           </Card>
           <Card>
@@ -288,7 +311,7 @@ const ClientPage = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-green-600">
-                {bookings.filter((b) => b.paymentStatus === "success").length}
+                {overallStats.paid}
               </div>
             </CardContent>
           </Card>
@@ -301,7 +324,7 @@ const ClientPage = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-yellow-600">
-                {bookings.filter((b) => b.paymentStatus === "pending").length}
+                {overallStats.pending}
               </div>
             </CardContent>
           </Card>
@@ -314,7 +337,7 @@ const ClientPage = () => {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-red-600">
-                {bookings.filter((b) => b.paymentStatus === "failed").length}
+                {overallStats.failed}
               </div>
             </CardContent>
           </Card>
@@ -326,7 +349,10 @@ const ClientPage = () => {
             <CardTitle className="flex items-center justify-between">
               <span>Bookings</span>
               <Button
-                onClick={() => fetchBookings()}
+                onClick={() => {
+                  fetchBookings();
+                  fetchStats();
+                }}
                 variant="outline"
                 size="sm"
               >

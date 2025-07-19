@@ -24,7 +24,15 @@ import { useAuth } from "@/hooks/useAuth";
 import { updateUser } from "@/services";
 
 const Register = () => {
-  const { signUp, signInWithGoogle, currentUser } = useAuth();
+  const {
+    signUp,
+    signInWithGoogle,
+    currentUser,
+    loading,
+    userData,
+    userToken,
+    refreshUserData,
+  } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
@@ -52,6 +60,8 @@ const Register = () => {
 
   // If user is already authenticated and we're on complete step, pre-fill data
   useEffect(() => {
+    // Don't do anything while loading
+    if (loading) return;
     if (currentUser && isCompleteStep) {
       setFormData((prev) => ({
         ...prev,
@@ -61,7 +71,7 @@ const Register = () => {
     } else {
       navigate("/register");
     }
-  }, [currentUser, isCompleteStep]);
+  }, [currentUser, isCompleteStep, loading]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -151,7 +161,9 @@ const Register = () => {
       if (error.message.includes("Firebase: Error")) {
         const regex = /Firebase: Error \(auth\/([^)]+)\)/;
         const match = error.message.match(regex);
-        errorMesg = match ? match[1].split("-").join(" ") : "An unknown error occurred";
+        errorMesg = match
+          ? match[1].split("-").join(" ")
+          : "An unknown error occurred";
       } else {
         errorMesg = error.message;
       }
@@ -197,6 +209,16 @@ const Register = () => {
           firebaseId: currentUser.uid,
         });
       }
+
+      // Refresh the user data to ensure the authentication state is up to date
+      await refreshUserData();
+
+      console.log("Profile completion - Auth state:", {
+        currentUser: !!currentUser,
+        userData: !!userData,
+        userToken: !!userToken,
+        redirect: redirect || "/member/dashboard",
+      });
 
       toast({
         title: "Profile Completed",
@@ -532,6 +554,30 @@ const Register = () => {
       </form>
     </>
   );
+
+  // Show loading state while authentication is being determined
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center pt-14">
+        {/* Background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#4eb4a7]/10 via-white to-[#85cbc3]/10 z-0"></div>
+
+        {/* Glow effects */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-[#4eb4a7]/20 opacity-5 filter blur-3xl z-0"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#85cbc3]/20 opacity-5 filter blur-3xl z-0"></div>
+
+        <Card className="w-full max-w-md p-8 shadow-lg relative z-10 bg-white/90 backdrop-blur-sm border border-white">
+          <div className="mb-6 flex justify-center">
+            <Logo />
+          </div>
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4eb4a7] mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center pt-14">

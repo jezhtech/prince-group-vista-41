@@ -588,7 +588,7 @@ const AdminDashboard = () => {
                           %)
                         </span>
                       </div>
-                      <div className="flex items-center">
+                      {/* <div className="flex items-center">
                         <div className="w-3 h-3 bg-prince-green rounded-full mr-2"></div>
                         <span>
                           Membership (
@@ -602,7 +602,7 @@ const AdminDashboard = () => {
                             : 0}
                           %)
                         </span>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -645,7 +645,7 @@ const AdminDashboard = () => {
                       />
                     </div>
 
-                    <div>
+                    {/* <div>
                       <div className="flex justify-between text-sm mb-1">
                         <span>Membership Revenue</span>
                         <span className="font-medium">
@@ -664,7 +664,7 @@ const AdminDashboard = () => {
                         }
                         className="h-2 bg-prince-light"
                       />
-                    </div>
+                    </div> */}
                   </div>
 
                   <Button variant="outline" size="sm" className="mt-6">

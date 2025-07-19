@@ -11,6 +11,7 @@ export interface Booking {
   ticketCount: number;
   paymentMethod: string;
   paymentStatus: "pending" | "success" | "failed";
+  paymentPrice: number;
   paymentDate: string;
   paymentLinkId: string;
   transactionId: string;
@@ -29,6 +30,7 @@ export interface CreateBookingRequest {
   ticketId: number;
   paymentMethod: string;
   paymentStatus: "pending" | "success" | "failed";
+  paymentPrice: number;
   paymentDate: string;
   paymentLinkId: string;
 }

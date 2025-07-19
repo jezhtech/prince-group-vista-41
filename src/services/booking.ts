@@ -156,6 +156,24 @@ export const getPaginatedBookingsForClient = async (
   };
 };
 
+// Get client stats
+export const getClientStats = async (token: string) => {
+  const response = await fetch(`${API_BASE_URL}/client/bookings/stats`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch client stats");
+  }
+
+  const data = await response.json();
+  return data.stats;
+};
+
 export const createBooking = async (
   token: string,
   booking: CreateBookingRequest

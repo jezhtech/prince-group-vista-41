@@ -152,9 +152,10 @@ function AuthProvider({ children }: AuthProviderProps) {
                 await signOut(auth);
               }
             } else {
-              // No valid session found, sign out to force re-authentication
-              console.error("No valid user session found, signing out");
-              await signOut(auth);
+              // Don't automatically sign out - just log the error and keep Firebase auth
+              // Keep the Firebase authentication state
+              setUserToken(await user.getIdToken());
+              // Don't set userData - it will be fetched later when needed
             }
           }
         } else {
@@ -221,6 +222,10 @@ function AuthProvider({ children }: AuthProviderProps) {
     await createUser(token, { ...user, firebaseId: result.user.uid });
 
     await updateProfile(result.user, { displayName: user.fullName });
+
+    // Set the token and fetch user data to ensure complete authentication state
+    setUserToken(token);
+    setCurrentUser(result.user);
   };
 
   const signInWithGoogle = async () => {
@@ -269,11 +274,17 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     try {
       const token = await currentUser.getIdToken();
+      setUserToken(token); // Ensure token is up to date
       const userData = await fetchUserData(token);
       setUserData(userData);
+      console.log("User data refreshed successfully:", {
+        userData: !!userData,
+        token: !!token,
+      });
     } catch (error) {
       console.error("Error refreshing user data:", error);
-      // If refresh fails, the auth state change handler will handle it
+      // Don't clear authentication state on refresh failure
+      // Just log the error and keep the current state
     }
   };
 

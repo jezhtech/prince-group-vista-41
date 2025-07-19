@@ -680,7 +680,7 @@ const MemberDashboard = () => {
                         </div>
                       ) : bookings.length > 0 ? (
                         <div className="space-y-6">
-                          {bookings.map((booking) => (
+                          {bookings.map((booking) => booking.paymentStatus === "success" && (
                             <div
                               key={booking.id}
                               className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-md hover:shadow-lg transition-all duration-300"
@@ -797,15 +797,7 @@ const MemberDashboard = () => {
                                           Total Price
                                         </p>
                                         <p className="font-semibold">
-                                          ₹
-                                          {(
-                                            (booking.ticket?.price || 0) *
-                                            (booking.ticketCount > 8
-                                              ? booking.ticketCount - 2
-                                              : booking.ticketCount > 4
-                                              ? booking.ticketCount - 1
-                                              : booking.ticketCount)
-                                          ).toLocaleString("en-IN")}
+                                          ₹ {booking.paymentPrice}
                                         </p>
                                       </div>
 

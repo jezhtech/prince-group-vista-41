@@ -457,7 +457,7 @@ const Events = () => {
             viewport={{ once: true }}
           >
             <Badge className="bg-[#4eb4a7]/20 text-[#4eb4a7] border-none backdrop-blur-sm py-2 px-4 mb-4 text-sm">
-              Oraganizer
+              Organizer
             </Badge>
             <h2 className="text-4xl sm:text-5xl font-bold text-white mb-3">
               Event Organizer
@@ -467,13 +467,10 @@ const Events = () => {
             </p>
             <div className="w-auto mx-auto flex flex-col justify-center items-center">
               <img
-                src="/small-logo.png"
+                src="/logo.png"
                 alt="Prince Group"
-                className="h-20 object-contain mb-4"
+                className="h-20 w-80 object-contain mb-4"
               />
-              <h4 className="font-semibold text-2xl text-teal-500">
-                PRINCE GROUP OF COMPANIES
-              </h4>
             </div>
           </motion.div>
         </div>

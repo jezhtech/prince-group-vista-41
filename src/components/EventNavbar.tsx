@@ -26,13 +26,10 @@ export const EventNavbar = ({
         <div className="flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2 p-2 pb-0 md:p-0">
             <img
-              src="/small-logo.png"
+              src="/logo.png"
               alt="Prince Group"
-              className="h-10 w-12 object-contain"
+              className="h-10 w-60 object-contain"
             />
-            <h4 className="font-semibold text-2xl text-teal-500">
-              PRINCE GROUP OF COMPANIES
-            </h4>
           </Link>
 
           <div className={cn("items-center gap-2 hidden md:flex")}>

@@ -272,6 +272,7 @@ export const EventBooking = memo(
           paymentStatus: "pending" as const,
           paymentDate: new Date().toISOString(),
           paymentLinkId: "",
+          paymentPrice: finalPrice, // Add the total payment amount
         };
 
         const booking = await createBooking(
@@ -414,9 +415,9 @@ export const EventBooking = memo(
     // Redesigned ticket cards for Select Ticket Class
     const ticketCards = useMemo(() => {
       // Find the ticket with the lowest offer price for badge
-      let bestValueType = '';
+      let bestValueType = "";
       let minOffer = Infinity;
-      ticketClasses.forEach(ticket => {
+      ticketClasses.forEach((ticket) => {
         if (ticket.offerPriceWithReferralAndYoutube < minOffer) {
           minOffer = ticket.offerPriceWithReferralAndYoutube;
           bestValueType = ticket.type;
@@ -445,29 +446,50 @@ export const EventBooking = memo(
             )}
             {/* Icon and Name */}
             <div className="flex items-center gap-3">
-              <div className={cn(
-                "rounded-full p-2 flex items-center justify-center",
-                selected ? "bg-white/20" : "bg-pink-500/20"
-              )}>
-                <TicketIcon className={cn("h-6 w-6", selected ? "text-white" : "text-pink-400")} />
+              <div
+                className={cn(
+                  "rounded-full p-2 flex items-center justify-center",
+                  selected ? "bg-white/20" : "bg-pink-500/20"
+                )}
+              >
+                <TicketIcon
+                  className={cn(
+                    "h-6 w-6",
+                    selected ? "text-white" : "text-pink-400"
+                  )}
+                />
               </div>
               <div>
-                <h4 className={cn(
-                  "font-bold text-base sm:text-lg",
-                  selected ? "text-white" : "text-pink-200"
-                )}>{ticket.name}</h4>
-                <p className="text-xs text-white/60 mt-0.5 uppercase tracking-wide">{ticket.type}</p>
+                <h4
+                  className={cn(
+                    "font-bold text-base sm:text-lg",
+                    selected ? "text-white" : "text-pink-200"
+                  )}
+                >
+                  {ticket.name}
+                </h4>
+                <p className="text-xs text-white/60 mt-0.5 uppercase tracking-wide">
+                  {ticket.type}
+                </p>
               </div>
             </div>
             {/* Price Section */}
             <div className="flex items-end gap-2 mt-2">
-              <span className={cn(
-                "font-extrabold text-xl sm:text-2xl",
-                selected ? "text-yellow-200 drop-shadow" : "text-white"
-              )}>{formatPrice(ticket.offerPriceWithReferralAndYoutube)}</span>
-              <span className="text-xs text-green-400 font-semibold">with offers</span>
+              <span
+                className={cn(
+                  "font-extrabold text-xl sm:text-2xl",
+                  selected ? "text-yellow-200 drop-shadow" : "text-white"
+                )}
+              >
+                {formatPrice(ticket.offerPriceWithReferralAndYoutube)}
+              </span>
+              <span className="text-xs text-green-400 font-semibold">
+                with offers
+              </span>
               {ticket.price !== ticket.offerPriceWithReferralAndYoutube && (
-                <span className="text-xs text-white/50 line-through ml-2">{formatPrice(ticket.price)}</span>
+                <span className="text-xs text-white/50 line-through ml-2">
+                  {formatPrice(ticket.price)}
+                </span>
               )}
             </div>
             {/* Benefits */}
@@ -513,33 +535,10 @@ export const EventBooking = memo(
                     "grid gap-4 md:gap-6 overflow-y-auto",
                     isIOS ? "mb-3" : "max-h-96",
                     "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
-                    "bg-gradient-to-br from-pink-900/30 to-red-900/10 p-2 rounded-xl"
+                    "p-2 rounded-xl"
                   )}
                 >
                   {ticketCards}
-                </div>
-
-                {/* General Benefits */}
-                <div
-                  className={cn(
-                    "bg-pink-900/20 p-3 sm:p-4 rounded-lg border border-pink-500/20",
-                    isIOS ? "" : "mt-4 md:mt-6"
-                  )}
-                >
-                  <h4 className="text-xs sm:text-sm font-medium text-pink-300 mb-2">
-                    All Tickets Include:
-                  </h4>
-                  <ul className="space-y-1.5 sm:space-y-2">
-                    {GENERAL_BENEFITS.map((benefit, idx) => (
-                      <li
-                        key={idx}
-                        className="flex items-start gap-1.5 sm:gap-2 text-xs sm:text-sm text-white/70"
-                      >
-                        <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-pink-400 mt-0.5 flex-shrink-0" />
-                        <span>{benefit}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
               </div>
 
@@ -1223,11 +1222,7 @@ export const EventBooking = memo(
             </Button>
           </div>
 
-          <div
-            className={cn(
-              "booking-form-content h-auto py-2 px-3 sm:px-4"
-            )}
-          >
+          <div className={cn("booking-form-content h-auto py-2 px-3 sm:px-4")}>
             {renderStepContent()}
 
             {/* Action Buttons */}

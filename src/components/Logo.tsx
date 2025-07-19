@@ -8,7 +8,7 @@ const Logo: React.FC = () => {
       <div className="h-14 flex items-center mr-2">
         {/* Static image with minimal styling for Safari */}
         <img 
-          src="/teal-cg-logo.png" 
+          src="/logo.png" 
           alt="Prince Group Logo" 
           className="safari-image-fix"
           style={{ 
