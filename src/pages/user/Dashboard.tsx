@@ -53,6 +53,7 @@ import { EventNavbar } from "@/components/EventNavbar";
 import { cn } from "@/lib/utils";
 import { QRCodeSVG } from "qrcode.react";
 import { downloadTicketPDFReactPDF } from "@/utils/ticketDownloadReactPDF";
+import { EVENT_DETAILS } from "@/constants/event";
 
 interface MemberInfo {
   name: string;
@@ -68,14 +69,6 @@ interface MemberInfo {
   pincode: string;
   aadhaar: string;
 }
-
-const EVENT_DETAILS = {
-  name: "Prince Group Mega Music Festival",
-  date: "September 20, 2025",
-  time: "5:00 PM - 10:00 PM",
-  location: "Concordia High School Ground, Nagercoil",
-  performers: ["Aditya Rkay", "Sri Nisha", "Aparnaa Pratheep"],
-};
 
 const MemberDashboard = () => {
   const { currentUser, userData, userToken, setUserData } = useAuth();
@@ -125,8 +118,6 @@ const MemberDashboard = () => {
         return "text-gray-600";
     }
   };
-
-
 
   // Handle profile edit
   const handleProfileChange = (e) => {
@@ -1060,7 +1051,6 @@ const MemberDashboard = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      
 
       <MainFooter />
     </div>

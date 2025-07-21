@@ -199,14 +199,17 @@ export const updateBooking = async (
   token: string,
   booking: UpdateBookingRequest
 ): Promise<Booking> => {
-  const response = await fetch(`${API_BASE_URL}/booking/${booking.bookingNumber}`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(booking),
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/booking/${booking.bookingNumber}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(booking),
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to update booking");
@@ -237,13 +240,16 @@ export const getBookingByBookingNumber = async (
   token: string,
   bookingNumber: string
 ): Promise<Booking> => {
-  const response = await fetch(`${API_BASE_URL}/booking/number/${bookingNumber}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
+  const response = await fetch(
+    `${API_BASE_URL}/booking/number/${bookingNumber}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch booking");
@@ -251,4 +257,4 @@ export const getBookingByBookingNumber = async (
 
   const data = await response.json();
   return data.booking;
-}; 
+};

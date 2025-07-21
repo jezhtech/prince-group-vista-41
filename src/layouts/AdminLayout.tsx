@@ -51,16 +51,9 @@ const AdminLayout = () => {
 
   const sidebarItems = [
     { name: "Dashboard", path: "/admin", icon: Home },
-    {
-      name: "Event Analytics",
-      path: "/admin/event-analytics",
-      icon: BarChart2,
-    },
     { name: "Ticket Management", path: "/admin/tickets", icon: Ticket },
     { name: "Referrals", path: "/admin/referrals", icon: LinkIcon },
-    // { name: "Members", path: "/admin/membership", icon: UserPlus },
     { name: "Users", path: "/admin/users", icon: Users },
-    { name: "Revenue", path: "/admin/revenue", icon: CreditCard },
   ];
 
   const isActiveLink = ({ isActive }: { isActive: boolean }) =>

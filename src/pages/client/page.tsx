@@ -79,6 +79,7 @@ const ClientPage = () => {
     paid: 0,
     pending: 0,
     failed: 0,
+    revenue: 0,
   });
 
   // Fetch bookings
@@ -111,7 +112,11 @@ const ClientPage = () => {
       }
 
       const stats = await getClientStats(userToken);
-      setOverallStats(stats);
+      
+      setOverallStats({
+        ...stats,
+        revenue: stats.revenue || 0,
+      });
     } catch (error) {
       console.error("Error fetching stats:", error);
       toast.error("Failed to fetch statistics");
@@ -121,7 +126,7 @@ const ClientPage = () => {
   // Load bookings and stats on component mount
   useEffect(() => {
     fetchBookings();
-    fetchStats();
+    fetchStats(); // Fetch stats independently
   }, [userToken]);
 
   // Handle page size change
@@ -290,7 +295,7 @@ const ClientPage = () => {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -339,6 +344,22 @@ const ClientPage = () => {
               <div className="text-2xl font-bold text-red-600">
                 {overallStats.failed}
               </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Total Revenue
+              </CardTitle>
+              <CreditCard className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-green-600">
+                ₹{overallStats.revenue.toLocaleString()}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                From successful payments
+              </p>
             </CardContent>
           </Card>
         </div>
