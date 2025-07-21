@@ -7,6 +7,7 @@ import {
   Users,
   CalendarDays,
   CalendarIcon,
+  Phone,
 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
@@ -280,6 +281,19 @@ const Events = () => {
                     <Ticket className="mr-2 h-5 w-5" />
                     Book Tickets Now
                   </Button>
+                  <div className="flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-lg px-6 py-3 border border-white/20">
+                    <Phone className="mr-2 h-4 w-4 text-white/80" />
+                    <span className="text-white/90 text-sm font-medium">
+                      Or call{" "}
+                      <a
+                        href="tel:9488934178"
+                        className="text-white font-semibold hover:text-yellow-300 transition-colors duration-200 underline decoration-yellow-300/50 hover:decoration-yellow-300"
+                      >
+                        9488934178
+                      </a>{" "}
+                      to book tickets
+                    </span>
+                  </div>
                 </motion.div>
               </motion.div>
 

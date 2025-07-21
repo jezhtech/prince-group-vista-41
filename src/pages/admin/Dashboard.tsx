@@ -565,7 +565,7 @@ const AdminDashboard = () => {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="w-48">
-                                <DropdownMenuItem
+                                {booking.paymentStatus !== "success" &&<DropdownMenuItem
                                   onClick={() =>
                                     handleAction(booking, "mark-success")
                                   }
@@ -573,7 +573,7 @@ const AdminDashboard = () => {
                                 >
                                   <CheckCircle className="h-4 w-4 mr-2" />
                                   Mark as Success
-                                </DropdownMenuItem>
+                                </DropdownMenuItem>}
                                 <DropdownMenuItem
                                   onClick={() =>
                                     handleAction(booking, "send-email")
