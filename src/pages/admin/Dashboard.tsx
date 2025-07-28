@@ -460,8 +460,8 @@ const AdminDashboard = () => {
 
         <TabsContent value="recent" className="space-y-4 animate-fade-in">
           <Card>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
+            <CardContent className="p-0 overflow-x-auto w-[calc(100vw-36px)] md:w-[calc(100vw-130px)] lg:w-full">
+              <div className="overflow-x-auto min-w-[800px] lg:min-w-full">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-ui-gray-200">
@@ -511,7 +511,7 @@ const AdminDashboard = () => {
                               {booking.user?.email}
                             </div>
                           </td>
-                          <td className="p-4">
+                          <td className="p-4 min-w-[150px]">
                             <span
                               className={`px-2 py-1 rounded-full text-xs font-medium ${
                                 booking.ticket?.type === "VIP"
@@ -526,7 +526,7 @@ const AdminDashboard = () => {
                               {booking.ticket?.name}
                             </span>
                           </td>
-                          <td className="p-4 text-ui-gray-500">
+                          <td className="p-4 text-ui-gray-500 min-w-[180px]">
                             {new Date(booking.createdAt).toLocaleDateString(
                               "en-US",
                               {
@@ -565,15 +565,17 @@ const AdminDashboard = () => {
                                 </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end" className="w-48">
-                                {booking.paymentStatus !== "success" &&<DropdownMenuItem
-                                  onClick={() =>
-                                    handleAction(booking, "mark-success")
-                                  }
-                                  className="cursor-pointer"
-                                >
-                                  <CheckCircle className="h-4 w-4 mr-2" />
-                                  Mark as Success
-                                </DropdownMenuItem>}
+                                {booking.paymentStatus !== "success" && (
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      handleAction(booking, "mark-success")
+                                    }
+                                    className="cursor-pointer"
+                                  >
+                                    <CheckCircle className="h-4 w-4 mr-2" />
+                                    Mark as Success
+                                  </DropdownMenuItem>
+                                )}
                                 <DropdownMenuItem
                                   onClick={() =>
                                     handleAction(booking, "send-email")
@@ -637,24 +639,36 @@ const AdminDashboard = () => {
                     />
                   </PaginationItem>
 
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
-                      <PaginationItem key={page}>
-                        <PaginationLink
-                          onClick={() => handlePageChange(page)}
-                          isActive={currentPage === page}
-                          className={cn(
-                            "cursor-pointer bg-white shadow hover:text-white",
-                            currentPage === page
-                              ? "bg-primary text-white hover:bg-primary"
-                              : ""
-                          )}
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-                    )
-                  )}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((page) => {
+                      // Show first 3 pages, last page, and current page with neighbors
+                      return (
+                        page <= 2 ||
+                        page === totalPages ||
+                        (page >= currentPage && page <= currentPage + 1)
+                      );
+                    })
+                    .map((page, index, array) => (
+                      <div key={page} className="flex items-center">
+                        {index > 0 && array[index - 1] !== page - 1 && (
+                          <span className="px-2 text-gray-500">...</span>
+                        )}
+                        <PaginationItem>
+                          <PaginationLink
+                            onClick={() => handlePageChange(page)}
+                            isActive={currentPage === page}
+                            className={cn(
+                              "cursor-pointer bg-white shadow hover:text-white",
+                              currentPage === page
+                                ? "bg-primary text-white hover:bg-primary"
+                                : ""
+                            )}
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      </div>
+                    ))}
 
                   <PaginationItem>
                     <PaginationNext
@@ -676,7 +690,7 @@ const AdminDashboard = () => {
           <Card>
             <CardContent className="p-0">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[700px]">
                   <thead>
                     <tr className="border-b border-ui-gray-200">
                       <th className="text-left p-4 font-medium text-ui-gray-500">
@@ -791,24 +805,36 @@ const AdminDashboard = () => {
                     />
                   </PaginationItem>
 
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (page) => (
-                      <PaginationItem key={page}>
-                        <PaginationLink
-                          onClick={() => handlePageChange(page)}
-                          isActive={currentPage === page}
-                          className={cn(
-                            "cursor-pointer bg-white shadow hover:text-white",
-                            currentPage === page
-                              ? "bg-primary text-white hover:bg-primary"
-                              : ""
-                          )}
-                        >
-                          {page}
-                        </PaginationLink>
-                      </PaginationItem>
-                    )
-                  )}
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((page) => {
+                      // Show first 3 pages, last page, and current page with neighbors
+                      return (
+                        page <= 2 ||
+                        page === totalPages ||
+                        (page >= currentPage - 1 && page <= currentPage + 1)
+                      );
+                    })
+                    .map((page, index, array) => (
+                      <div key={page} className="flex items-center">
+                        {index > 0 && array[index - 1] !== page - 1 && (
+                          <span className="px-2 text-gray-500">...</span>
+                        )}
+                        <PaginationItem>
+                          <PaginationLink
+                            onClick={() => handlePageChange(page)}
+                            isActive={currentPage === page}
+                            className={cn(
+                              "cursor-pointer bg-white shadow hover:text-white",
+                              currentPage === page
+                                ? "bg-primary text-white hover:bg-primary"
+                                : ""
+                            )}
+                          >
+                            {page}
+                          </PaginationLink>
+                        </PaginationItem>
+                      </div>
+                    ))}
 
                   <PaginationItem>
                     <PaginationNext

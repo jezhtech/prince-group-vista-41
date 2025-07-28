@@ -66,8 +66,10 @@ const AdminLayout = () => {
       {/* Sidebar */}
       <aside
         className={cn(
-          "stikcy inset-y-0 left-0 z-10 w-64 bg-white border-r md:mt-0 mt-12 border-gray-200 transition-all duration-300 transform md:relative md:translate-x-0 shadow-md",
-          isSidebarOpen ? "translate-x-0 md:w-64" : "-translate-x-full md:w-20"
+          "fixed md:sticky shrink-0 inset-y-0 left-0 z-10 bg-white border-r md:mt-0 mt-[3.75rem] border-gray-200 transition-all duration-300 transform md:translate-x-0 shadow-md",
+          isSidebarOpen
+            ? "translate-x-0 md:w-64"
+            : "-translate-x-full w-64 md:w-20"
         )}
       >
         <div className="flex flex-col h-full">
@@ -90,10 +92,10 @@ const AdminLayout = () => {
           </div>
 
           <div className="flex-1 overflow-y-auto py-4">
-            <div className="px-4 mb-6">
+            <div className="mb-6 px-2">
               <div className="bg-prince-light rounded-lg p-3">
                 <div className="flex items-center space-x-3">
-                  <div className="h-8 w-8 min-w-8 bg-prince-green rounded-full flex items-center justify-center flex-shrink-0">
+                  <div className="h-8 w-8 mx-auto bg-prince-green rounded-full flex items-center justify-center flex-shrink-0">
                     <Ticket size={16} className="text-white" />
                   </div>
                   {isSidebarOpen && (
@@ -172,7 +174,7 @@ const AdminLayout = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
-        <header className="bg-white h-16 border-b border-gray-200 shadow-sm">
+        <header className="bg-white sm:mt-0 mt-3 h-16 border-b border-gray-200 shadow-sm">
           <div className="container mx-auto h-full px-4 flex items-center justify-between">
             <div className="flex items-center">
               <button
