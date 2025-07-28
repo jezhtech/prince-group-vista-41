@@ -144,12 +144,7 @@ export const EventBooking = memo(
       // Calculate price based on quantity purchased (not received)
       let ticketsToPayFor = ticketQuantity;
 
-      // Apply bulk purchase offer - pay for the base quantity, get extra free
-      if (ticketQuantity >= 8) {
-        // Buy 8, get 2 more free = pay for 8, receive 10
-        ticketsToPayFor = 8;
-      } else if (ticketQuantity >= 4) {
-        // Buy 4, get 1 more free = pay for 4, receive 5
+      if (ticketQuantity === 4) {
         ticketsToPayFor = 4;
       }
 
@@ -165,10 +160,7 @@ export const EventBooking = memo(
       if (!selectedTicket) return 0;
 
       let savings = 0;
-      if (ticketQuantity >= 8) {
-        // Paying for 8 tickets but receiving 10 (2 free)
-        savings = selectedTicket.price * 2;
-      } else if (ticketQuantity >= 4) {
+      if (ticketQuantity === 4) {
         // Paying for 4 tickets but receiving 5 (1 free)
         savings = selectedTicket.price * 1;
       }
@@ -263,11 +255,7 @@ export const EventBooking = memo(
           referralId: isValidReferral ? referralCode : "",
           ticketId: selectedTicket!.id,
           ticketCount:
-            ticketQuantity >= 8
-              ? ticketQuantity + 2
-              : ticketQuantity >= 4
-              ? ticketQuantity + 1
-              : ticketQuantity, // Store actual tickets received
+            ticketQuantity === 4 ? ticketQuantity + 1 : ticketQuantity, // Store actual tickets received
           paymentMethod: "cashfree",
           paymentStatus: "pending" as const,
           paymentDate: new Date().toISOString(),
@@ -576,21 +564,14 @@ export const EventBooking = memo(
                       </Button>
                     </div>
                     <div className="mt-2 space-y-1">
-                      {ticketQuantity >= 4 && (
+                      {ticketQuantity === 4 && (
                         <p className="text-green-400 text-sm font-medium">
-                          {ticketQuantity >= 8
-                            ? "🎉 You're getting 2 MORE FREE tickets!"
-                            : "🎉 You're getting 1 MORE FREE ticket!"}
+                          You're getting 1 MORE FREE ticket!
                         </p>
                       )}
                       {ticketQuantity === 3 && (
                         <p className="text-yellow-400 text-sm">
                           Add 1 more ticket to get 1 MORE FREE ticket!
-                        </p>
-                      )}
-                      {ticketQuantity === 7 && (
-                        <p className="text-yellow-400 text-sm">
-                          Add 1 more ticket to get 2 MORE FREE tickets!
                         </p>
                       )}
                     </div>
@@ -663,13 +644,11 @@ export const EventBooking = memo(
                           {ticketQuantity}
                         </span>
                       </p>
-                      {ticketQuantity >= 4 && (
+                      {ticketQuantity === 4 && (
                         <p className="flex justify-between">
                           <span className="text-white/70">Bulk Offer</span>
                           <span className="text-green-400 text-sm">
-                            {ticketQuantity >= 8
-                              ? "Buy 8, Get 2 More Free"
-                              : "Buy 4, Get 1 More Free"}
+                            Buy 4, Get 1 More Free
                           </span>
                         </p>
                       )}
