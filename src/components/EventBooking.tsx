@@ -197,7 +197,7 @@ export const EventBooking = memo(
     }, []);
 
     const handleQuantityChange = useCallback((newQuantity: number) => {
-      if (newQuantity >= 1 && newQuantity <= 15) {
+      if (newQuantity >= 1) {
         setTicketQuantity(newQuantity);
       }
     }, []);
@@ -569,20 +569,13 @@ export const EventBooking = memo(
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() =>
-                          ticketQuantity < 15 &&
-                          handleQuantityChange(ticketQuantity + 1)
-                        }
-                        disabled={ticketQuantity >= 15}
+                        onClick={() => handleQuantityChange(ticketQuantity + 1)}
                         className="rounded-l-none border-white/20 text-white hover:bg-white/10 hover:text-white opacity-100 bg-white/15"
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
                     <div className="mt-2 space-y-1">
-                      <p className="text-white/50 text-sm">
-                        Maximum 15 tickets per booking
-                      </p>
                       {ticketQuantity >= 4 && (
                         <p className="text-green-400 text-sm font-medium">
                           {ticketQuantity >= 8
